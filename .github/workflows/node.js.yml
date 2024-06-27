@@ -28,7 +28,7 @@ jobs:
       run: yarn build
 
     - name: Docker build
-      run: docker build -t restaurant-management-system .
+      run: docker build -t restaurant-management-system:latest .
 
     - name: Docker login
       env:
