@@ -1,3 +1,16 @@
+Run project in classic way:
+
+1. Install Node.js
+
+2. Install yarn
+
+3. Install vite via yarn
+
+4. `yarn`
+
+5. `yarn dev`
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
