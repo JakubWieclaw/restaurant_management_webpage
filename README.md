@@ -10,6 +10,12 @@ Run project in classic way:
 
 5. `yarn dev`
 
+Run project via Docker image:
+(Remember do not run docker commands via `sudo` [solution for permission error](https://stackoverflow.com/questions/48957195/how-to-fix-docker-got-permission-denied-issue))
+Terminal tut: TBD
+Easy way: Docker desktop
+
+
 
 # React + TypeScript + Vite
 
