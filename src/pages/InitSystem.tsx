@@ -3,19 +3,18 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import ImageIcon from "@mui/icons-material/Image";
-import Container from "@mui/material/Container";
 import Divider from "@mui/material/Divider";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Typography from "@mui/material/Typography";
-import { useState, Fragment } from "react";
-import { MuiFileInput } from "mui-file-input";
+import { useState } from "react";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import "dayjs/locale/de";
-import { CheckBox } from "@mui/icons-material";
+import Checkbox from "@mui/material/Checkbox";
+import { Dayjs } from "dayjs";
 
 export function InitSystem() {
   const steps = [
@@ -33,19 +32,136 @@ export function InitSystem() {
     "Piątek",
     "Sobota",
     "Niedziela",
-  ];
+  ]; // do not change order
+  const daysOfWeekAfterMerge = ["Poniedziałek - Piątek", "Sobota", "Niedziela"]; // do not change order
+
+  type DayState = {
+    open: boolean;
+    startTime: Dayjs | null;
+    endTime: Dayjs | null;
+  };
+
+  const initialDayState: DayState = {
+    open: true,
+    startTime: null,
+    endTime: null,
+  };
 
   const [activeStep, setActiveStep] = useState<number>(0);
-  const [mergeMonToFir, setMergeMonToFir] = useState<boolean>(true);
+  const [mergeMonToFri, setMergeMonToFri] = useState<boolean>(true);
 
   const handleNext = () => {
     if (activeStep < steps.length - 1) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
-
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const [daysState, setDaysState] = useState<Record<string, DayState>>(
+    daysOfWeek.concat(daysOfWeekAfterMerge).reduce((acc, day) => {
+      acc[day] = { ...initialDayState };
+      return acc;
+    }, {} as Record<string, DayState>)
+  );
+
+  const changeAllWorkingDays = () => {
+    for (const workDay of daysOfWeek.slice(0, 5)) {
+      setDaysState((prevState) => ({
+        ...prevState,
+        [workDay]: {
+          ...prevState[daysOfWeekAfterMerge[0]],
+        },
+      }));
+    }
+  };
+
+  const handleCheckboxChange = (day: string) => {
+    setDaysState((prevState) => ({
+      ...prevState,
+      [day]: {
+        ...prevState[day],
+        open: !prevState[day].open,
+      },
+    }));
+    if (day === daysOfWeekAfterMerge[0]) {
+      // if Monday - Friday was changed then change all these days too
+      changeAllWorkingDays();
+    }
+  };
+
+  const handleTimeChange = (day: string, type: "startTime" | "endTime") => {
+    return (newValue: Dayjs | null) => {
+      setDaysState((prevState) => ({
+        ...prevState,
+        [day]: {
+          ...prevState[day],
+          [type]: newValue,
+        },
+      }));
+      if (day === daysOfWeekAfterMerge[0]) {
+        // if Monday - Friday was changed then change all these days too
+        changeAllWorkingDays();
+      }
+    };
+  };
+
+  const generateHoursForDays = (days: string[]) => {
+    return days.map((day) => (
+      <Grid item xs={12} key={day}>
+        <Box sx={{ marginY: 1 }}>
+          <Typography variant="h6">{day}</Typography>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={daysState[day].open}
+                onChange={() => {
+                  handleCheckboxChange(day);
+                }}
+              />
+            }
+            label="Czynne"
+            sx={{ marginLeft: 1 }}
+          />
+          <Box sx={{ marginY: 1 }}></Box>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
+            {daysState[day].open ? (
+              <>
+                <TimePicker
+                  label="Od"
+                  value={daysState[day].startTime}
+                  onChange={handleTimeChange(day, "startTime")}
+                  maxTime={daysState[day].endTime ?? undefined}
+                />
+                <TimePicker
+                  label="Do"
+                  value={daysState[day].endTime}
+                  onChange={handleTimeChange(day, "endTime")}
+                  minTime={daysState[day].startTime ?? undefined}
+                />
+              </>
+            ) : (
+              <>
+                <TimePicker
+                  disabled
+                  label="Od"
+                  value={daysState[day].startTime}
+                  onChange={handleTimeChange(day, "startTime")}
+                />
+                <TimePicker
+                  disabled
+                  label="Do"
+                  value={daysState[day].endTime}
+                  onChange={handleTimeChange(day, "endTime")}
+                  minTime={daysState[day].startTime ?? undefined}
+                />
+              </>
+            )}
+          </LocalizationProvider>
+        </Box>
+      </Grid>
+    ));
   };
 
   const inputs = (activeStep: number) => {
@@ -73,19 +189,6 @@ export function InitSystem() {
                   Wybierz logo *
                 </Button>
               </label>
-              {/* <MuiFileInput
-                id="file-upload"
-                label="Wybierz logo"
-                clearIconButtonProps={{
-                  title: "Remove",
-                  children: <ImageIcon />,
-                }}
-                InputProps={{
-                  inputProps: {
-                    accept: "image/*",
-                  },
-                }}
-              /> */}
             </Grid>
           </Grid>
         );
@@ -149,84 +252,12 @@ export function InitSystem() {
             <FormControlLabel
               control={<Switch defaultChecked />}
               label="Scal dni robocze"
-              onChange={() => setMergeMonToFir((prev) => !prev)}
+              onChange={() => setMergeMonToFri((prev) => !prev)}
             />
             <Grid container spacing={4} sx={{ textAlign: "center" }}>
-              {!mergeMonToFir ? (
-                daysOfWeek.map((day) => (
-                  <Grid item xs={12} key={day}>
-                    <Box sx={{ marginY: 1 }}>
-                      <Typography variant="h6">{day}</Typography>
-                      <FormControlLabel
-                        control={<CheckBox />}
-                        label="Czynne"
-                        sx={{ marginLeft: 1 }}
-                      />
-                      <Box sx={{ marginY: 1 }}></Box>
-                      <LocalizationProvider
-                        dateAdapter={AdapterDayjs}
-                        adapterLocale="de"
-                      >
-                        <TimePicker label="Od" />
-                        <TimePicker label="Do" />
-                      </LocalizationProvider>
-                    </Box>
-                  </Grid>
-                ))
-              ) : (
-                <>
-                  <Grid item xs={12}>
-                    <Typography variant="h6">Poniedziałek - Piątek</Typography>
-                    <FormControlLabel
-                      control={<CheckBox />}
-                      label="Czynne"
-                      sx={{ marginLeft: 1 }}
-                    />
-                    <Box sx={{ marginY: 1 }}></Box>
-
-                    <LocalizationProvider
-                      dateAdapter={AdapterDayjs}
-                      adapterLocale="de"
-                    >
-                      <TimePicker label="Od" />
-                      <TimePicker label="Do" />
-                    </LocalizationProvider>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Typography variant="h6">Sobota</Typography>
-                    <FormControlLabel
-                      control={<CheckBox />}
-                      label="Czynne"
-                      sx={{ marginLeft: 1 }}
-                    />
-                    <Box sx={{ marginY: 1 }}></Box>
-                    <LocalizationProvider
-                      dateAdapter={AdapterDayjs}
-                      adapterLocale="de"
-                    >
-                      <TimePicker label="Od" />
-                      <TimePicker label="Do" />
-                    </LocalizationProvider>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Typography variant="h6">Niedziela</Typography>
-                    <FormControlLabel
-                      control={<CheckBox />}
-                      label="Czynne"
-                      sx={{ marginLeft: 1 }}
-                    />
-                    <Box sx={{ marginY: 1 }}></Box>
-
-                    <LocalizationProvider
-                      dateAdapter={AdapterDayjs}
-                      adapterLocale="de"
-                    >
-                      <TimePicker label="Od" />
-                      <TimePicker label="Do" />
-                    </LocalizationProvider>
-                  </Grid>
-                </>
-              )}
+              {mergeMonToFri
+                ? generateHoursForDays(daysOfWeekAfterMerge)
+                : generateHoursForDays(daysOfWeek)}
             </Grid>
           </>
         );
@@ -240,7 +271,7 @@ export function InitSystem() {
       <Box component="h1">Wprowadź dane dotyczące restauracji</Box>
       <Divider orientation="horizontal" flexItem />
       <Stepper activeStep={activeStep} sx={{ paddingY: 5 }}>
-        {steps.map((label, index) => {
+        {steps.map((label) => {
           return (
             <Step key={label}>
               <StepLabel>{label}</StepLabel>
