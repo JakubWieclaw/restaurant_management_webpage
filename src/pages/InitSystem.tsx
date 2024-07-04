@@ -149,7 +149,7 @@ export function InitSystem() {
   const generateHoursForDays = (days: string[]) => {
     return days.map((day) => (
       <Grid item xs={12} key={day}>
-        <Box sx={{ my: 1 }}>
+        <Box>
           <Typography variant="h6">{day}</Typography>
           <FormControlLabel
             control={
@@ -161,7 +161,7 @@ export function InitSystem() {
             label="Czynne"
             sx={{ ml: 1 }}
           />
-          <Box sx={{ my: 1 }}>
+          <Box>
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
               {daysState[day].open ? (
                 <>
