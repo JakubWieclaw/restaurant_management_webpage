@@ -19,6 +19,11 @@ import {
   DialogActions,
   Slide,
 } from "@mui/material";
+import {
+  validatePostalCode,
+  validatePhoneNumber,
+  validateEmail,
+} from "../utils/validations";
 import "dayjs/locale/de";
 import { Dayjs } from "dayjs";
 import { forwardRef, ReactElement, Ref, useState } from "react";
@@ -72,12 +77,18 @@ export function InitSystem() {
   };
 
   const [restaurantName, setRestaurantName] = useState<string>("");
+  const [restaurantNameError, setRestaurantNameError] = useState<string>("");
   const [restaurantLogo, setRestaurantLogo] = useState<File | null>(null);
   const [postalCode, setPostalCode] = useState<string>("");
+  const [postalCodeError, setPostalCodeError] = useState<string>("");
   const [city, setCity] = useState<string>("");
+  const [cityError, setCityError] = useState<string>("");
   const [street, setStreet] = useState<string>("");
+  const [streetError, setStreetError] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [phoneNumberError, setPhoneNumberError] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [emailError, setEmailError] = useState("");
   const [activeStep, setActiveStep] = useState<number>(0);
   const [mergeMonToFri, setMergeMonToFri] = useState<boolean>(true);
   const [daysState, setDaysState] = useState<Record<string, DayState>>(
@@ -163,42 +174,22 @@ export function InitSystem() {
           />
           <Box>
             <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
-              {daysState[day].open ? (
-                <>
-                  <TimePicker
-                    label="Od"
-                    value={daysState[day].startTime}
-                    onChange={handleTimeChange(day, "startTime")}
-                    maxTime={daysState[day].endTime ?? undefined}
-                    sx={{ mr: 1 }}
-                  />
-                  <TimePicker
-                    label="Do"
-                    value={daysState[day].endTime}
-                    onChange={handleTimeChange(day, "endTime")}
-                    minTime={daysState[day].startTime ?? undefined}
-                    sx={{ ml: 1 }}
-                  />
-                </>
-              ) : (
-                <>
-                  <TimePicker
-                    disabled
-                    label="Od"
-                    value={daysState[day].startTime}
-                    onChange={handleTimeChange(day, "startTime")}
-                    sx={{ mr: 1 }}
-                  />
-                  <TimePicker
-                    disabled
-                    label="Do"
-                    value={daysState[day].endTime}
-                    onChange={handleTimeChange(day, "endTime")}
-                    minTime={daysState[day].startTime ?? undefined}
-                    sx={{ ml: 1 }}
-                  />
-                </>
-              )}
+              <TimePicker
+                label="Od"
+                disabled={daysState[day].open}
+                value={daysState[day].startTime}
+                onChange={handleTimeChange(day, "startTime")}
+                maxTime={daysState[day].endTime ?? undefined}
+                sx={{ mr: 1 }}
+              />
+              <TimePicker
+                label="Do"
+                disabled={daysState[day].open}
+                value={daysState[day].endTime}
+                onChange={handleTimeChange(day, "endTime")}
+                minTime={daysState[day].startTime ?? undefined}
+                sx={{ ml: 1 }}
+              />
             </LocalizationProvider>
           </Box>
         </Box>
@@ -209,9 +200,23 @@ export function InitSystem() {
   const [deliveryCosts, setDeliveryCosts] = useState([
     { distance: "", price: "" },
   ]);
+  const [deliveryCostsError, setDeliveryCostsError] = useState<string>("");
 
   const handleAddDeliveryCost = () => {
     setDeliveryCosts([...deliveryCosts, { distance: "", price: "" }]);
+  };
+
+  const howManyDeliveryCostsFieldsEmpty = () => {
+    let count = 0;
+    deliveryCosts.forEach((field) => {
+      if (field.distance === "") {
+        count++;
+      }
+      if (field.price === "") {
+        count++;
+      }
+    });
+    return count;
   };
 
   const handleDeliveryCostChange = (
@@ -225,50 +230,98 @@ export function InitSystem() {
   };
 
   const renderDeliveryCostInputs = () => {
-    return deliveryCosts.map((cost, index) => (
-      <Grid
-        container
-        spacing={2}
-        key={"deliveryCosts-" + index}
-        alignItems="center"
-      >
-        <Grid item xs={5}>
-          <TextField
-            label="Max. odległość od restauracji"
-            value={cost.distance}
-            onChange={(e) =>
-              handleDeliveryCostChange(index, "distance", e.target.value)
-            }
-            fullWidth
-            sx={{ my: 1 }}
-          />
+    return (
+      <Grid container spacing={2} alignItems="center">
+        <Grid item xs={12}>
+          <Typography align="center" color="error">
+            {deliveryCostsError}&nbsp;
+          </Typography>
         </Grid>
-        <Grid item xs={5}>
-          <TextField
-            label="Cena"
-            value={cost.price}
-            onChange={(e) =>
-              handleDeliveryCostChange(index, "price", e.target.value)
-            }
-            fullWidth
-            sx={{ my: 1, textAlign: "center" }}
-          />
-        </Grid>
-        <Grid item xs={2} textAlign={"end"}>
-          <Button
-            variant="outlined"
-            color="error"
-            onClick={() => handleRemoveDeliveryCost(index)}
-          >
-            Usuń
-          </Button>
-        </Grid>
+        {deliveryCosts.length === 0 ? (
+          <Grid item xs={12}>
+            <Typography align="center" variant={"h5"}>
+              Brak kosztów dostawy
+            </Typography>
+          </Grid>
+        ) : (
+          deliveryCosts.map((cost, index) => (
+            <>
+              <Grid item xs={5}>
+                <TextField
+                  label="Max. odległość od restauracji (km)"
+                  value={cost.distance}
+                  onChange={(e) => {
+                    if (
+                      howManyDeliveryCostsFieldsEmpty() === 1 &&
+                      cost.distance === ""
+                    ) {
+                      setDeliveryCostsError("");
+                    } // just one previously empty field is now filled
+                    handleDeliveryCostChange(index, "distance", e.target.value);
+                  }}
+                  fullWidth
+                  sx={{ my: 1 }}
+                  onBlur={(e) => {
+                    if (e.target.value === "") {
+                      setDeliveryCostsError("Wszystkie pola są wymagane");
+                    }
+                  }}
+                  type="number"
+                  inputProps={{ min: 1, step: 1 }}
+                />
+              </Grid>
+              <Grid item xs={5}>
+                <TextField
+                  label="Cena"
+                  value={cost.price}
+                  onChange={(e) => {
+                    if (
+                      howManyDeliveryCostsFieldsEmpty() === 1 &&
+                      cost.price === ""
+                    ) {
+                      setDeliveryCostsError("");
+                    } // just one previously empty field is now filled
+                    handleDeliveryCostChange(index, "price", e.target.value);
+                  }}
+                  fullWidth
+                  sx={{ my: 1, textAlign: "center" }}
+                  onBlur={(e) => {
+                    if (e.target.value === "") {
+                      setDeliveryCostsError("Wszystkie pola są wymagane");
+                    }
+                  }}
+                  type="number"
+                  inputProps={{ min: 0, step: 1 }}
+                />
+              </Grid>
+              <Grid item xs={2} textAlign={"end"}>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={() => handleRemoveDeliveryCost(index)}
+                >
+                  Usuń
+                </Button>
+              </Grid>
+            </>
+          ))
+        )}
       </Grid>
-    ));
+    );
   };
 
   const handleRemoveDeliveryCost = (index: number) => {
+    let emptyFieldsInCostIndex = 0;
+    if (deliveryCosts[index].distance === "") {
+      emptyFieldsInCostIndex++;
+    }
+    if (deliveryCosts[index].price === "") {
+      emptyFieldsInCostIndex++;
+    }
     setDeliveryCosts(deliveryCosts.filter((_, i) => i !== index));
+    if (howManyDeliveryCostsFieldsEmpty() === emptyFieldsInCostIndex) {
+      setDeliveryCostsError("");
+    } // just deleted fields was empty
   };
 
   const summaryContent = (
@@ -316,10 +369,23 @@ export function InitSystem() {
                 margin="normal"
                 required
                 label="Nazwa restauracji"
-                autoFocus
                 fullWidth
                 value={restaurantName}
-                onChange={(e) => setRestaurantName(e.target.value)}
+                onChange={(e) => {
+                  setRestaurantName(e.target.value);
+                  if (e.target.value !== "") {
+                    setRestaurantNameError("");
+                  }
+                }}
+                onBlur={() => {
+                  setRestaurantNameError(
+                    restaurantName === ""
+                      ? "Nazwa restauracji jest wymagana"
+                      : ""
+                  );
+                }}
+                error={restaurantNameError !== ""}
+                helperText={restaurantNameError}
               />
             </Grid>
             <Grid item xs={12}>
@@ -341,7 +407,7 @@ export function InitSystem() {
                   component="span"
                   sx={{ my: 2, py: 1 }}
                 >
-                  Wybierz logo *
+                  Wybierz logo
                 </Button>
                 <br />
                 <Typography variant="caption" color={"GrayText"}>
@@ -369,12 +435,27 @@ export function InitSystem() {
                 value={postalCode}
                 onChange={(e) => {
                   const value = e.target.value.replace(/\D/g, "").slice(0, 5);
+                  let formattedValue = value;
                   if (value.length > 1) {
-                    setPostalCode(value.slice(0, 2) + "-" + value.slice(2));
+                    formattedValue = value.slice(0, 2) + "-" + value.slice(2);
+                    setPostalCode(formattedValue);
                   } else {
                     setPostalCode(value);
                   }
+
+                  if (validatePostalCode(formattedValue)) {
+                    setPostalCodeError("");
+                  }
                 }}
+                onBlur={() => {
+                  setPostalCodeError(
+                    !validatePostalCode(postalCode)
+                      ? "Nieprawidłowy kod pocztowy"
+                      : ""
+                  );
+                }}
+                error={postalCodeError !== ""}
+                helperText={postalCodeError}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -385,7 +466,17 @@ export function InitSystem() {
                 placeholder="Poznań"
                 fullWidth
                 value={city}
-                onChange={(e) => setCity(e.target.value)}
+                onChange={(e) => {
+                  setCity(e.target.value);
+                  if (e.target.value !== "") {
+                    setCityError("");
+                  }
+                }}
+                onBlur={() => {
+                  setCityError(city === "" ? "Miasto jest wymagane" : "");
+                }}
+                error={cityError !== ""}
+                helperText={cityError}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -396,7 +487,17 @@ export function InitSystem() {
                 placeholder="ul. Piotrowo 2"
                 fullWidth
                 value={street}
-                onChange={(e) => setStreet(e.target.value)}
+                onChange={(e) => {
+                  setStreet(e.target.value);
+                  if (e.target.value !== "") {
+                    setStreetError("");
+                  }
+                }}
+                onBlur={() => {
+                  setStreetError(street === "" ? "Ulica jest wymagana" : "");
+                }}
+                error={streetError !== ""}
+                helperText={streetError}
               />
             </Grid>
             <Grid item xs={12}>
@@ -424,7 +525,19 @@ export function InitSystem() {
                     formattedValue = value;
                   }
                   setPhoneNumber(formattedValue);
+                  if (validatePhoneNumber(formattedValue)) {
+                    setPhoneNumberError("");
+                  }
                 }}
+                onBlur={() => {
+                  setPhoneNumberError(
+                    !validatePhoneNumber(phoneNumber)
+                      ? "Nieprawidłowy numer telefonu"
+                      : ""
+                  );
+                }}
+                error={phoneNumberError !== ""}
+                helperText={phoneNumberError}
               />
             </Grid>
             <Grid item xs={12}>
@@ -438,7 +551,17 @@ export function InitSystem() {
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
+                  if (validateEmail(e.target.value)) {
+                    setEmailError("");
+                  }
                 }}
+                onBlur={() => {
+                  setEmailError(
+                    !validateEmail(email) ? "Nieprawidłowy adres email" : ""
+                  );
+                }}
+                error={emailError !== ""}
+                helperText={emailError}
               />
             </Grid>
           </Grid>

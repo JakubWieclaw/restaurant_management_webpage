@@ -1192,6 +1192,11 @@ electron-to-chromium@^1.4.796:
   resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.812.tgz"
   integrity sha512-7L8fC2Ey/b6SePDFKR2zHAy4mbdp1/38Yk5TsARO66W3hC5KEaeKMMHoxwtuH+jcu2AYLSn9QX04i95t6Fl1Hg==
 
+email-validator@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/email-validator/-/email-validator-2.0.4.tgz#b8dfaa5d0dae28f1b03c95881d904d4e40bfe7ed"
+  integrity sha512-gYCwo7kh5S3IDyZPLZf6hSS0MnZT8QmJFqYvbqlDZSbwdZlY6QZWxJ4i/6UhITOJ4XzyI647Bm2MXKCLqnJ4nQ==
+
 error-ex@^1.3.1:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/error-ex/-/error-ex-1.3.2.tgz#b4ac40648107fdcdcfae242f428bea8a14d4f1bf"
@@ -1808,6 +1813,11 @@ path-type@^4.0.0:
   resolved "https://registry.npmjs.org/path-type/-/path-type-4.0.0.tgz"
   integrity sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==
 
+phone@^3.1.48:
+  version "3.1.48"
+  resolved "https://registry.yarnpkg.com/phone/-/phone-3.1.48.tgz#b014e0d51c3d419044545884197f476cfe461996"
+  integrity sha512-/yJHHnRkJUwzsOJFrflKyDonacyun5VvUu1ybTSTJv1+dRItjkRNeSL3m8XHmvhsDX9I4i4gtZPZESMFhuy73Q==
+
 picocolors@^1.0.0, picocolors@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/picocolors/-/picocolors-1.0.1.tgz"
@@ -1817,6 +1827,11 @@ picomatch@^2.3.1:
   version "2.3.1"
   resolved "https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
+
+postcode-validator@^3.8.21:
+  version "3.8.21"
+  resolved "https://registry.yarnpkg.com/postcode-validator/-/postcode-validator-3.8.21.tgz#da1b867a7281b7b763decfb0ef7ee60394f4ec02"
+  integrity sha512-I7VzmQpBWJn6XlMQcWga8mYwXzMoo1Po3C1j3AyH26+3QXzaD7VeSv1rEqyDJSmIJH0Ig6ZV43CgeIIngV7K0w==
 
 postcss@^8.4.38:
   version "8.4.38"
