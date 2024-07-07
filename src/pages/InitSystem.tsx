@@ -108,6 +108,7 @@ export function InitSystem() {
               }
             });
           }
+          break;
         default:
           break;
       }
