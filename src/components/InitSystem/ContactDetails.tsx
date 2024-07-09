@@ -1,9 +1,9 @@
-import { Grid, TextField } from "@mui/material";
 import {
   validateEmail,
   validatePhoneNumber,
   validatePostalCode,
 } from "../../utils/validations";
+import { Grid, TextField } from "@mui/material";
 
 interface ContactDetailsProps {
   postalCode: string;

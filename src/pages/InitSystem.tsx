@@ -9,10 +9,10 @@ import {
   Grid,
   Button,
 } from "@mui/material";
+
 import "dayjs/locale/de";
-import { useState } from "react";
-import { NameLogo } from "../components/InitSystem/NameLogo";
-import { ContactDetails } from "../components/InitSystem/ContactDetails";
+import { Slide, toast } from "react-toastify";
+
 import {
   daysOfWeek,
   daysOfWeekAfterMerge,
@@ -20,9 +20,11 @@ import {
   DayState,
   initialDayState,
 } from "../components/InitSystem/OpeningHours";
-import { DeliveryCosts } from "../components/InitSystem/DeliveryCosts";
+import { useState } from "react";
+import { NameLogo } from "../components/InitSystem/NameLogo";
 import { FinishModal } from "../components/InitSystem/FinishModal";
-import { Slide, toast } from "react-toastify";
+import { DeliveryCosts } from "../components/InitSystem/DeliveryCosts";
+import { ContactDetails } from "../components/InitSystem/ContactDetails";
 
 export function InitSystem() {
   const steps = [

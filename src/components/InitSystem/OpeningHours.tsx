@@ -6,11 +6,11 @@ import {
   Typography,
   Checkbox,
 } from "@mui/material";
-
-import { Dayjs } from "dayjs";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+
+import { Dayjs } from "dayjs";
 
 export const daysOfWeek = [
   "Poniedziałek",

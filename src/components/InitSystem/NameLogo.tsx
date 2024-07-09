@@ -1,5 +1,5 @@
-import { Button, Grid, TextField, Typography } from "@mui/material";
 import ImageIcon from "@mui/icons-material/Image";
+import { Button, Grid, TextField, Typography } from "@mui/material";
 
 interface NameLogoProps {
   restaurantName: string;
