@@ -7,20 +7,8 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import Slide from "@mui/material/Slide";
-import { TransitionProps } from "@mui/material/transitions";
-
+import { Transition } from "../Transision";
 import { DayState } from "./OpeningHours";
-import { forwardRef, ReactElement, Ref } from "react";
-
-const Transition = forwardRef(function Transition(
-  props: TransitionProps & {
-    children: ReactElement<any, any>;
-  },
-  ref: Ref<unknown>
-) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 const modalActions = ["Chcę je poprawić", "Wszystko OK!"];
 
@@ -98,6 +86,9 @@ export const FinishModal: React.FC<FinishModalProps> = ({
           Max. odległość: {cost.distance} km, Cena: {cost.price} zł
         </Typography>
       ))}
+      {deliveryCosts.length === 0 && (
+        <Typography>Brak kosztów dostawy</Typography>
+      )}
     </span>
   );
   return (

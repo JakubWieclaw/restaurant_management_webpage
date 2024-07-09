@@ -1,9 +1,7 @@
-import {
-  validateEmail,
-  validatePhoneNumber,
-  validatePostalCode,
-} from "../../utils/validations";
+import { validateEmail } from "../../utils/validations";
 import { Grid, TextField } from "@mui/material";
+import { PhoneNumber } from "../inputs/PhoneNumber";
+import { PostalCode } from "../inputs/PostalCode";
 
 interface ContactDetailsProps {
   postalCode: string;
@@ -58,36 +56,11 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
       justifyContent="center"
     >
       <Grid item xs={12} sm={4}>
-        <TextField
-          margin="normal"
-          required
-          label="Kod pocztowy"
-          placeholder="00-000"
-          fullWidth
-          value={postalCode}
-          onChange={(e) => {
-            const value = e.target.value.replace(/\D/g, "").slice(0, 5);
-            let formattedValue = value;
-            if (value.length > 1) {
-              formattedValue = value.slice(0, 2) + "-" + value.slice(2);
-              setPostalCode(formattedValue);
-            } else {
-              setPostalCode(value);
-            }
-
-            if (validatePostalCode(formattedValue)) {
-              setPostalCodeError("");
-            }
-          }}
-          onBlur={() => {
-            setPostalCodeError(
-              !validatePostalCode(postalCode)
-                ? "Nieprawidłowy kod pocztowy"
-                : ""
-            );
-          }}
-          error={postalCodeError !== ""}
-          helperText={postalCodeError}
+        <PostalCode
+          getValue={postalCode}
+          setValue={setPostalCode}
+          getError={postalCodeError}
+          setError={setPostalCodeError}
         />
       </Grid>
       <Grid item xs={12} sm={4}>
@@ -133,43 +106,11 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
         />
       </Grid>
       <Grid item xs={12}>
-        <TextField
-          margin="normal"
-          required
-          label="Nr telefonu"
-          placeholder="123-456-789"
-          type="tel"
-          fullWidth
-          value={phoneNumber}
-          onChange={(e) => {
-            const value = e.target.value.replace(/\D/g, "").slice(0, 9);
-            let formattedValue = "";
-            if (value.length > 5) {
-              formattedValue =
-                value.slice(0, 3) +
-                "-" +
-                value.slice(3, 6) +
-                "-" +
-                value.slice(6);
-            } else if (value.length > 2) {
-              formattedValue = value.slice(0, 3) + "-" + value.slice(3);
-            } else if (value.length > 0) {
-              formattedValue = value;
-            }
-            setPhoneNumber(formattedValue);
-            if (validatePhoneNumber(formattedValue)) {
-              setPhoneNumberError("");
-            }
-          }}
-          onBlur={() => {
-            setPhoneNumberError(
-              !validatePhoneNumber(phoneNumber)
-                ? "Nieprawidłowy numer telefonu"
-                : ""
-            );
-          }}
-          error={phoneNumberError !== ""}
-          helperText={phoneNumberError}
+        <PhoneNumber
+          getValue={phoneNumber}
+          setValue={setPhoneNumber}
+          getError={phoneNumberError}
+          setError={setPhoneNumberError}
         />
       </Grid>
       <Grid item xs={12}>
