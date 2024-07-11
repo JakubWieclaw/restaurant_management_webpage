@@ -93,7 +93,6 @@ const generateHoursForDays = (
               value={daysState[day].startTime}
               onChange={handleTimeChange(day, "startTime", setDaysState)}
               maxTime={daysState[day].endTime ?? undefined}
-              sx={{ mr: 1 }}
             />
             <TimePicker
               label="Do"
@@ -101,7 +100,6 @@ const generateHoursForDays = (
               value={daysState[day].endTime}
               onChange={handleTimeChange(day, "endTime", setDaysState)}
               minTime={daysState[day].startTime ?? undefined}
-              sx={{ ml: 1 }}
             />
           </LocalizationProvider>
         </Box>

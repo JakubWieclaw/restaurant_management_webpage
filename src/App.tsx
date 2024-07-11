@@ -4,10 +4,12 @@ import { ToastContainer } from "react-toastify";
 import { InitSystem } from "./pages/InitSystem";
 import { Route, Routes } from "react-router-dom";
 import { LoginRegister } from "./pages/LoginRegister";
+import { AppBarHeader } from "./components/AppBarHeader";
 
 function App() {
   return (
     <>
+      <AppBarHeader />
       <Routes>
         <Route path="/initialize-system" element={<InitSystem />} />
         <Route path="/" element={<LoginRegister />} />

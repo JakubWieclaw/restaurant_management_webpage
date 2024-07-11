@@ -18,7 +18,7 @@ const renderDeliveryCostInputs = (
   setDeliveryCosts: (costs: { distance: string; price: string }[]) => void
 ) => {
   return (
-    <Grid container spacing={2} alignItems="center">
+    <Grid container alignItems="center" spacing={1}>
       {deliveryCosts.length === 0 ? (
         <Grid item xs={12}>
           <Typography align="center" variant={"h5"}>
@@ -43,7 +43,6 @@ const renderDeliveryCostInputs = (
                   );
                 }}
                 fullWidth
-                sx={{ my: 1 }}
                 type="number"
                 inputProps={{ min: 1, step: 1 }}
               />
@@ -63,7 +62,7 @@ const renderDeliveryCostInputs = (
                   );
                 }}
                 fullWidth
-                sx={{ my: 1, textAlign: "center" }}
+                sx={{ textAlign: "center" }}
                 type="number"
                 inputProps={{ min: 0, step: 1 }}
               />

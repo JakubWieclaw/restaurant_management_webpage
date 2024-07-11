@@ -20,6 +20,23 @@ export function LoginRegister() {
   const [passwordRepeat, setPasswordRepeat] = useState<string>("");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    switch (loginRegisterState) {
+      case LoginRegisterState.Login:
+        alert("Login");
+        break;
+      case LoginRegisterState.Register:
+        if (password === passwordRepeat) {
+          alert("Register");
+          setPassword("");
+        }
+        break;
+      case LoginRegisterState.ForgetPassword:
+        console.log("ForgetPassword");
+        setPassword("");
+        break;
+      default:
+        break;
+    }
   };
   const [loginRegisterState, setLoginRegisterState] =
     useState<LoginRegisterState>(LoginRegisterState.Login);

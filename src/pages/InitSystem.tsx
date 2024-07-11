@@ -192,13 +192,45 @@ export function InitSystem() {
         Wprowadź dane dotyczące restauracji
       </Typography>
       <Divider />
-      <Stepper activeStep={activeStep} sx={{ py: 5 }}>
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+      <Box
+        sx={{
+          justifyContent: "center",
+          display: { sm: "block", xs: "none" },
+        }}
+      >
+        <Stepper
+          activeStep={activeStep}
+          sx={{
+            py: 5,
+          }}
+        >
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
+      <Box
+        sx={{
+          justifyContent: "center",
+          display: { sm: "none", xs: "flex" },
+        }}
+      >
+        <Stepper
+          activeStep={activeStep}
+          sx={{
+            py: 5,
+          }}
+          orientation="vertical"
+        >
+          {steps.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
       <Box component={"form"} ref={formRef} onSubmit={(e) => handleNext(e)}>
         <Box>{inputs(activeStep)}</Box>
         <Grid container sx={{ py: 5 }} justifyContent="space-between">
