@@ -8,7 +8,8 @@ import {
   DialogActions,
 } from "@mui/material";
 import { Transition } from "../Transision";
-import { DayState } from "./OpeningHours";
+
+import { daysOfWeek, daysOfWeekAfterMerge, DayState } from "./OpeningHours";
 
 const modalActions = ["Chcę je poprawić", "Wszystko OK!"];
 
@@ -36,6 +37,7 @@ interface FinishModalProps {
   email: string;
   daysState: Record<string, DayState>;
   deliveryCosts: { distance: string; price: string }[];
+  mergeMonToFri: boolean;
 }
 
 export const FinishModal: React.FC<FinishModalProps> = ({
@@ -50,6 +52,7 @@ export const FinishModal: React.FC<FinishModalProps> = ({
   email,
   daysState,
   deliveryCosts,
+  mergeMonToFri,
 }) => {
   const summaryContent = (
     <span>
@@ -68,16 +71,32 @@ export const FinishModal: React.FC<FinishModalProps> = ({
       <Typography>Adres e-mail: {email}</Typography>
       <Divider sx={{ my: 2 }} />
       <Typography variant="h6">Godziny otwarcia:</Typography>
-      {Object.entries(daysState).map(([day, state]) => (
-        <Typography key={day}>
-          {day}:{" "}
-          {state.open
-            ? `${state.startTime?.format("HH:mm")} - ${state.endTime?.format(
-                "HH:mm"
-              )}`
-            : "Zamknięte"}
-        </Typography>
-      ))}
+      {mergeMonToFri
+        ? Object.entries(daysState)
+            .filter(([day]) => daysOfWeekAfterMerge.includes(day))
+            .map(([day, state]) => (
+              <Typography key={day}>
+                {day}:{" "}
+                {state.open
+                  ? `${state.startTime?.format(
+                      "HH:mm"
+                    )} - ${state.endTime?.format("HH:mm")}`
+                  : "Zamknięte"}
+              </Typography>
+            ))
+        : Object.entries(daysState)
+            .filter(([day]) => daysOfWeek.includes(day))
+            .map(([day, state]) => (
+              <Typography key={day}>
+                {day}:{" "}
+                {state.open
+                  ? `${state.startTime?.format(
+                      "HH:mm"
+                    )} - ${state.endTime?.format("HH:mm")}`
+                  : "Zamknięte"}
+              </Typography>
+            ))}
+
       <Divider sx={{ my: 2 }} />
 
       <Typography variant="h6">Koszty dostawy:</Typography>

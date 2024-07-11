@@ -30,11 +30,6 @@ export const PostalCode: React.FC<InputProps> = ({
           setError("");
         }
       }}
-      onBlur={() => {
-        setError(
-          !validatePostalCode(getValue) ? "Nieprawidłowy kod pocztowy" : ""
-        );
-      }}
       error={getError !== ""}
       helperText={getError}
     />

@@ -20,11 +20,12 @@ import {
   DayState,
   initialDayState,
 } from "../components/InitSystem/OpeningHours";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { NameLogo } from "../components/InitSystem/NameLogo";
 import { FinishModal } from "../components/InitSystem/FinishModal";
 import { DeliveryCosts } from "../components/InitSystem/DeliveryCosts";
 import { ContactDetails } from "../components/InitSystem/ContactDetails";
+import { validatePhoneNumber, validatePostalCode } from "../utils/validations";
 
 export function InitSystem() {
   const steps = [
@@ -35,25 +36,20 @@ export function InitSystem() {
   ];
 
   const [restaurantName, setRestaurantName] = useState<string>("");
-  const [restaurantNameError, setRestaurantNameError] = useState<string>("");
   const [restaurantLogo, setRestaurantLogo] = useState<File | null>(null);
   const [postalCode, setPostalCode] = useState<string>("");
   const [postalCodeError, setPostalCodeError] = useState<string>("");
   const [city, setCity] = useState<string>("");
-  const [cityError, setCityError] = useState<string>("");
   const [street, setStreet] = useState<string>("");
-  const [streetError, setStreetError] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [phoneNumberError, setPhoneNumberError] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const [emailError, setEmailError] = useState("");
   const [activeStep, setActiveStep] = useState<number>(0);
   const [mergeMonToFri, setMergeMonToFri] = useState<boolean>(true);
   const [openSummary, setOpenSummary] = useState(false); // State for modal open/close
   const [deliveryCosts, setDeliveryCosts] = useState([
     { distance: "", price: "" },
   ]);
-  const [deliveryCostsError, setDeliveryCostsError] = useState<string>("");
   const [daysState, setDaysState] = useState<Record<string, DayState>>(
     daysOfWeek.concat(daysOfWeekAfterMerge).reduce((acc, day) => {
       acc[day] = { ...initialDayState };
@@ -61,98 +57,77 @@ export function InitSystem() {
     }, {} as Record<string, DayState>)
   );
 
-  const handleNext = () => {
-    if (activeStep < steps.length - 1) {
-      // setActiveStep((prevActiveStep) => prevActiveStep + 1);
-      // check if all fields are filled and valid
-      let error = false;
-      switch (activeStep) {
-        case 0:
-          if (restaurantName === "" || restaurantNameError !== "") {
-            error = true;
-          }
-          break;
-        case 1:
-          if (
-            postalCode === "" ||
-            postalCodeError !== "" ||
-            city === "" ||
-            cityError !== "" ||
-            street === "" ||
-            streetError !== "" ||
-            phoneNumber === "" ||
-            phoneNumberError !== "" ||
-            email === "" ||
-            emailError !== ""
-          ) {
-            error = true;
-          }
-          break;
-        case 2:
-          if (mergeMonToFri) {
-            daysOfWeekAfterMerge.forEach((day) => {
-              if (
-                daysState[day].open &&
-                (daysState[day].startTime === null ||
-                  daysState[day].endTime === null)
-              ) {
-                error = true;
-              }
-            });
-          } else {
-            daysOfWeek.forEach((day) => {
-              if (
-                daysState[day].open &&
-                (daysState[day].startTime === null ||
-                  daysState[day].endTime === null)
-              ) {
-                error = true;
-              }
-            });
-          }
-          break;
-        default:
-          break;
-      }
-      if (error) {
-        toast.warn("Uzupełnij wymagane pola", {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Slide,
-        });
-      } else {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-      }
-    } else {
-      let errorFinish = false;
-      deliveryCosts.forEach((cost) => {
-        console.log(cost);
-        if (cost.distance === "" || cost.price === "") {
-          errorFinish = true;
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const handleNext = (e: any) => {
+    e.preventDefault();
+    if (formRef.current?.checkValidity()) {
+      if (activeStep < steps.length - 1) {
+        // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        // check if all fields are filled and valid
+        let error = false;
+        switch (activeStep) {
+          case 0:
+            break;
+          case 1:
+            if (!validatePostalCode(postalCode)) {
+              error = true;
+              setPostalCodeError("Nieprawidłowy kod pocztowy");
+            } else {
+              setPostalCodeError("");
+            }
+
+            if (!validatePhoneNumber(phoneNumber)) {
+              error = true;
+              setPhoneNumberError("Nieprawidłowy numer telefonu");
+            } else {
+              setPhoneNumberError("");
+            }
+            break;
+          case 2:
+            if (mergeMonToFri) {
+              daysOfWeekAfterMerge.forEach((day) => {
+                if (
+                  daysState[day].open &&
+                  (daysState[day].startTime === null ||
+                    daysState[day].endTime === null)
+                ) {
+                  error = true;
+                }
+              });
+            } else {
+              daysOfWeek.forEach((day) => {
+                if (
+                  daysState[day].open &&
+                  (daysState[day].startTime === null ||
+                    daysState[day].endTime === null)
+                ) {
+                  error = true;
+                }
+              });
+            }
+            break;
+          default:
+            break;
         }
-      });
-      if (deliveryCostsError !== "") {
-        errorFinish = true;
+        if (error) {
+          toast.warn("Uzupełnij wymagane pola", {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Slide,
+          });
+        } else {
+          setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        }
+      } else {
+        setOpenSummary(true); // Open summary modal
       }
-      if (errorFinish) {
-        toast.warn("Uzupełnij wymagane pola", {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Slide,
-        });
-      } else setOpenSummary(true); // Open summary modal
     }
   };
   const handleBack = () => {
@@ -166,8 +141,6 @@ export function InitSystem() {
           <NameLogo
             restaurantName={restaurantName}
             setRestaurantName={setRestaurantName}
-            restaurantNameError={restaurantNameError}
-            setRestaurantNameError={setRestaurantNameError}
             restaurantLogo={restaurantLogo}
             setRestaurantLogo={setRestaurantLogo}
           />
@@ -182,20 +155,14 @@ export function InitSystem() {
             setPostalCodeError={setPostalCodeError}
             city={city}
             setCity={setCity}
-            cityError={cityError}
-            setCityError={setCityError}
             street={street}
             setStreet={setStreet}
-            streetError={streetError}
-            setStreetError={setStreetError}
             phoneNumber={phoneNumber}
             setPhoneNumber={setPhoneNumber}
             phoneNumberError={phoneNumberError}
             setPhoneNumberError={setPhoneNumberError}
             email={email}
             setEmail={setEmail}
-            emailError={emailError}
-            setEmailError={setEmailError}
           />
         );
       case 2:
@@ -212,8 +179,6 @@ export function InitSystem() {
           <DeliveryCosts
             deliveryCosts={deliveryCosts}
             setDeliveryCosts={setDeliveryCosts}
-            deliveryCostsError={deliveryCostsError}
-            setDeliveryCostsError={setDeliveryCostsError}
           />
         );
       default:
@@ -234,24 +199,28 @@ export function InitSystem() {
           </Step>
         ))}
       </Stepper>
-      <Box>{inputs(activeStep)}</Box>
-      <Grid container sx={{ py: 5 }} justifyContent="space-between">
-        <Grid item>
-          <Button
-            color="inherit"
-            disabled={activeStep === 0}
-            onClick={handleBack}
-          >
-            Poprzedni
-          </Button>
+      <Box component={"form"} ref={formRef} onSubmit={(e) => handleNext(e)}>
+        <Box>{inputs(activeStep)}</Box>
+        <Grid container sx={{ py: 5 }} justifyContent="space-between">
+          <Grid item>
+            <Button
+              color="inherit"
+              disabled={activeStep === 0}
+              onClick={handleBack}
+            >
+              Poprzedni
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button variant="contained" type="submit">
+              {activeStep === steps.length - 1 ? "Zakończ" : "Następny"}
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item>
-          <Button variant="contained" onClick={handleNext}>
-            {activeStep === steps.length - 1 ? "Zakończ" : "Następny"}
-          </Button>
-        </Grid>
-      </Grid>
+      </Box>
+
       <FinishModal
+        mergeMonToFri={mergeMonToFri}
         openSummary={openSummary}
         setOpenSummary={setOpenSummary}
         restaurantName={restaurantName}

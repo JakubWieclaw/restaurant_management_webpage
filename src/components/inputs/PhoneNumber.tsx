@@ -33,11 +33,6 @@ export const PhoneNumber: React.FC<InputProps> = ({
           setError("");
         }
       }}
-      onBlur={() => {
-        setError(
-          !validatePhoneNumber(getValue) ? "Nieprawidłowy numer telefonu" : ""
-        );
-      }}
       error={getError !== ""}
       helperText={getError}
     />

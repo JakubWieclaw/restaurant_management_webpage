@@ -4,8 +4,6 @@ import { Button, Grid, TextField, Typography } from "@mui/material";
 interface NameLogoProps {
   restaurantName: string;
   setRestaurantName: (name: string) => void;
-  restaurantNameError: string;
-  setRestaurantNameError: (error: string) => void;
   restaurantLogo: File | null;
   setRestaurantLogo: (logo: File | null) => void;
 }
@@ -13,8 +11,6 @@ interface NameLogoProps {
 export const NameLogo: React.FC<NameLogoProps> = ({
   restaurantName,
   setRestaurantName,
-  restaurantNameError,
-  setRestaurantNameError,
   restaurantLogo,
   setRestaurantLogo,
 }) => {
@@ -29,17 +25,7 @@ export const NameLogo: React.FC<NameLogoProps> = ({
           value={restaurantName}
           onChange={(e) => {
             setRestaurantName(e.target.value);
-            if (e.target.value !== "") {
-              setRestaurantNameError("");
-            }
           }}
-          onBlur={() => {
-            setRestaurantNameError(
-              restaurantName === "" ? "Nazwa restauracji jest wymagana" : ""
-            );
-          }}
-          error={restaurantNameError !== ""}
-          helperText={restaurantNameError}
         />
       </Grid>
       <Grid item xs={12}>

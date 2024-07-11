@@ -1,4 +1,3 @@
-import { validateEmail } from "../../utils/validations";
 import { Grid, TextField } from "@mui/material";
 import { PhoneNumber } from "../inputs/PhoneNumber";
 import { PostalCode } from "../inputs/PostalCode";
@@ -10,20 +9,14 @@ interface ContactDetailsProps {
   setPostalCodeError: (error: string) => void;
   city: string;
   setCity: (city: string) => void;
-  cityError: string;
-  setCityError: (error: string) => void;
   street: string;
   setStreet: (street: string) => void;
-  streetError: string;
-  setStreetError: (error: string) => void;
   phoneNumber: string;
   setPhoneNumber: (phoneNumber: string) => void;
   phoneNumberError: string;
   setPhoneNumberError: (error: string) => void;
   email: string;
   setEmail: (email: string) => void;
-  emailError: string;
-  setEmailError: (error: string) => void;
 }
 
 export const ContactDetails: React.FC<ContactDetailsProps> = ({
@@ -33,20 +26,14 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
   setPostalCodeError,
   city,
   setCity,
-  cityError,
-  setCityError,
   street,
   setStreet,
-  streetError,
-  setStreetError,
   phoneNumber,
   setPhoneNumber,
   phoneNumberError,
   setPhoneNumberError,
   email,
   setEmail,
-  emailError,
-  setEmailError,
 }) => {
   return (
     <Grid
@@ -73,15 +60,7 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
           value={city}
           onChange={(e) => {
             setCity(e.target.value);
-            if (e.target.value !== "") {
-              setCityError("");
-            }
           }}
-          onBlur={() => {
-            setCityError(city === "" ? "Miasto jest wymagane" : "");
-          }}
-          error={cityError !== ""}
-          helperText={cityError}
         />
       </Grid>
       <Grid item xs={12} sm={4}>
@@ -94,15 +73,7 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
           value={street}
           onChange={(e) => {
             setStreet(e.target.value);
-            if (e.target.value !== "") {
-              setStreetError("");
-            }
           }}
-          onBlur={() => {
-            setStreetError(street === "" ? "Ulica jest wymagana" : "");
-          }}
-          error={streetError !== ""}
-          helperText={streetError}
         />
       </Grid>
       <Grid item xs={12}>
@@ -124,17 +95,7 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
           value={email}
           onChange={(e) => {
             setEmail(e.target.value);
-            if (validateEmail(e.target.value)) {
-              setEmailError("");
-            }
           }}
-          onBlur={() => {
-            setEmailError(
-              !validateEmail(email) ? "Nieprawidłowy adres email" : ""
-            );
-          }}
-          error={emailError !== ""}
-          helperText={emailError}
         />
       </Grid>
     </Grid>

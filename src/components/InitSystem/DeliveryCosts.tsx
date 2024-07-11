@@ -1,21 +1,6 @@
 import { Fragment } from "react";
 import { Button, Grid, TextField, Typography, Box } from "@mui/material";
 
-const howManyDeliveryCostsFieldsEmpty = (
-  deliveryCosts: { distance: string; price: string }[]
-) => {
-  let count = 0;
-  deliveryCosts.forEach((field: { distance: string; price: string }) => {
-    if (field.distance === "") {
-      count++;
-    }
-    if (field.price === "") {
-      count++;
-    }
-  });
-  return count;
-};
-
 const handleDeliveryCostChange = (
   index: number,
   field: string,
@@ -30,17 +15,10 @@ const handleDeliveryCostChange = (
 
 const renderDeliveryCostInputs = (
   deliveryCosts: { distance: string; price: string }[],
-  setDeliveryCosts: (costs: { distance: string; price: string }[]) => void,
-  deliveryCostsError: string,
-  setDeliveryCostsError: (error: string) => void
+  setDeliveryCosts: (costs: { distance: string; price: string }[]) => void
 ) => {
   return (
     <Grid container spacing={2} alignItems="center">
-      <Grid item xs={12}>
-        <Typography align="center" color="error">
-          {deliveryCostsError}&nbsp;
-        </Typography>
-      </Grid>
       {deliveryCosts.length === 0 ? (
         <Grid item xs={12}>
           <Typography align="center" variant={"h5"}>
@@ -54,13 +32,8 @@ const renderDeliveryCostInputs = (
               <TextField
                 label="Max. odległość od restauracji (km)"
                 value={cost.distance}
+                required
                 onChange={(e) => {
-                  if (
-                    howManyDeliveryCostsFieldsEmpty(deliveryCosts) === 1 &&
-                    cost.distance === ""
-                  ) {
-                    setDeliveryCostsError("");
-                  } // just one previously empty field is now filled
                   handleDeliveryCostChange(
                     index,
                     "distance",
@@ -71,11 +44,6 @@ const renderDeliveryCostInputs = (
                 }}
                 fullWidth
                 sx={{ my: 1 }}
-                onBlur={(e) => {
-                  if (e.target.value === "") {
-                    setDeliveryCostsError("Wszystkie pola są wymagane");
-                  }
-                }}
                 type="number"
                 inputProps={{ min: 1, step: 1 }}
               />
@@ -84,13 +52,8 @@ const renderDeliveryCostInputs = (
               <TextField
                 label="Cena"
                 value={cost.price}
+                required
                 onChange={(e) => {
-                  if (
-                    howManyDeliveryCostsFieldsEmpty(deliveryCosts) === 1 &&
-                    cost.price === ""
-                  ) {
-                    setDeliveryCostsError("");
-                  } // just one previously empty field is now filled
                   handleDeliveryCostChange(
                     index,
                     "price",
@@ -101,11 +64,6 @@ const renderDeliveryCostInputs = (
                 }}
                 fullWidth
                 sx={{ my: 1, textAlign: "center" }}
-                onBlur={(e) => {
-                  if (e.target.value === "") {
-                    setDeliveryCostsError("Wszystkie pola są wymagane");
-                  }
-                }}
                 type="number"
                 inputProps={{ min: 0, step: 1 }}
               />
@@ -118,8 +76,7 @@ const renderDeliveryCostInputs = (
                   handleRemoveDeliveryCost(
                     index,
                     deliveryCosts,
-                    setDeliveryCosts,
-                    setDeliveryCostsError
+                    setDeliveryCosts
                   )
                 }
               >
@@ -136,8 +93,7 @@ const renderDeliveryCostInputs = (
 const handleRemoveDeliveryCost = (
   index: number,
   deliveryCosts: { distance: string; price: string }[],
-  setDeliveryCosts: (costs: { distance: string; price: string }[]) => void,
-  setDeliveryCostsError: (error: string) => void
+  setDeliveryCosts: (costs: { distance: string; price: string }[]) => void
 ) => {
   let emptyFieldsInCostIndex = 0;
   if (deliveryCosts[index].distance === "") {
@@ -147,11 +103,6 @@ const handleRemoveDeliveryCost = (
     emptyFieldsInCostIndex++;
   }
   setDeliveryCosts(deliveryCosts.filter((_, i) => i !== index));
-  if (
-    howManyDeliveryCostsFieldsEmpty(deliveryCosts) === emptyFieldsInCostIndex
-  ) {
-    setDeliveryCostsError("");
-  } // just deleted fields was empty
 };
 
 const handleAddDeliveryCost = (
@@ -164,25 +115,16 @@ const handleAddDeliveryCost = (
 interface DeliveryCostsProps {
   deliveryCosts: { distance: string; price: string }[];
   setDeliveryCosts: (costs: { distance: string; price: string }[]) => void;
-  deliveryCostsError: string;
-  setDeliveryCostsError: (error: string) => void;
 }
 
 export const DeliveryCosts: React.FC<DeliveryCostsProps> = ({
   deliveryCosts,
   setDeliveryCosts,
-  deliveryCostsError,
-  setDeliveryCostsError,
 }) => {
   return (
     <>
       <Grid container>
-        {renderDeliveryCostInputs(
-          deliveryCosts,
-          setDeliveryCosts,
-          deliveryCostsError,
-          setDeliveryCostsError
-        )}
+        {renderDeliveryCostInputs(deliveryCosts, setDeliveryCosts)}
       </Grid>
       <Box sx={{ textAlign: "center", my: 2 }}>
         <Button
