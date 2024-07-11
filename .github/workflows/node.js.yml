@@ -5,36 +5,35 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '22.3'
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22.3"
 
-    - name: Install dependencies
-      run: yarn install
+      - name: Install dependencies
+        run: yarn install
 
-    - name: Build the project
-      run: yarn build
+      - name: Build the project
+        run: yarn build
 
-    - name: Docker build
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/restaurant-management-system:latest .
+      - name: Docker build
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/restaurant-management-system:latest .
 
-    - name: Docker login
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - name: Docker login
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+        run: echo "$DOCKER_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-    - name: Docker push
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/restaurant-management-system:latest
+      - name: Docker push
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/restaurant-management-system:latest
