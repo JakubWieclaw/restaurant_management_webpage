@@ -1,40 +1,12 @@
 import { Grid, TextField } from "@mui/material";
 import { PhoneNumber } from "../inputs/PhoneNumber";
 import { PostalCode } from "../inputs/PostalCode";
+import { useContext } from "react";
+import { WizardContext } from "../../pages/InitSystem";
 
-interface ContactDetailsProps {
-  postalCode: string;
-  setPostalCode: (postalCode: string) => void;
-  postalCodeError: string;
-  setPostalCodeError: (error: string) => void;
-  city: string;
-  setCity: (city: string) => void;
-  street: string;
-  setStreet: (street: string) => void;
-  phoneNumber: string;
-  setPhoneNumber: (phoneNumber: string) => void;
-  phoneNumberError: string;
-  setPhoneNumberError: (error: string) => void;
-  email: string;
-  setEmail: (email: string) => void;
-}
+export const ContactDetails = () => {
+  const ctx = useContext(WizardContext);
 
-export const ContactDetails: React.FC<ContactDetailsProps> = ({
-  postalCode,
-  setPostalCode,
-  postalCodeError,
-  setPostalCodeError,
-  city,
-  setCity,
-  street,
-  setStreet,
-  phoneNumber,
-  setPhoneNumber,
-  phoneNumberError,
-  setPhoneNumberError,
-  email,
-  setEmail,
-}) => {
   return (
     <Grid
       container
@@ -44,10 +16,10 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
     >
       <Grid item xs={12} sm={4}>
         <PostalCode
-          getValue={postalCode}
-          setValue={setPostalCode}
-          getError={postalCodeError}
-          setError={setPostalCodeError}
+          getValue={ctx.postalCode}
+          setValue={ctx.setPostalCode}
+          getError={ctx.postalCodeError}
+          setError={ctx.setPostalCodeError}
         />
       </Grid>
       <Grid item xs={12} sm={4}>
@@ -57,9 +29,9 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
           label="Miasto"
           placeholder="Poznań"
           fullWidth
-          value={city}
+          value={ctx.city}
           onChange={(e) => {
-            setCity(e.target.value);
+            ctx.setCity(e.target.value);
           }}
         />
       </Grid>
@@ -70,18 +42,18 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
           label="Ulica"
           placeholder="ul. Piotrowo 2"
           fullWidth
-          value={street}
+          value={ctx.street}
           onChange={(e) => {
-            setStreet(e.target.value);
+            ctx.setStreet(e.target.value);
           }}
         />
       </Grid>
       <Grid item xs={12}>
         <PhoneNumber
-          getValue={phoneNumber}
-          setValue={setPhoneNumber}
-          getError={phoneNumberError}
-          setError={setPhoneNumberError}
+          getValue={ctx.phoneNumber}
+          setValue={ctx.setPhoneNumber}
+          getError={ctx.phoneNumberError}
+          setError={ctx.setPhoneNumberError}
         />
       </Grid>
       <Grid item xs={12}>
@@ -92,9 +64,9 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
           placeholder="example@domain.com"
           type="email"
           fullWidth
-          value={email}
+          value={ctx.email}
           onChange={(e) => {
-            setEmail(e.target.value);
+            ctx.setEmail(e.target.value);
           }}
         />
       </Grid>

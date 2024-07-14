@@ -12,6 +12,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 import { Dayjs } from "dayjs";
 
+import { useContext } from "react";
+import { WizardContext } from "../../pages/InitSystem";
+
 export const daysOfWeek = [
   "Poniedziałek",
   "Wtorek",
@@ -120,36 +123,30 @@ export const initialDayState: DayState = {
   endTime: null,
 };
 
-interface OpeningHoursProps {
-  mergeMonToFri: boolean;
-  setMergeMonToFri: any;
-  daysState: any;
-  setDaysState: any;
-}
+export const OpeningHours = () => {
+  const ctx = useContext(WizardContext);
 
-export const OpeningHours: React.FC<OpeningHoursProps> = ({
-  mergeMonToFri,
-  setMergeMonToFri,
-  daysState,
-  setDaysState,
-}) => {
   return (
     <>
       <FormControlLabel
         control={
           <Switch
-            checked={mergeMonToFri}
+            checked={ctx.mergeMonToFri}
             onChange={() => {
-              setMergeMonToFri((prev: boolean) => !prev);
+              ctx.setMergeMonToFri((prev: boolean) => !prev);
             }}
           />
         }
         label="Scal dni robocze"
       />
       <Grid container spacing={4} sx={{ textAlign: "center" }}>
-        {mergeMonToFri
-          ? generateHoursForDays(daysOfWeekAfterMerge, daysState, setDaysState)
-          : generateHoursForDays(daysOfWeek, daysState, setDaysState)}
+        {ctx.mergeMonToFri
+          ? generateHoursForDays(
+              daysOfWeekAfterMerge,
+              ctx.daysState,
+              ctx.setDaysState
+            )
+          : generateHoursForDays(daysOfWeek, ctx.daysState, ctx.setDaysState)}
       </Grid>
     </>
   );

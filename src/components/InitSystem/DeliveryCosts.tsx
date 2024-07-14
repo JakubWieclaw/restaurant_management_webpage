@@ -1,5 +1,6 @@
-import { Fragment } from "react";
+import { Fragment, useContext } from "react";
 import { Button, Grid, TextField, Typography, Box } from "@mui/material";
+import { WizardContext } from "../../pages/InitSystem";
 
 const handleDeliveryCostChange = (
   index: number,
@@ -111,25 +112,19 @@ const handleAddDeliveryCost = (
   setDeliveryCosts([...deliveryCosts, { distance: "", price: "" }]);
 };
 
-interface DeliveryCostsProps {
-  deliveryCosts: { distance: string; price: string }[];
-  setDeliveryCosts: (costs: { distance: string; price: string }[]) => void;
-}
+export const DeliveryCosts = () => {
+  const ctx = useContext(WizardContext);
 
-export const DeliveryCosts: React.FC<DeliveryCostsProps> = ({
-  deliveryCosts,
-  setDeliveryCosts,
-}) => {
   return (
     <>
       <Grid container>
-        {renderDeliveryCostInputs(deliveryCosts, setDeliveryCosts)}
+        {renderDeliveryCostInputs(ctx.deliveryCosts, ctx.setDeliveryCosts)}
       </Grid>
       <Box sx={{ textAlign: "center", my: 2 }}>
         <Button
           variant="contained"
           onClick={() => {
-            handleAddDeliveryCost(deliveryCosts, setDeliveryCosts);
+            handleAddDeliveryCost(ctx.deliveryCosts, ctx.setDeliveryCosts);
           }}
         >
           Dodaj przedział

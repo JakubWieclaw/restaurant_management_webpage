@@ -20,12 +20,14 @@ import {
   DayState,
   initialDayState,
 } from "../components/InitSystem/OpeningHours";
-import { useRef, useState } from "react";
+import { createContext, useRef, useState, useMemo } from "react";
 import { NameLogo } from "../components/InitSystem/NameLogo";
 import { FinishModal } from "../components/InitSystem/FinishModal";
 import { DeliveryCosts } from "../components/InitSystem/DeliveryCosts";
 import { ContactDetails } from "../components/InitSystem/ContactDetails";
 import { validatePhoneNumber, validatePostalCode } from "../utils/validations";
+
+export const WizardContext = createContext<any>(null);
 
 export function InitSystem() {
   const steps = [
@@ -63,8 +65,6 @@ export function InitSystem() {
     e.preventDefault();
     if (formRef.current?.checkValidity()) {
       if (activeStep < steps.length - 1) {
-        // setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        // check if all fields are filled and valid
         let error = false;
         switch (activeStep) {
           case 0:
@@ -137,50 +137,13 @@ export function InitSystem() {
   const inputs = (activeStep: number) => {
     switch (activeStep) {
       case 0:
-        return (
-          <NameLogo
-            restaurantName={restaurantName}
-            setRestaurantName={setRestaurantName}
-            restaurantLogo={restaurantLogo}
-            setRestaurantLogo={setRestaurantLogo}
-          />
-        );
-
+        return <NameLogo />;
       case 1:
-        return (
-          <ContactDetails
-            postalCode={postalCode}
-            setPostalCode={setPostalCode}
-            postalCodeError={postalCodeError}
-            setPostalCodeError={setPostalCodeError}
-            city={city}
-            setCity={setCity}
-            street={street}
-            setStreet={setStreet}
-            phoneNumber={phoneNumber}
-            setPhoneNumber={setPhoneNumber}
-            phoneNumberError={phoneNumberError}
-            setPhoneNumberError={setPhoneNumberError}
-            email={email}
-            setEmail={setEmail}
-          />
-        );
+        return <ContactDetails />;
       case 2:
-        return (
-          <OpeningHours
-            mergeMonToFri={mergeMonToFri}
-            setMergeMonToFri={setMergeMonToFri}
-            daysState={daysState}
-            setDaysState={setDaysState}
-          />
-        );
+        return <OpeningHours />;
       case 3:
-        return (
-          <DeliveryCosts
-            deliveryCosts={deliveryCosts}
-            setDeliveryCosts={setDeliveryCosts}
-          />
-        );
+        return <DeliveryCosts />;
       default:
         return null;
     }
@@ -232,7 +195,73 @@ export function InitSystem() {
         </Stepper>
       </Box>
       <Box component={"form"} ref={formRef} onSubmit={(e) => handleNext(e)}>
-        <Box>{inputs(activeStep)}</Box>
+        <WizardContext.Provider
+          value={useMemo(
+            () => ({
+              restaurantName,
+              setRestaurantName,
+              restaurantLogo,
+              setRestaurantLogo,
+              postalCode,
+              setPostalCode,
+              city,
+              setCity,
+              street,
+              setStreet,
+              phoneNumber,
+              setPhoneNumber,
+              email,
+              setEmail,
+              activeStep,
+              setActiveStep,
+              mergeMonToFri,
+              setMergeMonToFri,
+              openSummary,
+              setOpenSummary,
+              deliveryCosts,
+              setDeliveryCosts,
+              daysState,
+              setDaysState,
+              postalCodeError,
+              setPostalCodeError,
+              phoneNumberError,
+              setPhoneNumberError,
+            }),
+            [
+              restaurantName,
+              setRestaurantName,
+              restaurantLogo,
+              setRestaurantLogo,
+              postalCode,
+              setPostalCode,
+              city,
+              setCity,
+              street,
+              setStreet,
+              phoneNumber,
+              setPhoneNumber,
+              email,
+              setEmail,
+              activeStep,
+              setActiveStep,
+              mergeMonToFri,
+              setMergeMonToFri,
+              openSummary,
+              setOpenSummary,
+              deliveryCosts,
+              setDeliveryCosts,
+              daysState,
+              setDaysState,
+              postalCodeError,
+              setPostalCodeError,
+              phoneNumberError,
+              setPhoneNumberError,
+            ]
+          )}
+        >
+          <Box>{inputs(activeStep)}</Box>
+          <FinishModal />
+        </WizardContext.Provider>
         <Grid container sx={{ py: 5 }} justifyContent="space-between">
           <Grid item>
             <Button
@@ -250,21 +279,6 @@ export function InitSystem() {
           </Grid>
         </Grid>
       </Box>
-
-      <FinishModal
-        mergeMonToFri={mergeMonToFri}
-        openSummary={openSummary}
-        setOpenSummary={setOpenSummary}
-        restaurantName={restaurantName}
-        restaurantLogo={restaurantLogo}
-        postalCode={postalCode}
-        city={city}
-        street={street}
-        phoneNumber={phoneNumber}
-        email={email}
-        daysState={daysState}
-        deliveryCosts={deliveryCosts}
-      />
     </Container>
   );
 }

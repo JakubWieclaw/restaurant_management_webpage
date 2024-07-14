@@ -9,7 +9,10 @@ import {
 } from "@mui/material";
 import { Transition } from "../Transision";
 
-import { daysOfWeek, daysOfWeekAfterMerge, DayState } from "./OpeningHours";
+import { daysOfWeek, daysOfWeekAfterMerge } from "./OpeningHours";
+
+import { useContext } from "react";
+import { WizardContext } from "../../pages/InitSystem";
 
 const modalActions = ["Chcę je poprawić", "Wszystko OK!"];
 
@@ -25,56 +28,30 @@ const handleCloseSummary = (
   }
 }; // Function to close modal
 
-interface FinishModalProps {
-  openSummary: boolean;
-  setOpenSummary: (open: boolean) => void;
-  restaurantName: string;
-  restaurantLogo: File | null;
-  postalCode: string;
-  city: string;
-  street: string;
-  phoneNumber: string;
-  email: string;
-  daysState: Record<string, DayState>;
-  deliveryCosts: { distance: string; price: string }[];
-  mergeMonToFri: boolean;
-}
+export const FinishModal = () => {
+  const ctx = useContext(WizardContext);
 
-export const FinishModal: React.FC<FinishModalProps> = ({
-  openSummary,
-  setOpenSummary,
-  restaurantName,
-  restaurantLogo,
-  postalCode,
-  city,
-  street,
-  phoneNumber,
-  email,
-  daysState,
-  deliveryCosts,
-  mergeMonToFri,
-}) => {
   const summaryContent = (
     <span>
       <Typography variant="h6">Nazwa i logo:</Typography>
-      <Typography>Nazwa restauracji: {restaurantName}</Typography>
+      <Typography>Nazwa restauracji: {ctx.restaurantName}</Typography>
       <Typography>
-        Logo: {restaurantLogo ? restaurantLogo.name : "Nie wybrano"}
+        Logo: {ctx.restaurantLogo ? ctx.restaurantLogo.name : "Nie wybrano"}
       </Typography>
       <Divider sx={{ my: 2 }} />
       <Typography variant="h6">Dane kontaktowe:</Typography>
 
-      <Typography>Kod pocztowy: {postalCode}</Typography>
-      <Typography>Miasto: {city}</Typography>
-      <Typography>Ulica: {street}</Typography>
-      <Typography>Nr telefonu: {phoneNumber}</Typography>
-      <Typography>Adres e-mail: {email}</Typography>
+      <Typography>Kod pocztowy: {ctx.postalCode}</Typography>
+      <Typography>Miasto: {ctx.city}</Typography>
+      <Typography>Ulica: {ctx.street}</Typography>
+      <Typography>Nr telefonu: {ctx.phoneNumber}</Typography>
+      <Typography>Adres e-mail: {ctx.email}</Typography>
       <Divider sx={{ my: 2 }} />
       <Typography variant="h6">Godziny otwarcia:</Typography>
-      {mergeMonToFri
-        ? Object.entries(daysState)
+      {ctx.mergeMonToFri
+        ? Object.entries(ctx.daysState)
             .filter(([day]) => daysOfWeekAfterMerge.includes(day))
-            .map(([day, state]) => (
+            .map(([day, state]: [string, any]) => (
               <Typography key={day}>
                 {day}:{" "}
                 {state.open
@@ -84,9 +61,9 @@ export const FinishModal: React.FC<FinishModalProps> = ({
                   : "Zamknięte"}
               </Typography>
             ))
-        : Object.entries(daysState)
+        : Object.entries(ctx.daysState)
             .filter(([day]) => daysOfWeek.includes(day))
-            .map(([day, state]) => (
+            .map(([day, state]: [string, any]) => (
               <Typography key={day}>
                 {day}:{" "}
                 {state.open
@@ -100,19 +77,21 @@ export const FinishModal: React.FC<FinishModalProps> = ({
       <Divider sx={{ my: 2 }} />
 
       <Typography variant="h6">Koszty dostawy:</Typography>
-      {deliveryCosts.map((cost, index) => (
-        <Typography key={`deliveryCost-${index}`}>
-          Max. odległość: {cost.distance} km, Cena: {cost.price} zł
-        </Typography>
-      ))}
-      {deliveryCosts.length === 0 && (
+      {ctx.deliveryCosts.map(
+        (cost: { distance: number; price: number }, index: number) => (
+          <Typography key={`deliveryCost-${index}`}>
+            Max. odległość: {cost.distance} km, Cena: {cost.price} zł
+          </Typography>
+        )
+      )}
+      {ctx.deliveryCosts.length === 0 && (
         <Typography>Brak kosztów dostawy</Typography>
       )}
     </span>
   );
   return (
     <Dialog
-      open={openSummary}
+      open={ctx.openSummary}
       TransitionComponent={Transition}
       keepMounted
       aria-labelledby="alert-dialog-title"
@@ -127,14 +106,14 @@ export const FinishModal: React.FC<FinishModalProps> = ({
       <DialogActions>
         <Button
           onClick={(e) => {
-            handleCloseSummary(e, modalActions, setOpenSummary);
+            handleCloseSummary(e, modalActions, ctx.setOpenSummary);
           }}
         >
           {modalActions[0]}
         </Button>
         <Button
           onClick={(e) => {
-            handleCloseSummary(e, modalActions, setOpenSummary);
+            handleCloseSummary(e, modalActions, ctx.setOpenSummary);
           }}
           autoFocus
         >

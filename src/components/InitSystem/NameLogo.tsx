@@ -1,19 +1,10 @@
 import ImageIcon from "@mui/icons-material/Image";
 import { Button, Grid, TextField, Typography } from "@mui/material";
+import { WizardContext } from "../../pages/InitSystem";
+import { useContext } from "react";
 
-interface NameLogoProps {
-  restaurantName: string;
-  setRestaurantName: (name: string) => void;
-  restaurantLogo: File | null;
-  setRestaurantLogo: (logo: File | null) => void;
-}
-
-export const NameLogo: React.FC<NameLogoProps> = ({
-  restaurantName,
-  setRestaurantName,
-  restaurantLogo,
-  setRestaurantLogo,
-}) => {
+export const NameLogo = () => {
+  const ctx = useContext(WizardContext);
   return (
     <Grid container sx={{ textAlign: "center" }}>
       <Grid item xs={12}>
@@ -22,9 +13,9 @@ export const NameLogo: React.FC<NameLogoProps> = ({
           required
           label="Nazwa restauracji"
           fullWidth
-          value={restaurantName}
+          value={ctx.restaurantName}
           onChange={(e) => {
-            setRestaurantName(e.target.value);
+            ctx.setRestaurantName(e.target.value);
           }}
         />
       </Grid>
@@ -36,7 +27,7 @@ export const NameLogo: React.FC<NameLogoProps> = ({
           hidden
           onChange={(e) => {
             if (e.target.files) {
-              setRestaurantLogo(e.target.files[0]);
+              ctx.setRestaurantLogo(e.target.files[0]);
             }
           }}
         />
@@ -51,7 +42,7 @@ export const NameLogo: React.FC<NameLogoProps> = ({
           </Button>
           <br />
           <Typography variant="caption" color={"GrayText"}>
-            ({restaurantLogo ? restaurantLogo.name : "Nie wybrano"})
+            ({ctx.restaurantLogo ? ctx.restaurantLogo.name : "Nie wybrano"})
           </Typography>
         </label>
       </Grid>
