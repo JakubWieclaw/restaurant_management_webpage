@@ -6,6 +6,8 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Divider,
+  Link,
 } from "@mui/material";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 
@@ -59,6 +61,32 @@ export const ForgetPassword: React.FC<ForgetPasswordProps> = ({
           Resetuj hasło
         </Button>
       </Grid>
+      <Grid item xs={12}>
+        <Divider />
+      </Grid>
+      <Grid item xs={12}>
+        <Link
+          href="#"
+          variant="body2"
+          onClick={() => {
+            setLoginRegisterState(LoginRegisterState.Login);
+          }}
+        >
+          {"Wróć do logowania"}
+        </Link>
+      </Grid>
+      <Grid item xs={12}>
+        <Link
+          href="#"
+          variant="body2"
+          onClick={() => {
+            setLoginRegisterState(LoginRegisterState.Register);
+          }}
+        >
+          {"Nie masz konta? Zarejestruj się"}
+        </Link>
+      </Grid>
+
       <Dialog
         open={openDialog}
         TransitionComponent={Transition}

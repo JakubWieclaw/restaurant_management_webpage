@@ -5,15 +5,20 @@ import { InitSystem } from "./pages/InitSystem";
 import { Route, Routes } from "react-router-dom";
 import { LoginRegister } from "./pages/LoginRegister";
 import { AppBarHeader } from "./components/AppBarHeader";
+import { AppFooter } from "./components/AppFooter";
+import { Container } from "@mui/material";
 
 function App() {
   return (
     <>
       <AppBarHeader />
-      <Routes>
-        <Route path="/initialize-system" element={<InitSystem />} />
-        <Route path="/" element={<LoginRegister />} />
-      </Routes>
+      <Container id="content">
+        <Routes>
+          <Route path="/initialize-system" element={<InitSystem />} />
+          <Route path="/auth" element={<LoginRegister />} />
+        </Routes>
+      </Container>
+      <AppFooter />
       <ToastContainer />
     </>
   );
