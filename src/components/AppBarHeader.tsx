@@ -11,9 +11,13 @@ import {
   Avatar,
   Tooltip,
 } from "@mui/material";
-import { Link } from "react-router-dom";
-import { useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
+
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { RootState, AppDispatch } from "../store";
+import { login, logout } from "../utils/userSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 export const AppBarHeader = () => {
   const [anchorElMenu, setAnchorElMenu] = useState(null);
@@ -30,6 +34,16 @@ export const AppBarHeader = () => {
       link: "/auth",
     },
   ];
+
+  const dispatch: AppDispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user);
+  const handleLogin = () => {
+    dispatch(login());
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
 
   return (
     <AppBar position="static">
@@ -201,13 +215,11 @@ export const AppBarHeader = () => {
               open={Boolean(anchorElProfile)}
               onClose={() => setAnchorElProfile(null)}
             >
-              {" "}
-              <MenuItem onClick={() => setAnchorElProfile(null)}>
-                <Typography textAlign="center">Lorem</Typography>
-              </MenuItem>
-              <MenuItem onClick={() => setAnchorElProfile(null)}>
-                <Typography textAlign="center">Ipsum</Typography>
-              </MenuItem>
+              {user.loggedIn ? (
+                <MenuItem onClick={handleLogout}>Wyloguj się</MenuItem>
+              ) : (
+                <MenuItem onClick={handleLogin}>Zaloguj się</MenuItem>
+              )}
             </Menu>
           </Box>
         </Toolbar>
