@@ -19,13 +19,16 @@ import {
   OpeningHours,
   DayState,
   initialDayState,
+  validateOpeningHours,
 } from "../components/InitSystem/OpeningHours";
 import { createContext, useRef, useState, useMemo } from "react";
 import { NameLogo } from "../components/InitSystem/NameLogo";
 import { FinishModal } from "../components/InitSystem/FinishModal";
 import { DeliveryCosts } from "../components/InitSystem/DeliveryCosts";
-import { ContactDetails } from "../components/InitSystem/ContactDetails";
-import { validatePhoneNumber, validatePostalCode } from "../utils/validations";
+import {
+  ContactDetails,
+  validateContactDetails,
+} from "../components/InitSystem/ContactDetails";
 
 export const WizardContext = createContext<any>(null);
 
@@ -66,46 +69,20 @@ export function InitSystem() {
     if (formRef.current?.checkValidity()) {
       if (activeStep < steps.length - 1) {
         let error = false;
+        console.log(activeStep);
         switch (activeStep) {
           case 0:
-            break;
+            break; // handled by internal HTML5 form validation
           case 1:
-            if (!validatePostalCode(postalCode)) {
-              error = true;
-              setPostalCodeError("Nieprawidłowy kod pocztowy");
-            } else {
-              setPostalCodeError("");
-            }
-
-            if (!validatePhoneNumber(phoneNumber)) {
-              error = true;
-              setPhoneNumberError("Nieprawidłowy numer telefonu");
-            } else {
-              setPhoneNumberError("");
-            }
+            error = validateContactDetails(
+              postalCode,
+              setPostalCodeError,
+              phoneNumber,
+              setPhoneNumberError
+            );
             break;
           case 2:
-            if (mergeMonToFri) {
-              daysOfWeekAfterMerge.forEach((day) => {
-                if (
-                  daysState[day].open &&
-                  (daysState[day].startTime === null ||
-                    daysState[day].endTime === null)
-                ) {
-                  error = true;
-                }
-              });
-            } else {
-              daysOfWeek.forEach((day) => {
-                if (
-                  daysState[day].open &&
-                  (daysState[day].startTime === null ||
-                    daysState[day].endTime === null)
-                ) {
-                  error = true;
-                }
-              });
-            }
+            error = validateOpeningHours(daysState, mergeMonToFri);
             break;
           default:
             break;

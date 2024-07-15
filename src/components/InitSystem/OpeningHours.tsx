@@ -123,6 +123,33 @@ export const initialDayState: DayState = {
   endTime: null,
 };
 
+export const validateOpeningHours = (
+  daysState: Record<string, DayState>,
+  mergeMonToFri: boolean
+) => {
+  let err = false;
+  if (mergeMonToFri) {
+    daysOfWeekAfterMerge.forEach((day) => {
+      if (
+        daysState[day].open &&
+        (daysState[day].startTime === null || daysState[day].endTime === null)
+      ) {
+        err = true;
+      }
+    });
+  } else {
+    daysOfWeek.forEach((day) => {
+      if (
+        daysState[day].open &&
+        (daysState[day].startTime === null || daysState[day].endTime === null)
+      ) {
+        err = true;
+      }
+    });
+  }
+  return err;
+};
+
 export const OpeningHours = () => {
   const ctx = useContext(WizardContext);
 
