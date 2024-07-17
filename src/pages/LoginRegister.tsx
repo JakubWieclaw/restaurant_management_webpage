@@ -114,6 +114,7 @@ export function LoginRegister() {
                 surname,
                 setSurname,
                 setLoginRegisterState,
+                loading,
               }),
               [
                 email,
@@ -127,6 +128,7 @@ export function LoginRegister() {
                 surname,
                 setSurname,
                 setLoginRegisterState,
+                loading,
               ]
             )}
           >
