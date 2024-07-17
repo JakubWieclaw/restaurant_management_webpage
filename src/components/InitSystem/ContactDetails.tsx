@@ -1,7 +1,9 @@
 import { Grid, TextField } from "@mui/material";
-import { PhoneNumber } from "../inputs/PhoneNumber";
-import { PostalCode } from "../inputs/PostalCode";
+
 import { useContext } from "react";
+
+import { PostalCode } from "../inputs/PostalCode";
+import { PhoneNumber } from "../inputs/PhoneNumber";
 import { WizardContext } from "../../pages/InitSystem";
 import {
   validatePhoneNumber,

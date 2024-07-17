@@ -1,12 +1,14 @@
 import "./App.css";
+import { Container } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
+
 import { ToastContainer } from "react-toastify";
-import { InitSystem } from "./pages/InitSystem";
 import { Route, Routes } from "react-router-dom";
+
+import { InitSystem } from "./pages/InitSystem";
+import { AppFooter } from "./components/AppFooter";
 import { LoginRegister } from "./pages/LoginRegister";
 import { AppBarHeader } from "./components/AppBarHeader";
-import { AppFooter } from "./components/AppFooter";
-import { Container } from "@mui/material";
 
 function App() {
   return (

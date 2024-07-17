@@ -15,9 +15,10 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+
 import { RootState, AppDispatch } from "../store";
 import { login, logout } from "../utils/userSlice";
-import { useSelector, useDispatch } from "react-redux";
 
 export const AppBarHeader = () => {
   const [anchorElMenu, setAnchorElMenu] = useState(null);

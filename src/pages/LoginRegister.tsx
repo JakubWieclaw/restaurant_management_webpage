@@ -1,7 +1,8 @@
-import { Container, Box, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
+import { Container, Box, Typography } from "@mui/material";
 
-import { useState, useRef } from "react";
+import { useState, useRef, createContext } from "react";
+
 import { Login } from "../components/LoginRegister/Login";
 import { Register } from "../components/LoginRegister/Register";
 import { ForgetPassword } from "../components/LoginRegister/ForgetPassword";
@@ -11,6 +12,8 @@ export enum LoginRegisterState {
   Register,
   ForgetPassword,
 }
+
+export const AuthContext = createContext<any>(null);
 
 export function LoginRegister() {
   const [name, setName] = useState<string>("");

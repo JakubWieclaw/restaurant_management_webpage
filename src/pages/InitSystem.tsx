@@ -12,6 +12,7 @@ import {
 
 import "dayjs/locale/de";
 import { Slide, toast } from "react-toastify";
+import { createContext, useRef, useState, useMemo } from "react";
 
 import {
   daysOfWeek,
@@ -21,14 +22,13 @@ import {
   initialDayState,
   validateOpeningHours,
 } from "../components/InitSystem/OpeningHours";
-import { createContext, useRef, useState, useMemo } from "react";
-import { NameLogo } from "../components/InitSystem/NameLogo";
-import { FinishModal } from "../components/InitSystem/FinishModal";
-import { DeliveryCosts } from "../components/InitSystem/DeliveryCosts";
 import {
   ContactDetails,
   validateContactDetails,
 } from "../components/InitSystem/ContactDetails";
+import { NameLogo } from "../components/InitSystem/NameLogo";
+import { FinishModal } from "../components/InitSystem/FinishModal";
+import { DeliveryCosts } from "../components/InitSystem/DeliveryCosts";
 
 export const WizardContext = createContext<any>(null);
 

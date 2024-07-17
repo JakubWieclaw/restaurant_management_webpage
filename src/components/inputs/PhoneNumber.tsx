@@ -1,6 +1,7 @@
 import { TextField } from "@mui/material";
-import { validatePhoneNumber } from "../../utils/validations";
+
 import { InputProps } from "./Interface";
+import { validatePhoneNumber } from "../../utils/validations";
 
 export const PhoneNumber: React.FC<InputProps> = ({
   getValue,

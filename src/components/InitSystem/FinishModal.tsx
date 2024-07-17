@@ -7,12 +7,12 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { Transition } from "../Transision";
-
-import { daysOfWeek, daysOfWeekAfterMerge } from "./OpeningHours";
 
 import { useContext } from "react";
+
+import { Transition } from "../Transision";
 import { WizardContext } from "../../pages/InitSystem";
+import { daysOfWeek, daysOfWeekAfterMerge } from "./OpeningHours";
 
 const modalActions = ["Chcę je poprawić", "Wszystko OK!"];
 

@@ -1,7 +1,9 @@
 import ImageIcon from "@mui/icons-material/Image";
 import { Button, Grid, TextField, Typography } from "@mui/material";
-import { WizardContext } from "../../pages/InitSystem";
+
 import { useContext } from "react";
+
+import { WizardContext } from "../../pages/InitSystem";
 
 export const NameLogo = () => {
   const ctx = useContext(WizardContext);
