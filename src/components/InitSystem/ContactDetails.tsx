@@ -2,13 +2,13 @@ import { Grid, TextField } from "@mui/material";
 
 import { useContext } from "react";
 
-import { PostalCode } from "../inputs/PostalCode";
-import { PhoneNumber } from "../inputs/PhoneNumber";
-import { WizardContext } from "../../pages/InitSystem";
 import {
   validatePhoneNumber,
   validatePostalCode,
 } from "../../utils/validations";
+import { PostalCode } from "../inputs/PostalCode";
+import { PhoneNumber } from "../inputs/PhoneNumber";
+import { WizardContext } from "../../pages/InitSystem";
 
 export const validateContactDetails = (
   postalCode: string,

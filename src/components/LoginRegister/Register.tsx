@@ -9,40 +9,21 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 
-import { LoginRegisterState } from "../../pages/LoginRegister";
+import { useContext } from "react";
 
-interface RegisterProps {
-  name: string;
-  setName: (name: string) => void;
-  surname: string;
-  setSurname: (surname: string) => void;
-  email: string;
-  setEmail: (email: string) => void;
-  password: string;
-  setPassword: (password: string) => void;
-  passwordRepeat: string;
-  setPasswordRepeat: (repeatPassword: string) => void;
-  setLoginRegisterState: (state: LoginRegisterState) => void;
-}
+import { authContext, LoginRegisterState } from "../../pages/LoginRegister";
 
-export const Register: React.FC<RegisterProps> = ({
-  name,
-  setName,
-  surname,
-  setSurname,
-  email,
-  setEmail,
-  password,
-  setPassword,
-  passwordRepeat,
-  setPasswordRepeat,
-  setLoginRegisterState,
-}) => {
+export const Register = () => {
+  const ctx = useContext(authContext);
+
   const CustomHelperTextLength = styled(FormHelperText)({
-    color: password.length < 8 ? "red" : "green",
+    color: ctx.password.length < 8 ? "red" : "green",
   });
   const CustomHelperTextRepeat = styled(FormHelperText)({
-    color: password.length < 8 || password !== passwordRepeat ? "red" : "green",
+    color:
+      ctx.password.length < 8 || ctx.password !== ctx.passwordRepeat
+        ? "red"
+        : "green",
   });
   return (
     <>
@@ -52,8 +33,8 @@ export const Register: React.FC<RegisterProps> = ({
           required
           label="Imię"
           fullWidth
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={ctx.name}
+          onChange={(e) => ctx.setName(e.target.value)}
         ></TextField>
       </Grid>
       <Grid item xs={6}>
@@ -62,8 +43,8 @@ export const Register: React.FC<RegisterProps> = ({
           required
           label="Nazwisko"
           fullWidth
-          value={surname}
-          onChange={(e) => setSurname(e.target.value)}
+          value={ctx.surname}
+          onChange={(e) => ctx.setSurname(e.target.value)}
         ></TextField>
       </Grid>
       <Grid item xs={12}>
@@ -74,8 +55,8 @@ export const Register: React.FC<RegisterProps> = ({
           autoComplete="email"
           type="email"
           fullWidth
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={ctx.email}
+          onChange={(e) => ctx.setEmail(e.target.value)}
         />
       </Grid>
       <Grid item xs={12}>
@@ -86,8 +67,8 @@ export const Register: React.FC<RegisterProps> = ({
           type="password"
           autoComplete="current-password"
           fullWidth
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={ctx.password}
+          onChange={(e) => ctx.setPassword(e.target.value)}
           helperText={
             <CustomHelperTextLength>
               Hasło musi mieć co najmniej 8 znaków
@@ -106,8 +87,8 @@ export const Register: React.FC<RegisterProps> = ({
           type="password"
           autoComplete="current-password"
           fullWidth
-          value={passwordRepeat}
-          onChange={(e) => setPasswordRepeat(e.target.value)}
+          value={ctx.passwordRepeat}
+          onChange={(e) => ctx.setPasswordRepeat(e.target.value)}
           helperText={
             <CustomHelperTextRepeat>
               Hasło musi być takie samo jak powyżej
@@ -139,7 +120,7 @@ export const Register: React.FC<RegisterProps> = ({
           href="#"
           variant="body2"
           onClick={() => {
-            setLoginRegisterState(LoginRegisterState.Login);
+            ctx.setLoginRegisterState(LoginRegisterState.Login);
           }}
         >
           {"Masz konto? Zaloguj się"}

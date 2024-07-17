@@ -1,8 +1,9 @@
 import Grid from "@mui/material/Grid";
 import { Container, Box, Typography } from "@mui/material";
 
-import { useState, useRef, createContext } from "react";
+import { useState, useRef, createContext, useMemo } from "react";
 
+import api from "../utils/api";
 import { Login } from "../components/LoginRegister/Login";
 import { Register } from "../components/LoginRegister/Register";
 import { ForgetPassword } from "../components/LoginRegister/ForgetPassword";
@@ -13,7 +14,7 @@ export enum LoginRegisterState {
   ForgetPassword,
 }
 
-export const AuthContext = createContext<any>(null);
+export const authContext = createContext<any>(null);
 
 export function LoginRegister() {
   const [name, setName] = useState<string>("");
@@ -21,11 +22,30 @@ export function LoginRegister() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [passwordRepeat, setPasswordRepeat] = useState<string>("");
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+
     switch (loginRegisterState) {
       case LoginRegisterState.Login:
         alert("Login");
+        try {
+          const response = await api.post(`/messages`, {
+            params: {
+              email: email,
+              password: password,
+            },
+          });
+          if (response.status === 200) {
+            console.log(response.data);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoading(false);
+        }
         break;
       case LoginRegisterState.Register:
         if (password === passwordRepeat) {
@@ -48,40 +68,11 @@ export function LoginRegister() {
   const returnProperComponent = (formRef: React.MutableRefObject<null>) => {
     switch (loginRegisterState) {
       case LoginRegisterState.Login:
-        return (
-          <Login
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            setLoginRegisterState={setLoginRegisterState}
-          />
-        );
+        return <Login />;
       case LoginRegisterState.Register:
-        return (
-          <Register
-            name={name}
-            setName={setName}
-            surname={surname}
-            setSurname={setSurname}
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            passwordRepeat={passwordRepeat}
-            setPasswordRepeat={setPasswordRepeat}
-            setLoginRegisterState={setLoginRegisterState}
-          />
-        );
+        return <Register />;
       case LoginRegisterState.ForgetPassword:
-        return (
-          <ForgetPassword
-            email={email}
-            setEmail={setEmail}
-            setLoginRegisterState={setLoginRegisterState}
-            formRef={formRef}
-          />
-        );
+        return <ForgetPassword formRef={formRef} />;
 
       default:
         break;
@@ -109,7 +100,38 @@ export function LoginRegister() {
           <Grid item xs={12}>
             <Typography variant="h4">System Zarządzania Restauracją</Typography>
           </Grid>
-          {returnProperComponent(formRef)}
+          <authContext.Provider
+            value={useMemo(
+              () => ({
+                email,
+                setEmail,
+                password,
+                setPassword,
+                passwordRepeat,
+                setPasswordRepeat,
+                name,
+                setName,
+                surname,
+                setSurname,
+                setLoginRegisterState,
+              }),
+              [
+                email,
+                setEmail,
+                password,
+                setPassword,
+                passwordRepeat,
+                setPasswordRepeat,
+                name,
+                setName,
+                surname,
+                setSurname,
+                setLoginRegisterState,
+              ]
+            )}
+          >
+            {returnProperComponent(formRef)}
+          </authContext.Provider>
         </Grid>
       </Box>
     </Container>

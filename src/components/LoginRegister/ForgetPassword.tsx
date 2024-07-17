@@ -11,24 +11,18 @@ import {
 } from "@mui/material";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 
-import { Transition } from "../Transision";
-import { LoginRegisterState } from "../../pages/LoginRegister";
+import { useContext, useState } from "react";
 
-import { useState } from "react";
+import { Transition } from "../../utils/Transision";
+import { authContext, LoginRegisterState } from "../../pages/LoginRegister";
 
 interface ForgetPasswordProps {
-  email: string;
-  setEmail: (email: string) => void;
-  setLoginRegisterState: (state: LoginRegisterState) => void;
   formRef: any;
 }
 
-export const ForgetPassword: React.FC<ForgetPasswordProps> = ({
-  email,
-  setEmail,
-  setLoginRegisterState,
-  formRef,
-}) => {
+export const ForgetPassword: React.FC<ForgetPasswordProps> = ({ formRef }) => {
+  const ctx = useContext(authContext);
+
   const [openDialog, setOpenDialog] = useState(false);
   const handleSubmit = () => {
     if (formRef.current.checkValidity()) {
@@ -44,8 +38,8 @@ export const ForgetPassword: React.FC<ForgetPasswordProps> = ({
           label="Adres e-mail"
           autoComplete="email"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={ctx.email}
+          onChange={(e) => ctx.setEmail(e.target.value)}
         />
       </Grid>
       <Grid item xs={4}>
@@ -69,7 +63,7 @@ export const ForgetPassword: React.FC<ForgetPasswordProps> = ({
           href="#"
           variant="body2"
           onClick={() => {
-            setLoginRegisterState(LoginRegisterState.Login);
+            ctx.setLoginRegisterState(LoginRegisterState.Login);
           }}
         >
           {"Wróć do logowania"}
@@ -80,7 +74,7 @@ export const ForgetPassword: React.FC<ForgetPasswordProps> = ({
           href="#"
           variant="body2"
           onClick={() => {
-            setLoginRegisterState(LoginRegisterState.Register);
+            ctx.setLoginRegisterState(LoginRegisterState.Register);
           }}
         >
           {"Nie masz konta? Zarejestruj się"}
@@ -105,7 +99,7 @@ export const ForgetPassword: React.FC<ForgetPasswordProps> = ({
           <Button
             onClick={() => {
               setOpenDialog(false);
-              setLoginRegisterState(LoginRegisterState.Login);
+              ctx.setLoginRegisterState(LoginRegisterState.Login);
             }}
             autoFocus
           >

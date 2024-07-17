@@ -10,7 +10,7 @@ import {
 
 import { useContext } from "react";
 
-import { Transition } from "../Transision";
+import { Transition } from "../../utils/Transision";
 import { WizardContext } from "../../pages/InitSystem";
 import { daysOfWeek, daysOfWeekAfterMerge } from "./OpeningHours";
 
@@ -77,13 +77,11 @@ export const FinishModal = () => {
       <Divider sx={{ my: 2 }} />
 
       <Typography variant="h6">Koszty dostawy:</Typography>
-      {ctx.deliveryCosts.map(
-        (cost: { distance: number; price: number }, index: number) => (
-          <Typography key={`deliveryCost-${index}`}>
-            Max. odległość: {cost.distance} km, Cena: {cost.price} zł
-          </Typography>
-        )
-      )}
+      {ctx.deliveryCosts.map((cost: { distance: number; price: number }) => (
+        <Typography key={`deliveryCost-${cost.distance}-${cost.price}`}>
+          Max. odległość: {cost.distance} km, Cena: {cost.price} zł
+        </Typography>
+      ))}
       {ctx.deliveryCosts.length === 0 && (
         <Typography>Brak kosztów dostawy</Typography>
       )}

@@ -1,22 +1,12 @@
 import { Grid, TextField, Button, Link, Divider } from "@mui/material";
 
-import { LoginRegisterState } from "../../pages/LoginRegister";
+import { useContext } from "react";
 
-interface LoginProps {
-  email: string;
-  setEmail: (email: string) => void;
-  password: string;
-  setPassword: (password: string) => void;
-  setLoginRegisterState: (state: LoginRegisterState) => void;
-}
+import { authContext, LoginRegisterState } from "../../pages/LoginRegister";
 
-export const Login: React.FC<LoginProps> = ({
-  email,
-  setEmail,
-  password,
-  setPassword,
-  setLoginRegisterState,
-}) => {
+export const Login = () => {
+  const ctx = useContext(authContext);
+
   return (
     <>
       <Grid item xs={12}>
@@ -26,8 +16,8 @@ export const Login: React.FC<LoginProps> = ({
           label="Adres e-mail"
           autoComplete="email"
           type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={ctx.email}
+          onChange={(e) => ctx.setEmail(e.target.value)}
         />
       </Grid>
       <Grid item xs={12}>
@@ -37,8 +27,8 @@ export const Login: React.FC<LoginProps> = ({
           label="Hasło"
           type="password"
           autoComplete="current-password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={ctx.password}
+          onChange={(e) => ctx.setPassword(e.target.value)}
         />
       </Grid>
       <Grid item xs={4}>
@@ -54,7 +44,7 @@ export const Login: React.FC<LoginProps> = ({
           href="#"
           variant="body2"
           onClick={() => {
-            setLoginRegisterState(LoginRegisterState.ForgetPassword);
+            ctx.setLoginRegisterState(LoginRegisterState.ForgetPassword);
           }}
         >
           {"Nie pamiętasz hasła?"}
@@ -65,7 +55,7 @@ export const Login: React.FC<LoginProps> = ({
           href="#"
           variant="body2"
           onClick={() => {
-            setLoginRegisterState(LoginRegisterState.Register);
+            ctx.setLoginRegisterState(LoginRegisterState.Register);
           }}
         >
           {"Nie masz konta? Zarejestruj się"}
