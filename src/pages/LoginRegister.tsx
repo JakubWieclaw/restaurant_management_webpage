@@ -46,6 +46,21 @@ export function LoginRegister() {
         } finally {
           setLoading(false);
         }
+        try {
+          const response = await api.get(`/messages`, {
+            params: {
+              email: email,
+              password: password,
+            },
+          });
+          if (response.status === 200) {
+            console.log(response.data);
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoading(false);
+        }
         break;
       case LoginRegisterState.Register:
         if (password === passwordRepeat) {
