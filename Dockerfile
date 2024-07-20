@@ -7,6 +7,7 @@ WORKDIR /app
 # Copy the package.json and tsconfig.json and the rest of the files
 COPY package.json .
 COPY tsconfig.json .
+COPY .env .
 COPY . .
 
 # Install dependencies and build the app
