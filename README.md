@@ -8,15 +8,20 @@ Run project in classic way:
 
 4. `yarn`
 
-5. `yarn dev`
+5. `yarn dev` - it should run at 5173 port
 
 Run project via Docker image:
 
 (Remember do not run docker commands via `sudo` [solution for permission error](https://stackoverflow.com/questions/48957195/how-to-fix-docker-got-permission-denied-issue))
 
-Terminal tut: TBD
+Terminal way:
 
-Easy way: Docker desktop
+1. docker pull bartox7777/restaurant-management-system
+
+2. docker run -p 5173:80 bartox7777/restaurant-management-system
+
+GUI way: Docker desktop - just remember to set 5173 port
+![image](https://github.com/user-attachments/assets/f055f9be-42c2-429d-86f4-00de4dcb35c4)
 
 
 
