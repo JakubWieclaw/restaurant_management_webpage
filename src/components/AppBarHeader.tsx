@@ -10,8 +10,10 @@ import {
   IconButton,
   Avatar,
   Tooltip,
+  Badge,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -190,8 +192,17 @@ export const AppBarHeader = () => {
               </Button>
             ))}
           </Box>
-
           <Box sx={{ flexGrow: 0 }}>
+            <IconButton
+              size="large"
+              aria-label="show 17 new notifications"
+              color="inherit"
+              sx={{ marginRight: 1 }}
+            >
+              <Badge badgeContent={7} color="error">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
             <Tooltip title="Open settings">
               <IconButton
                 onClick={(e: any) => setAnchorElProfile(e.currentTarget)}

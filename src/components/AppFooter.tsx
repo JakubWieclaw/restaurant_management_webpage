@@ -18,6 +18,11 @@ export const AppFooter = () => {
             </Typography>
           </Toolbar>
         </Container>
+        {/* <BottomNavigation showLabels onChange={(event, newValue) => {}}>
+          <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
+          <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
+          <BottomNavigationAction label="Nearby" icon={<LocationOnIcon />} />
+        </BottomNavigation> */}
       </AppBar>
     </Box>
   );
