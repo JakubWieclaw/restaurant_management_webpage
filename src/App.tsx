@@ -1,5 +1,4 @@
 import "./App.css";
-import { Container } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
 
 import { ToastContainer } from "react-toastify";
@@ -15,13 +14,11 @@ function App() {
   return (
     <>
       <AppBarHeader />
-      <Container id="content">
-        <Routes>
-          <Route path="/" element={<Menu />} />
-          <Route path="/auth" element={<LoginRegister />} />
-          <Route path="/initialize-system" element={<InitSystem />} />
-        </Routes>
-      </Container>
+      <Routes>
+        <Route path="/" element={<Menu />} />
+        <Route path="/auth" element={<LoginRegister />} />
+        <Route path="/initialize-system" element={<InitSystem />} />
+      </Routes>
       <AppFooter />
       <ToastContainer />
     </>
