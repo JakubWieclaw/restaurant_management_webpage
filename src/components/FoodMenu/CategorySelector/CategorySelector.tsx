@@ -1,4 +1,4 @@
-import { Box, Grid, Typography, Paper } from "@mui/material";
+import { Box } from "@mui/material";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Pagination, Navigation, Autoplay } from "swiper/modules";
