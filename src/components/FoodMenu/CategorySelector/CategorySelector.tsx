@@ -1,9 +1,15 @@
 import { Box } from "@mui/material";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode, Pagination, Navigation, Autoplay } from "swiper/modules";
+import {
+  FreeMode,
+  Pagination,
+  Navigation,
+  Autoplay,
+  Mousewheel,
+} from "swiper/modules";
 
-import { CategoryPaper } from "./CategoryPaper";
+import { CategoryCard } from "./CategoryCard";
 
 import "swiper/css";
 import "swiper/css/pagination";
@@ -25,12 +31,14 @@ export function CategorySelector() {
       <Swiper
         slidesPerView={3}
         spaceBetween={20}
-        loop={true}
+        loop={false}
         pagination={{
           clickable: true,
         }}
         navigation={true}
-        modules={[Pagination, Navigation, Autoplay, FreeMode]}
+        modules={[Pagination, Navigation, Autoplay, FreeMode, Mousewheel]}
+        centeredSlides={true}
+        mousewheel={true}
         className="mySwiper"
         grabCursor={true}
         autoplay={{
@@ -51,11 +59,11 @@ export function CategorySelector() {
             spaceBetween: 50,
           },
         }}
-        freeMode={false}
+        freeMode={true}
       >
         {categories.map(([category, icon]) => (
           <SwiperSlide key={category}>
-            <CategoryPaper category={category} icon={icon} />
+            <CategoryCard category={category} icon={icon} />
           </SwiperSlide>
         ))}
       </Swiper>

@@ -1,22 +1,22 @@
-import { Typography, Card, Box, CardContent } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Typography, Card, Box, CardContent, Link } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 
-interface CategoryPaperProps {
+interface CategoryCardProps {
   category: string;
   icon: string;
 }
 
-export const CategoryPaper: React.FC<CategoryPaperProps> = ({
+export const CategoryCard: React.FC<CategoryCardProps> = ({
   category,
   icon,
 }) => {
   return (
-    <Link to="/">
+    <Link component={RouterLink} to="/" underline="none">
       <Card
         elevation={3}
         sx={{ my: 7, mx: 1 }}
         onClick={() => {
-          alert("!clicked");
+          alert("clicked!");
         }}
       >
         <CardContent>

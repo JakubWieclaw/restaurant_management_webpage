@@ -1,5 +1,6 @@
 import { Container, Grid } from "@mui/material";
 import { CategorySelector } from "../components/FoodMenu/CategorySelector/CategorySelector";
+import { DishesList } from "../components/FoodMenu/DishesList/DishesList";
 
 export function Menu() {
   return (
@@ -14,7 +15,7 @@ export function Menu() {
               <CategorySelector />
             </Grid>
             <Grid item xs={12}>
-              Product list
+              <DishesList />
             </Grid>
           </Grid>
         </Grid>
