@@ -13,6 +13,7 @@ import {
   TextField,
   DialogActions,
   Box,
+  Rating,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
@@ -98,7 +99,14 @@ export const DishCard: React.FC<DishCardProps> = ({ dish }) => {
             </Grid>
           </Grid>
         </CardContent>
+
         <CardActions>
+          <Rating
+            name="read-only"
+            sx={{ mr: "auto", ml: 0 }}
+            value={Math.round(1 + Math.random() * 4)}
+            readOnly
+          />
           <Button
             variant="contained"
             sx={{ ml: "auto", mr: 0 }}
