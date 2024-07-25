@@ -32,7 +32,7 @@ import { DeliveryCosts } from "../components/InitSystem/DeliveryCosts";
 
 export const WizardContext = createContext<any>(null);
 
-export function InitSystem() {
+export const InitSystem = () => {
   const steps = [
     "Nazwa i logo",
     "Dane kontaktowe",
@@ -258,4 +258,4 @@ export function InitSystem() {
       </Box>
     </Container>
   );
-}
+};

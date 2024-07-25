@@ -16,7 +16,7 @@ export enum LoginRegisterState {
 
 export const authContext = createContext<any>(null);
 
-export function LoginRegister() {
+export const LoginRegister = () => {
   const [name, setName] = useState<string>("");
   const [surname, setSurname] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -153,4 +153,4 @@ export function LoginRegister() {
       </Box>
     </Container>
   );
-}
+};
