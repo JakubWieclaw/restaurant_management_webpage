@@ -8,8 +8,6 @@ import {
   Autocomplete,
   Chip,
   TextField,
-  ListItemText,
-  ListItemSecondaryAction,
   ListSubheader,
   Rating,
   Slider,
@@ -23,7 +21,7 @@ export const Menu = () => {
   const [minStars, setMinStars] = useState<number>(1);
   const [minMaxPrice, setMinMaxPrice] = useState<number[]>([0, 1000]);
   const [category, setCategory] = useState<string>("Pizza");
-  const [excludedIngridients, setExcludedIngredients] = useState<string[]>([]);
+  const [excludedIngredients, setExcludedIngredients] = useState<string[]>([]);
 
   const handlePriceFilter = (
     _: Event,
@@ -109,7 +107,7 @@ export const Menu = () => {
                   <ListItem>
                     <Autocomplete
                       multiple
-                      value={excludedIngridients}
+                      value={excludedIngredients}
                       onChange={(_, newValue) => {
                         setExcludedIngredients([...newValue]);
                       }}
