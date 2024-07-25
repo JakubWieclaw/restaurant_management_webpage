@@ -1,9 +1,14 @@
-import { Grid } from "@mui/material";
+import { Divider, Grid, Skeleton, CardMedia, Typography } from "@mui/material";
 
 import { Dish } from "../../../types/dish";
 import { DishCard } from "./DishCard";
 
-export function DishesList() {
+interface DishesListProps {
+  category: string;
+}
+
+export const DishesList: React.FC<DishesListProps> = ({ category }) => {
+  // TBD: Fetch dishes from API based on category
   const dishes: Dish[] = [
     {
       id: "1",
@@ -63,13 +68,35 @@ export function DishesList() {
     },
   ];
 
+  const filteredDishes = dishes.filter((dish) => dish.category === category);
+  const dummyDishes = Array(6).fill(null);
+
   return (
-    <Grid container justifyContent="space-around" spacing={1} sx={{ mt: 5 }}>
-      {dishes.map((dish) => (
-        <Grid item key={dish.id}>
-          <DishCard dish={dish} />
-        </Grid>
-      ))}
-    </Grid>
+    <>
+      <Divider sx={{ marginTop: 3 }} />
+
+      <Typography variant="h2" sx={{ m: 5, textAlign: "center" }}>
+        {category}
+      </Typography>
+      <Grid container justifyContent="space-around" spacing={1} sx={{ mt: 5 }}>
+        {filteredDishes.length !== 0
+          ? filteredDishes.map((dish) => (
+              <Grid item key={dish.id}>
+                <DishCard dish={dish} />
+              </Grid>
+            ))
+          : // repeat 6 times
+            dummyDishes.map((_, index) => (
+              <Grid item key={index}>
+                <Skeleton variant="rectangular">
+                  <CardMedia sx={{ height: 200, width: 400 }} />
+                </Skeleton>
+                <Skeleton variant="rectangular" sx={{ mt: 2 }}>
+                  <CardMedia sx={{ height: 120, width: 400 }} />
+                </Skeleton>
+              </Grid>
+            ))}
+      </Grid>
+    </>
   );
-}
+};

@@ -14,7 +14,13 @@ import { CategoryCard } from "./CategoryCard";
 import "swiper/css";
 import "swiper/css/pagination";
 
-export function CategorySelector() {
+interface CategorySelectorProps {
+  setCategory: (category: string) => void;
+}
+
+export const CategorySelector: React.FC<CategorySelectorProps> = ({
+  setCategory,
+}) => {
   const categories: [string, string][] = [
     ["Pizza", "icons8-pizza.svg"],
     ["Spaghetti", "icons8-spaghetti.svg"],
@@ -62,11 +68,16 @@ export function CategorySelector() {
         freeMode={true}
       >
         {categories.map(([category, icon]) => (
-          <SwiperSlide key={category}>
+          <SwiperSlide
+            key={category}
+            onClick={() => {
+              setCategory(category);
+            }}
+          >
             <CategoryCard category={category} icon={icon} />
           </SwiperSlide>
         ))}
       </Swiper>
     </Box>
   );
-}
+};
