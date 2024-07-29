@@ -1,51 +1,99 @@
-import {
-  Container,
-  Grid,
-  Divider,
-  Typography,
-  List,
-  ListItem,
-  Autocomplete,
-  Chip,
-  TextField,
-  ListSubheader,
-  Rating,
-  Slider,
-} from "@mui/material";
+import { Container, Grid, Divider, Typography } from "@mui/material";
 
 import { useState } from "react";
 
-import { CategorySelector } from "../components/FoodMenu/CategorySelector/CategorySelector";
+import { Dish } from "../types/dish";
+import { Filters } from "../components/FoodMenu/Filters/Filters";
 import { DishesList } from "../components/FoodMenu/DishesList/DishesList";
+import { CategorySelector } from "../components/FoodMenu/CategorySelector/CategorySelector";
+
 export const Menu = () => {
   const [minStars, setMinStars] = useState<number>(1);
   const [minMaxPrice, setMinMaxPrice] = useState<number[]>([0, 1000]);
   const [category, setCategory] = useState<string>("Pizza");
   const [excludedIngredients, setExcludedIngredients] = useState<string[]>([]);
 
-  const handlePriceFilter = (
-    _: Event,
-    newValue: number | number[],
-    activeThumb: number
-  ) => {
-    if (!Array.isArray(newValue)) {
-      return;
-    }
+  const dishes: Dish[] = [
+    {
+      id: "1",
+      name: "Margherita",
+      price: 20.99,
+      ingredients: ["Sos pomidorowy", "Ser", "Bazylia"],
+      category: "Pizza",
+      image: "food/pizza1.jpg",
+      rating: 4,
+    },
+    {
+      id: "2",
+      name: "Capriciosa",
+      price: 25.99,
+      ingredients: ["Sos pomidorowy", "Ser", "Szynka", "Pieczarki"],
+      category: "Pizza",
+      image: "food/pizza2.jpg",
+      rating: 5,
+    },
+    {
+      id: "3",
+      name: "Hawajska",
+      price: 24.99,
+      ingredients: ["Sos pomidorowy", "Ser", "Szynka", "Ananas"],
+      category: "Pizza",
+      image: "food/pizza3.jpg",
+      rating: 3,
+    },
+    {
+      id: "4",
+      name: "Pepperoni",
+      price: 23.99,
+      ingredients: ["Sos pomidorowy", "Ser", "Pepperoni"],
+      category: "Pizza",
+      image: "food/pizza4.jpg",
+      rating: 2,
+    },
+    {
+      id: "5",
+      name: "Diavola",
+      price: 27.99,
+      ingredients: ["Sos pomidorowy", "Ser", "Salami", "Oliwki"],
+      category: "Pizza",
+      image: "food/pizza5.jpg",
+      rating: 1,
+    },
+    {
+      id: "6",
+      name: "Vegetariana",
+      price: 22.99,
+      ingredients: ["Sos pomidorowy", "Ser", "Papryka", "Pieczarki", "Oliwki"],
+      category: "Pizza",
+      image: "food/pizza6.jpg",
+      rating: 4,
+    },
+    {
+      id: "7",
+      name: "Prosciutto",
+      price: 26.99,
+      ingredients: ["Sos pomidorowy", "Ser", "Szynka", "Rukola"],
+      category: "Pizza",
+      image: "food/pizza7.jpg",
+      rating: 5,
+    },
+  ];
 
-    if (newValue[1] - newValue[0] < 10) {
-      if (activeThumb === 0) {
-        const clamped = Math.min(newValue[0], 200 - 10);
-        setMinMaxPrice([clamped, clamped + 10]);
-      } else {
-        const clamped = Math.max(newValue[1], 10);
-        setMinMaxPrice([clamped - 10, clamped]);
-      }
-    } else {
-      setMinMaxPrice(newValue);
-    }
-  };
+  const filteredDishes = dishes.filter(
+    (dish) =>
+      dish.category === category &&
+      dish.price >= minMaxPrice[0] &&
+      dish.price <= minMaxPrice[1] &&
+      dish.ingredients.every(
+        (ingredient) => !excludedIngredients.includes(ingredient)
+      ) &&
+      dish.rating >= minStars
+  );
 
-  const ingredients = ["Ser", "Szynka", "Pieczarki", "Ananas", "Oliwki"];
+  // Ingredients as a set to avoid duplicates from multiple dishes
+  const ingredients = Array.from(
+    new Set(dishes.flatMap((dish) => dish.ingredients))
+  );
 
   return (
     <Container sx={{ mt: 3 }} maxWidth="xl">
@@ -76,58 +124,18 @@ export const Menu = () => {
                 >
                   Filtry
                 </Typography>
-                <List>
-                  {/* filters like price, rating, ingridients to exclude */}
-                  <ListSubheader>Cena</ListSubheader>
-                  <ListItem sx={{ mt: 4 }}>
-                    <Slider
-                      value={minMaxPrice}
-                      onChange={handlePriceFilter}
-                      valueLabelDisplay="auto"
-                      getAriaValueText={(num: number) => `${num} zł`}
-                      disableSwap
-                      min={0}
-                      max={200}
-                    />
-                  </ListItem>
-                  <Divider />
-
-                  <ListSubheader>Minimalna ocena</ListSubheader>
-                  <ListItem>
-                    <Rating
-                      value={minStars}
-                      onChange={(_, value) => {
-                        setMinStars(value ?? 1);
-                      }}
-                    />
-                  </ListItem>
-                  <Divider />
-
-                  <ListSubheader>Składniki do wykluczenia</ListSubheader>
-                  <ListItem>
-                    <Autocomplete
-                      multiple
-                      value={excludedIngredients}
-                      onChange={(_, newValue) => {
-                        setExcludedIngredients([...newValue]);
-                      }}
-                      options={ingredients}
-                      renderTags={(tagValue, getTagProps) =>
-                        tagValue.map((option, index) => {
-                          const { key, ...tagProps } = getTagProps({ index });
-                          return (
-                            <Chip key={key} label={option} {...tagProps} />
-                          );
-                        })
-                      }
-                      style={{ width: 500 }}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                  </ListItem>
-                </List>
+                <Filters
+                  minStars={minStars}
+                  setMinStars={setMinStars}
+                  minMaxPrice={minMaxPrice}
+                  setMinMaxPrice={setMinMaxPrice}
+                  excludedIngredients={excludedIngredients}
+                  setExcludedIngredients={setExcludedIngredients}
+                  ingredients={ingredients}
+                />
               </Grid>
               <Grid item xs={9}>
-                <DishesList category={category} />
+                <DishesList dishes={filteredDishes} />
               </Grid>
             </Grid>
           </Grid>

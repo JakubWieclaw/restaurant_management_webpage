@@ -5,8 +5,8 @@ export interface Dish {
   ingredients: string[];
   category: string;
   image: string;
+  rating: number;
   //   description: string;
-  //   rating: number;
   //   countInStock: number;
   //   isVeg: boolean;
   //   spicy: number;
