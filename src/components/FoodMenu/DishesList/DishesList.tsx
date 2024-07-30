@@ -22,10 +22,16 @@ export const DishesList: React.FC<DishesListProps> = ({ dishes }) => {
           dummyDishes.map((_, index) => (
             <Grid item key={index} sx={{ mb: 2 }}>
               <Skeleton variant="rounded">
-                <CardMedia sx={{ height: 200, width: 400, mb: 1 }} />
+                <CardMedia
+                  sx={{ height: 200, width: 400, mb: 1 }}
+                  component={"span"}
+                />
               </Skeleton>
               <Skeleton variant="rounded">
-                <CardMedia sx={{ height: 120, width: 400 }} />
+                <CardMedia
+                  sx={{ height: 120, width: 400 }}
+                  component={"span"}
+                />
               </Skeleton>
             </Grid>
           ))}

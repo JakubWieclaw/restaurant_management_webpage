@@ -90,10 +90,10 @@ export const Menu = () => {
       dish.rating >= minStars
   );
 
-  // Ingredients as a set to avoid duplicates from multiple dishes
+  // Ingredients as a set to avoid duplicates from multiple dishes and sort them alphabetically
   const ingredients = Array.from(
-    new Set(dishes.flatMap((dish) => dish.ingredients))
-  );
+    new Set(filteredDishes.flatMap((dish) => dish.ingredients))
+  ).sort((a, b) => a.localeCompare(b));
 
   return (
     <Container sx={{ mt: 3 }} maxWidth="xl">
@@ -113,8 +113,13 @@ export const Menu = () => {
             <Grid container>
               <Grid
                 item
-                xs={3}
-                sx={{ p: 3, borderRight: 1, borderColor: "divider" }}
+                xs={12}
+                md={4}
+                sx={{
+                  p: 3,
+                  borderRight: { xs: 0, md: 1 },
+                  borderColor: { xs: "transparent", md: "divider" },
+                }}
               >
                 <Typography
                   variant="h5"
@@ -134,7 +139,8 @@ export const Menu = () => {
                   ingredients={ingredients}
                 />
               </Grid>
-              <Grid item xs={9}>
+
+              <Grid item xs={12} md={8}>
                 <DishesList dishes={filteredDishes} />
               </Grid>
             </Grid>
