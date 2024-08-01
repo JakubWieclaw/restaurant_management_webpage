@@ -16,11 +16,12 @@ import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { toast, Slide } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { RootState, AppDispatch } from "../store";
-import { login, logout } from "../utils/userSlice";
+import { logout } from "../utils/userSlice";
 
 export const AppBarHeader = () => {
   const [anchorElMenu, setAnchorElMenu] = useState(null);
@@ -32,20 +33,29 @@ export const AppBarHeader = () => {
       label: "Inicjalizuj system",
       link: "/initialize-system",
     },
-    {
-      label: "Zaloguj się",
-      link: "/auth",
-    },
   ];
 
   const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
+
   const user = useSelector((state: RootState) => state.user);
   const handleLogin = () => {
-    dispatch(login());
+    navigate("/auth");
   };
 
   const handleLogout = () => {
     dispatch(logout());
+    toast.success("Wylogowano pomyślnie", {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Slide,
+    });
   };
 
   return (

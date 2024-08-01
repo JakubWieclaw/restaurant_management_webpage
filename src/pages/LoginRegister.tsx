@@ -1,9 +1,13 @@
 import Grid from "@mui/material/Grid";
 import { Container, Box, Typography } from "@mui/material";
 
+import { toast, Slide } from "react-toastify";
+import { useDispatch } from "react-redux";
 import { useState, useRef, createContext, useMemo } from "react";
 
 import api from "../utils/api";
+import { AppDispatch } from "../store";
+import { login } from "../utils/userSlice";
 import { Login } from "../components/LoginRegister/Login";
 import { Register } from "../components/LoginRegister/Register";
 import { ForgetPassword } from "../components/LoginRegister/ForgetPassword";
@@ -24,28 +28,15 @@ export const LoginRegister = () => {
   const [passwordRepeat, setPasswordRepeat] = useState<string>("");
 
   const [loading, setLoading] = useState<boolean>(false);
+
+  const dispatch: AppDispatch = useDispatch();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
     switch (loginRegisterState) {
       case LoginRegisterState.Login:
-        alert("Login");
-        try {
-          const response = await api.post(`/messages`, {
-            params: {
-              email: email,
-              password: password,
-            },
-          });
-          if (response.status === 200) {
-            console.log(response.data);
-          }
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setLoading(false);
-        }
         try {
           const response = await api.get(`/messages`, {
             params: {
@@ -54,7 +45,22 @@ export const LoginRegister = () => {
             },
           });
           if (response.status === 200) {
-            console.log(response.data);
+            if (response.data == "Hello World!") {
+              dispatch(login());
+              toast.success("Zalogowano pomyślnie", {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Slide,
+              });
+            } else {
+              console.log(response.data);
+            }
           }
         } catch (error) {
           console.error(error);
