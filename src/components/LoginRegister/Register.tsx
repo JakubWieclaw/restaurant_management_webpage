@@ -1,30 +1,21 @@
 import {
   Button,
-  FormHelperText,
   Grid,
   Link,
   TextField,
   Typography,
   Divider,
 } from "@mui/material";
-import { styled } from "@mui/system";
 
-import { useContext } from "react";
+import { useContext, useState } from "react";
 
 import { authContext, LoginRegisterState } from "../../pages/LoginRegister";
+import { PhoneNumber } from "../inputs/PhoneNumber";
 
 export const Register = () => {
   const ctx = useContext(authContext);
+  const [phoneNumberError, setPhoneNumberError] = useState<string>("");
 
-  const CustomHelperTextLength = styled(FormHelperText)({
-    color: ctx.password.length < 8 ? "red" : "green",
-  });
-  const CustomHelperTextRepeat = styled(FormHelperText)({
-    color:
-      ctx.password.length < 8 || ctx.password !== ctx.passwordRepeat
-        ? "red"
-        : "green",
-  });
   return (
     <>
       <Grid item xs={6}>
@@ -60,6 +51,15 @@ export const Register = () => {
         />
       </Grid>
       <Grid item xs={12}>
+        <PhoneNumber
+          setValue={ctx.setPhoneNumber}
+          getValue={ctx.phoneNumber}
+          setError={setPhoneNumberError}
+          getError={phoneNumberError}
+          helperText={"Numer telefonu musi być w formacie 123-456-789"}
+        />
+      </Grid>
+      <Grid item xs={12}>
         <TextField
           margin="normal"
           required
@@ -69,11 +69,8 @@ export const Register = () => {
           fullWidth
           value={ctx.password}
           onChange={(e) => ctx.setPassword(e.target.value)}
-          helperText={
-            <CustomHelperTextLength>
-              Hasło musi mieć co najmniej 8 znaków
-            </CustomHelperTextLength>
-          }
+          error={ctx.password.length < 8 && ctx.password.length > 0}
+          helperText={"Hasło musi mieć co najmniej 8 znaków"}
           inputProps={{
             minLength: 8,
           }}
@@ -89,11 +86,11 @@ export const Register = () => {
           fullWidth
           value={ctx.passwordRepeat}
           onChange={(e) => ctx.setPasswordRepeat(e.target.value)}
-          helperText={
-            <CustomHelperTextRepeat>
-              Hasło musi być takie samo jak powyżej
-            </CustomHelperTextRepeat>
+          error={
+            (ctx.password.length < 8 || ctx.password !== ctx.passwordRepeat) &&
+            ctx.passwordRepeat.length > 0
           }
+          helperText={"Hasło musi być takie samo jak powyżej"}
         />
       </Grid>
       <Grid item xs={4}>

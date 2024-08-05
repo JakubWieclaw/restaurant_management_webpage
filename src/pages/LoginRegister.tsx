@@ -11,6 +11,7 @@ import { login } from "../utils/userSlice";
 import { Login } from "../components/LoginRegister/Login";
 import { Register } from "../components/LoginRegister/Register";
 import { ForgetPassword } from "../components/LoginRegister/ForgetPassword";
+import { validatePhoneNumber } from "../utils/validations";
 
 export enum LoginRegisterState {
   Login,
@@ -24,6 +25,7 @@ export const LoginRegister = () => {
   const [name, setName] = useState<string>("");
   const [surname, setSurname] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [passwordRepeat, setPasswordRepeat] = useState<string>("");
 
@@ -34,33 +36,42 @@ export const LoginRegister = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    let response;
 
     switch (loginRegisterState) {
       case LoginRegisterState.Login:
         try {
-          const response = await api.get(`/messages`, {
+          const response = await api.post(`/auth/login`, {
             params: {
               email: email,
               password: password,
             },
           });
+          console.log(response.data);
           if (response.status === 200) {
-            if (response.data == "Hello World!") {
-              dispatch(login());
-              toast.success("Zalogowano pomyślnie", {
-                position: "bottom-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-                transition: Slide,
-              });
-            } else {
-              console.log(response.data);
-            }
+            dispatch(login());
+            toast.success("Zalogowano pomyślnie", {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Slide,
+            });
+            toast.error("Błąd logowania", {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Slide,
+            });
           }
         } catch (error) {
           console.error(error);
@@ -69,10 +80,75 @@ export const LoginRegister = () => {
         }
         break;
       case LoginRegisterState.Register:
-        if (password === passwordRepeat) {
-          alert("Register");
-          setPassword("");
+        if (password !== passwordRepeat) {
+          toast.error("Hasła nie są takie same", {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Slide,
+          });
+          return;
         }
+        if (!validatePhoneNumber(phoneNumber)) {
+          toast.error("Numer telefonu w niepoprawnym formacie", {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Slide,
+          });
+          return;
+        }
+        try {
+          response = await api.post(`/auth/register`, {
+            email: email,
+            name: name,
+            surname: surname,
+            phone: phoneNumber,
+            password: password,
+          });
+          if (response.status === 200) {
+            toast.success("Zarejestrowano pomyślnie", {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Slide,
+            });
+            setLoginRegisterState(LoginRegisterState.Login);
+          } else {
+            toast.error("Błąd rejestracji", {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Slide,
+            });
+          }
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setLoading(false);
+        }
+
+        setPassword("");
         break;
       case LoginRegisterState.ForgetPassword:
         console.log("ForgetPassword");
@@ -126,6 +202,8 @@ export const LoginRegister = () => {
               () => ({
                 email,
                 setEmail,
+                phoneNumber,
+                setPhoneNumber,
                 password,
                 setPassword,
                 passwordRepeat,
@@ -140,6 +218,8 @@ export const LoginRegister = () => {
               [
                 email,
                 setEmail,
+                phoneNumber,
+                setPhoneNumber,
                 password,
                 setPassword,
                 passwordRepeat,

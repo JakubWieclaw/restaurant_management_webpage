@@ -8,6 +8,7 @@ export const PhoneNumber: React.FC<InputProps> = ({
   setValue,
   getError,
   setError,
+  helperText,
 }) => {
   return (
     <TextField
@@ -18,6 +19,12 @@ export const PhoneNumber: React.FC<InputProps> = ({
       type="tel"
       fullWidth
       value={getValue}
+      onKeyDown={(e) => {
+        if (e.key === "Backspace") {
+          e.preventDefault();
+          setValue(getValue.slice(0, -1));
+        }
+      }}
       onChange={(e) => {
         const value = e.target.value.replace(/\D/g, "").slice(0, 9);
         let formattedValue = "";
@@ -35,7 +42,7 @@ export const PhoneNumber: React.FC<InputProps> = ({
         }
       }}
       error={getError !== ""}
-      helperText={getError}
+      helperText={getError || helperText}
     />
   );
 };

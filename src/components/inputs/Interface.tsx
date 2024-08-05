@@ -3,4 +3,5 @@ export interface InputProps {
   setValue: (phoneNumber: string) => void;
   getError: string;
   setError: (error: string) => void;
+  helperText?: string;
 }
