@@ -15,6 +15,7 @@ import { PhoneNumber } from "../inputs/PhoneNumber";
 export const Register = () => {
   const ctx = useContext(authContext);
   const [phoneNumberError, setPhoneNumberError] = useState<string>("");
+  const minPasswordLength = 3;
 
   return (
     <>
@@ -69,10 +70,12 @@ export const Register = () => {
           fullWidth
           value={ctx.password}
           onChange={(e) => ctx.setPassword(e.target.value)}
-          error={ctx.password.length < 8 && ctx.password.length > 0}
-          helperText={"Hasło musi mieć co najmniej 8 znaków"}
+          error={
+            ctx.password.length < minPasswordLength && ctx.password.length > 0
+          }
+          helperText={`Hasło musi mieć co najmniej ${minPasswordLength} znaki`}
           inputProps={{
-            minLength: 8,
+            minLength: minPasswordLength,
           }}
         />
       </Grid>
@@ -87,7 +90,8 @@ export const Register = () => {
           value={ctx.passwordRepeat}
           onChange={(e) => ctx.setPasswordRepeat(e.target.value)}
           error={
-            (ctx.password.length < 8 || ctx.password !== ctx.passwordRepeat) &&
+            (ctx.password.length < minPasswordLength ||
+              ctx.password !== ctx.passwordRepeat) &&
             ctx.passwordRepeat.length > 0
           }
           helperText={"Hasło musi być takie samo jak powyżej"}

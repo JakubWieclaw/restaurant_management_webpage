@@ -36,20 +36,15 @@ export const LoginRegister = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    let response;
-
     switch (loginRegisterState) {
       case LoginRegisterState.Login:
         try {
           const response = await api.post(`/auth/login`, {
-            params: {
-              email: email,
-              password: password,
-            },
+            email: email,
+            password: password,
           });
-          console.log(response.data);
           if (response.status === 200) {
-            dispatch(login());
+            dispatch(login({ token: response.data }));
             toast.success("Zalogowano pomyślnie", {
               position: "bottom-center",
               autoClose: 5000,
@@ -61,7 +56,13 @@ export const LoginRegister = () => {
               theme: "light",
               transition: Slide,
             });
-            toast.error("Błąd logowania", {
+          }
+        } catch (error: any) {
+          toast.error(
+            error?.response?.data
+              ? error.response.data
+              : "Błąd połączenia z serwerem",
+            {
               position: "bottom-center",
               autoClose: 5000,
               hideProgressBar: false,
@@ -71,10 +72,8 @@ export const LoginRegister = () => {
               progress: undefined,
               theme: "light",
               transition: Slide,
-            });
-          }
-        } catch (error) {
-          console.error(error);
+            }
+          );
         } finally {
           setLoading(false);
         }
@@ -109,7 +108,7 @@ export const LoginRegister = () => {
           return;
         }
         try {
-          response = await api.post(`/auth/register`, {
+          const response = await api.post(`/auth/register`, {
             email: email,
             name: name,
             surname: surname,
@@ -129,8 +128,13 @@ export const LoginRegister = () => {
               transition: Slide,
             });
             setLoginRegisterState(LoginRegisterState.Login);
-          } else {
-            toast.error("Błąd rejestracji", {
+          }
+        } catch (error: any) {
+          toast.error(
+            error?.response?.data
+              ? error.response.data
+              : "Błąd połączenia z serwerem",
+            {
               position: "bottom-center",
               autoClose: 5000,
               hideProgressBar: false,
@@ -140,10 +144,8 @@ export const LoginRegister = () => {
               progress: undefined,
               theme: "light",
               transition: Slide,
-            });
-          }
-        } catch (error) {
-          console.error(error);
+            }
+          );
         } finally {
           setLoading(false);
         }

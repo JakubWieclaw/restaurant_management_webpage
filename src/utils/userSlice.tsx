@@ -1,18 +1,19 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { UserState } from "../types/userTypes";
 
 const initialState: UserState = {
   loggedIn: false,
+  token: "",
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    // login(state, action: PayloadAction<UserInfo>) {
-    login(state) {
+    login(state, action: PayloadAction<{ token: string }>) {
       state.loggedIn = true;
+      state.token = action.payload.token;
     },
     logout(state) {
       state.loggedIn = false;

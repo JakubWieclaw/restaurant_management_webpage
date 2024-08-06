@@ -49,7 +49,7 @@ export const DishCard: React.FC<DishCardProps> = ({ dish }) => {
       }}
     >
       <DialogTitle>
-        <Typography variant="h4" sx={{ textAlign: "center", m: 1 }}>
+        <Typography sx={{ textAlign: "center", m: 1, fontSize: 35 }}>
           {}
           {dish.name} - {dish.price} zł
         </Typography>
