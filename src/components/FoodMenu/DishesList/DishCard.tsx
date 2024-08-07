@@ -21,9 +21,12 @@ import {
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 import { Dish } from "../../../types/dish";
 import { IncrementDecrementNumberInput } from "../../inputs/IncrementDecrementNumberInput";
+import api from "../../../utils/api";
 
 interface DishCardProps {
   dish: Dish;
@@ -33,16 +36,28 @@ export const DishCard: React.FC<DishCardProps> = ({ dish }) => {
   const [open, setOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
+  const user = useSelector((state: RootState) => state.user);
+
   const putIntoCartDialog = (
     <Dialog
       open={open}
       onClose={() => setOpen(false)}
       PaperProps={{
         component: "form",
-        onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+        onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
           event.preventDefault();
           if ((event.nativeEvent as any).submitter.name === "submit_btn") {
-            console.log("Add to cart");
+            console.log(user.token);
+            try {
+              const response = await api.get("/messages", {
+                headers: {
+                  Authorization: `Bearer ${user.token}`,
+                },
+              });
+              console.log(response);
+            } catch (error) {
+              console.error(error);
+            }
             setOpen(false);
           }
         },

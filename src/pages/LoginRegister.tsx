@@ -1,8 +1,9 @@
 import Grid from "@mui/material/Grid";
 import { Container, Box, Typography } from "@mui/material";
 
-import { toast, Slide } from "react-toastify";
 import { useDispatch } from "react-redux";
+import { toast, Slide } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import { useState, useRef, createContext, useMemo } from "react";
 
 import api from "../utils/api";
@@ -33,6 +34,8 @@ export const LoginRegister = () => {
 
   const dispatch: AppDispatch = useDispatch();
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
@@ -56,6 +59,7 @@ export const LoginRegister = () => {
               theme: "light",
               transition: Slide,
             });
+            navigate("/");
           }
         } catch (error: any) {
           toast.error(
