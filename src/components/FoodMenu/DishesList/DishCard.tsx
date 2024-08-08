@@ -21,12 +21,15 @@ import {
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 import { useState } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../store";
+import { toast, Slide } from "react-toastify";
+import { useSelector, useDispatch } from "react-redux";
 
-import { Dish } from "../../../types/dish";
-import { IncrementDecrementNumberInput } from "../../inputs/IncrementDecrementNumberInput";
 import api from "../../../utils/api";
+import { Dish } from "../../../types/dish";
+import { AppDispatch, RootState } from "../../../store";
+import { CartItem } from "../../../types/cartTypes";
+import { IncrementDecrementNumberInput } from "../../inputs/IncrementDecrementNumberInput";
+import { addToCart } from "../../../reducers/slices/cartSlice";
 
 interface DishCardProps {
   dish: Dish;
@@ -35,8 +38,9 @@ interface DishCardProps {
 export const DishCard: React.FC<DishCardProps> = ({ dish }) => {
   const [open, setOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [removedIngredients, setRemovedIngredients] = useState<string[]>([]);
 
-  const user = useSelector((state: RootState) => state.user);
+  const dispatch: AppDispatch = useDispatch();
 
   const putIntoCartDialog = (
     <Dialog
@@ -47,17 +51,26 @@ export const DishCard: React.FC<DishCardProps> = ({ dish }) => {
         onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
           event.preventDefault();
           if ((event.nativeEvent as any).submitter.name === "submit_btn") {
-            console.log(user.token);
-            try {
-              const response = await api.get("/messages", {
-                headers: {
-                  Authorization: `Bearer ${user.token}`,
-                },
-              });
-              console.log(response);
-            } catch (error) {
-              console.error(error);
-            }
+            console.log(quantity, removedIngredients);
+            const item: CartItem = {
+              dish,
+              quantity,
+              removedIngredients,
+            };
+            dispatch(addToCart(item));
+            toast.success("Dodano do koszyka", {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Slide,
+            });
+            setRemovedIngredients([]);
+            setQuantity(1);
             setOpen(false);
           }
         },
@@ -98,7 +111,27 @@ export const DishCard: React.FC<DishCardProps> = ({ dish }) => {
               defaultChecked
               label={ingredient}
               control={
-                <Checkbox name={ingredient} defaultChecked color="primary" />
+                <Checkbox
+                  name={ingredient}
+                  color="primary"
+                  checked={!removedIngredients.includes(ingredient)}
+                  onChange={(event) => {
+                    const checked = event.target.checked;
+                    if (checked) {
+                      setRemovedIngredients(
+                        removedIngredients.filter(
+                          (removedIngredient) =>
+                            removedIngredient !== ingredient
+                        )
+                      );
+                    } else {
+                      setRemovedIngredients([
+                        ...removedIngredients,
+                        ingredient,
+                      ]);
+                    }
+                  }}
+                />
               }
             />
           ))}

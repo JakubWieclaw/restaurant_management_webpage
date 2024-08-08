@@ -8,7 +8,7 @@ import { useState, useRef, createContext, useMemo } from "react";
 
 import api from "../utils/api";
 import { AppDispatch } from "../store";
-import { login } from "../utils/userSlice";
+import { login } from "../reducers/slices/userSlice";
 import { Login } from "../components/LoginRegister/Login";
 import { Register } from "../components/LoginRegister/Register";
 import { ForgetPassword } from "../components/LoginRegister/ForgetPassword";

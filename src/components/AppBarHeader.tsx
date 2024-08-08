@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 
 import { useState } from "react";
 import { toast, Slide } from "react-toastify";
@@ -21,11 +22,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { RootState, AppDispatch } from "../store";
-import { logout } from "../utils/userSlice";
+import { logout } from "../reducers/slices/userSlice";
 
 export const AppBarHeader = () => {
   const [anchorElMenu, setAnchorElMenu] = useState(null);
   const [anchorElProfile, setAnchorElProfile] = useState(null);
+
   const appBarLogo = "icons8-meal.svg";
   const appBarTitle = "SZR";
   const appBarMenuItems = [
@@ -36,6 +38,7 @@ export const AppBarHeader = () => {
   ];
 
   const dispatch: AppDispatch = useDispatch();
+  const cart = useSelector((state: RootState) => state.cart);
   const navigate = useNavigate();
 
   const user = useSelector((state: RootState) => state.user);
@@ -203,6 +206,17 @@ export const AppBarHeader = () => {
             ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
+            <IconButton
+              size="large"
+              color="inherit"
+              onClick={() => {
+                console.log(cart.items);
+              }}
+            >
+              <Badge badgeContent={cart.items.length} color="error">
+                <ShoppingBasketIcon />
+              </Badge>
+            </IconButton>
             <IconButton
               size="large"
               aria-label="show 17 new notifications"
