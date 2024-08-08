@@ -22,11 +22,10 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 import { useState } from "react";
 import { toast, Slide } from "react-toastify";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
-import api from "../../../utils/api";
 import { Dish } from "../../../types/dish";
-import { AppDispatch, RootState } from "../../../store";
+import { AppDispatch } from "../../../store";
 import { CartItem } from "../../../types/cartTypes";
 import { IncrementDecrementNumberInput } from "../../inputs/IncrementDecrementNumberInput";
 import { addToCart } from "../../../reducers/slices/cartSlice";
