@@ -8,6 +8,7 @@ import { Container } from "@mui/material";
 import { Menu } from "./pages/FoodMenu";
 import { InitSystem } from "./pages/InitSystem";
 import { AppFooter } from "./components/AppFooter";
+import { CartContent } from "./pages/CartContent";
 import { LoginRegister } from "./pages/LoginRegister";
 import { AppBarHeader } from "./components/AppBarHeader";
 
@@ -18,6 +19,7 @@ function App() {
       <Container id="content" maxWidth={false}>
         <Routes>
           <Route path="/" element={<Menu />} />
+          <Route path="/cart" element={<CartContent />} />
           <Route path="/auth" element={<LoginRegister />} />
           <Route path="/initialize-system" element={<InitSystem />} />
         </Routes>

@@ -210,7 +210,7 @@ export const AppBarHeader = () => {
               size="large"
               color="inherit"
               onClick={() => {
-                console.log(cart.items);
+                navigate("/cart");
               }}
             >
               <Badge badgeContent={cart.items.length} color="error">
