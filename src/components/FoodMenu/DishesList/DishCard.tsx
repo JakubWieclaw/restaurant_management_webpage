@@ -6,17 +6,7 @@ import {
   CardActions,
   Button,
   Grid,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Box,
   Rating,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-  Divider,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
@@ -25,9 +15,8 @@ import { toast, Slide } from "react-toastify";
 import { useDispatch } from "react-redux";
 
 import { Dish } from "../../../types/dish";
-import { AppDispatch } from "../../../store";
+import { DishDialog } from "./DishDialog";
 import { CartItem } from "../../../types/cartTypes";
-import { IncrementDecrementNumberInput } from "../../inputs/IncrementDecrementNumberInput";
 import { addToCart } from "../../../reducers/slices/cartSlice";
 
 interface DishCardProps {
@@ -39,111 +28,29 @@ export const DishCard: React.FC<DishCardProps> = ({ dish }) => {
   const [quantity, setQuantity] = useState(1);
   const [removedIngredients, setRemovedIngredients] = useState<string[]>([]);
 
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useDispatch();
 
-  const putIntoCartDialog = (
-    <Dialog
-      open={open}
-      onClose={() => setOpen(false)}
-      PaperProps={{
-        component: "form",
-        onSubmit: async (event: React.FormEvent<HTMLFormElement>) => {
-          event.preventDefault();
-          if ((event.nativeEvent as any).submitter.name === "submit_btn") {
-            console.log(quantity, removedIngredients);
-            const item: CartItem = {
-              dish,
-              quantity,
-              removedIngredients,
-            };
-            dispatch(addToCart(item));
-            toast.success("Dodano do koszyka", {
-              position: "bottom-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-              transition: Slide,
-            });
-            setRemovedIngredients([]);
-            setQuantity(1);
-            setOpen(false);
-          }
-        },
-      }}
-    >
-      <DialogTitle>
-        <Typography sx={{ textAlign: "center", m: 1, fontSize: 35 }}>
-          {}
-          {dish.name} - {dish.price} zł
-        </Typography>
-        <Box
-          component="img"
-          src={dish.image}
-          sx={{
-            height: 300,
-            width: "100%",
-            objectFit: "cover",
-          }}
-        ></Box>
-      </DialogTitle>
-      <Divider />
-
-      <DialogContent>
-        <DialogContentText>Liczba sztuk</DialogContentText>
-        <FormGroup sx={{ m: 1 }}>
-          <IncrementDecrementNumberInput
-            value={quantity}
-            setValue={setQuantity}
-          />
-        </FormGroup>
-
-        <DialogContentText>Modyfikuj składniki</DialogContentText>
-        <FormGroup sx={{ my: 2 }}>
-          {dish.ingredients.map((ingredient) => (
-            <FormControlLabel
-              key={ingredient}
-              name={ingredient}
-              defaultChecked
-              label={ingredient}
-              control={
-                <Checkbox
-                  name={ingredient}
-                  color="primary"
-                  checked={!removedIngredients.includes(ingredient)}
-                  onChange={(event) => {
-                    const checked = event.target.checked;
-                    if (checked) {
-                      setRemovedIngredients(
-                        removedIngredients.filter(
-                          (removedIngredient) =>
-                            removedIngredient !== ingredient
-                        )
-                      );
-                    } else {
-                      setRemovedIngredients([
-                        ...removedIngredients,
-                        ingredient,
-                      ]);
-                    }
-                  }}
-                />
-              }
-            />
-          ))}
-        </FormGroup>
-      </DialogContent>
-      <Divider />
-      <DialogActions sx={{ display: "flex", justifyContent: "center", my: 1 }}>
-        <Button type="submit" variant="contained" name="submit_btn">
-          Dodaj do koszyka - {(quantity * dish.price).toFixed(2)} zł
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
+  const onSubmit = (_: React.FormEvent<HTMLFormElement>) => {
+    const item: CartItem = {
+      dish,
+      quantity,
+      removedIngredients,
+    };
+    dispatch(addToCart(item));
+    toast.success("Dodano do koszyka", {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      transition: Slide,
+    });
+    setRemovedIngredients([]);
+    setQuantity(1);
+  };
 
   return (
     <>
@@ -192,7 +99,19 @@ export const DishCard: React.FC<DishCardProps> = ({ dish }) => {
           </Button>
         </CardActions>
       </Card>
-      {putIntoCartDialog}
+      <DishDialog
+        {...{
+          open,
+          setOpen,
+          dish,
+          quantity,
+          setQuantity,
+          removedIngredients,
+          setRemovedIngredients,
+          onSubmit,
+          submitLabel: "Dodaj do koszyka",
+        }}
+      />
     </>
   );
 };

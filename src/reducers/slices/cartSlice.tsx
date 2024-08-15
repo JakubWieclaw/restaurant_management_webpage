@@ -30,13 +30,20 @@ const cartSlice = createSlice({
     },
     updateCartItem(
       state,
-      action: PayloadAction<{ dishId: string; quantity: number }>
+      action: PayloadAction<{
+        row: any;
+        quantity: number;
+        removedIngredients: string[];
+      }>
     ) {
       const existingItem = state.items.find(
-        (item) => item.dish.id === action.payload.dishId
+        (item) =>
+          JSON.stringify(item) === JSON.stringify(action.payload.row.item)
       );
       if (existingItem) {
-        existingItem.quantity = action.payload.quantity;
+        const idx = state.items.indexOf(existingItem);
+        state.items[idx].quantity = action.payload.quantity;
+        state.items[idx].removedIngredients = action.payload.removedIngredients;
       }
     },
     clearCart(state) {
