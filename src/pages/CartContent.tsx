@@ -58,6 +58,18 @@ export const CartContent = () => {
     }
   };
 
+  const noItemsInfo = () => (
+    <Typography
+      sx={{
+        textAlign: "center",
+        mt: 5,
+        color: "text.secondary",
+      }}
+    >
+      Brak pozycji w koszyku. Dodaj coś smacznego!
+    </Typography>
+  );
+
   return (
     <Container maxWidth="md" sx={{ mt: 15 }}>
       <Typography
@@ -95,17 +107,7 @@ export const CartContent = () => {
           disableMultipleRowSelection={true}
           sx={{ border: 2, borderColor: "divider" }}
           slots={{
-            noRowsOverlay: () => (
-              <Typography
-                sx={{
-                  textAlign: "center",
-                  mt: 5,
-                  color: "text.secondary",
-                }}
-              >
-                Brak pozycji w koszyku. Dodaj coś smacznego!
-              </Typography>
-            ),
+            noRowsOverlay: noItemsInfo,
           }}
         />
       </Box>
