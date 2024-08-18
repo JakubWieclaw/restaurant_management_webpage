@@ -1,6 +1,6 @@
 Run project in classic way:
 
-1. Install Node.js
+1. Install Node.js 22
 
 2. Install yarn
 
