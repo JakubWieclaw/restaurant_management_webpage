@@ -12,22 +12,14 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import { useState, useEffect } from "react";
 
-import api from "../../../utils/api";
+import api, { categoriesApi } from "../../../utils/api";
 import { CategoryCard } from "./CategoryCard";
+import { AxiosResponse } from "axios";
+import { Category } from "../../../api";
 
 interface CategorySelectorProps {
   setCategory: (category: string) => void;
 }
-
-const fetchCategories = async () => {
-  const response = await api.get("/api/categories/all");
-  if (response.status === 200) {
-    return response.data;
-  } else {
-    console.error(response);
-    return [];
-  }
-};
 
 export const CategorySelector: React.FC<CategorySelectorProps> = ({
   setCategory,
@@ -35,38 +27,15 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
   const [categories, setCategories] = useState<[string, string][]>([]);
 
   useEffect(() => {
-    fetchCategories().then((data: { id: number; name: string }[]) => {
-      const categories_imgs = [
-        "icons8-pizza.svg",
-        "icons8-spaghetti.svg",
-        "icons8-salad.svg",
-        "icons8-burger.svg",
-        "icons8-dessert.svg",
-        "icons8-coffee-cup.svg",
-        "icons8-sushi.svg",
-        "icons8-noodles.svg",
-        "icons8-sandwich.svg",
-      ];
-
+    categoriesApi.getAllCategories().then((data: AxiosResponse) => {
       setCategories(
-        data
-          .toReversed()
-          .map((json, index: number) => [json.name, categories_imgs[index]])
+        data.data.map((category: Category) => [
+          category.name,
+          category.photographUrl,
+        ])
       );
     });
   }, []);
-
-  // let categories: [string, string][] = [
-  //   ["Pizza", "icons8-pizza.svg"],
-  //   ["Spaghetti", "icons8-spaghetti.svg"],
-  //   ["Sałatki", "icons8-salad.svg"],
-  //   ["Burgery", "icons8-burger.svg"],
-  //   ["Desery", "icons8-dessert.svg"],
-  //   ["Napoje", "icons8-coffee-cup.svg"],
-  //   ["Sushi", "icons8-sushi.svg"],
-  //   ["Zupy", "icons8-noodles.svg"],
-  //   ["Kanapki", "icons8-sandwich.svg"],
-  // ];
 
   return (
     <Box>

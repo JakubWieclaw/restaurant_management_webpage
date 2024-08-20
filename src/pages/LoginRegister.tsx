@@ -6,7 +6,7 @@ import { toast, Slide } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, createContext, useMemo } from "react";
 
-import api from "../utils/api";
+import api, { authApi } from "../utils/api";
 import { AppDispatch } from "../store";
 import { login } from "../reducers/slices/userSlice";
 import { Login } from "../components/LoginRegister/Login";
@@ -41,46 +41,46 @@ export const LoginRegister = () => {
     setLoading(true);
     switch (loginRegisterState) {
       case LoginRegisterState.Login:
-        try {
-          const response = await api.post(`/auth/login`, {
-            email: email,
-            password: password,
-          });
-          if (response.status === 200) {
-            dispatch(login({ token: response.data }));
-            toast.success("Zalogowano pomyślnie", {
-              position: "bottom-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-              transition: Slide,
-            });
-            navigate("/");
-          }
-        } catch (error: any) {
-          toast.error(
-            error?.response?.data
-              ? error.response.data
-              : "Błąd połączenia z serwerem",
-            {
-              position: "bottom-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-              transition: Slide,
+        await authApi
+          .login({ email: email, password: password })
+          .then((response) => {
+            if (response.status === 200) {
+              dispatch(login({ token: response.data }));
+              toast.success("Zalogowano pomyślnie", {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Slide,
+              });
+              navigate("/");
             }
-          );
-        } finally {
-          setLoading(false);
-        }
+          })
+          .catch((error: any) => {
+            toast.error(
+              error?.response?.data
+                ? error.response.data
+                : "Błąd połączenia z serwerem",
+              {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Slide,
+              }
+            );
+          })
+          .finally(() => {
+            setLoading(false);
+          });
         break;
       case LoginRegisterState.Register:
         if (password !== passwordRepeat) {

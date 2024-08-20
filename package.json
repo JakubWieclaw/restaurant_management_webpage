@@ -19,6 +19,7 @@
     "@mui/x-data-grid": "^7.12.1",
     "@mui/x-date-pickers": "^7.8.0",
     "@mui/x-date-pickers-pro": "^7.8.0",
+    "@openapitools/openapi-generator-cli": "^2.13.4",
     "@reduxjs/toolkit": "^2.2.6",
     "@types/node": "^20.14.11",
     "@types/react-redux": "^7.1.33",
