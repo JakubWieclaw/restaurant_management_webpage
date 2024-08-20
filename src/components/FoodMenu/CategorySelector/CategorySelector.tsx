@@ -12,7 +12,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import { useState, useEffect } from "react";
 
-import api, { categoriesApi } from "../../../utils/api";
+import { categoriesApi } from "../../../utils/api";
 import { CategoryCard } from "./CategoryCard";
 import { AxiosResponse } from "axios";
 import { Category } from "../../../api";
