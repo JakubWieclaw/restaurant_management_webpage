@@ -35,6 +35,10 @@ export const AppBarHeader = () => {
       label: "Inicjalizuj system",
       link: "/initialize-system",
     },
+    {
+      label: "Zarządzaj kategoriami",
+      link: "/categories-management",
+    },
   ];
 
   const dispatch: AppDispatch = useDispatch();

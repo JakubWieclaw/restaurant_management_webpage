@@ -11,6 +11,7 @@ import { InitSystem } from "./pages/InitSystem";
 import { AppFooter } from "./components/AppFooter";
 import { LoginRegister } from "./pages/LoginRegister";
 import { AppBarHeader } from "./components/AppBarHeader";
+import { CategoriesManagement } from "./pages/CategoriesManagement";
 
 function App() {
   return (
@@ -22,6 +23,10 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/auth" element={<LoginRegister />} />
           <Route path="/initialize-system" element={<InitSystem />} />
+          <Route
+            path="/categories-management"
+            element={<CategoriesManagement />}
+          />
         </Routes>
       </Container>
       <AppFooter />
