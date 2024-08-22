@@ -6,20 +6,15 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  ListSubheader,
   Collapse,
   Box,
   ListItem,
   Button,
 } from "@mui/material";
 
-import SendIcon from "@mui/icons-material/Send";
-import DraftsIcon from "@mui/icons-material/Drafts";
-import InboxIcon from "@mui/icons-material/Inbox";
+import EditIcon from "@mui/icons-material/Edit";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import StarBorder from "@mui/icons-material/StarBorder";
-import EditIcon from "@mui/icons-material/Edit";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 
 import { useEffect, useState } from "react";
