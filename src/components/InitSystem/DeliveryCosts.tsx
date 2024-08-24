@@ -3,13 +3,14 @@ import { Button, Grid, TextField, Typography, Box } from "@mui/material";
 import { Fragment, useContext } from "react";
 
 import { WizardContext } from "../../pages/InitSystem";
+import { DeliveryPricing } from "../../api";
 
 const handleDeliveryCostChange = (
   index: number,
   field: string,
   value: string,
-  deliveryCosts: { distance: string; price: string }[],
-  setDeliveryCosts: (costs: { distance: string; price: string }[]) => void
+  deliveryCosts: DeliveryPricing[],
+  setDeliveryCosts: (costs: DeliveryPricing[]) => void
 ) => {
   const newDeliveryCosts = deliveryCosts.slice();
   newDeliveryCosts[index] = { ...newDeliveryCosts[index], [field]: value };
@@ -17,8 +18,8 @@ const handleDeliveryCostChange = (
 };
 
 const renderDeliveryCostInputs = (
-  deliveryCosts: { distance: string; price: string }[],
-  setDeliveryCosts: (costs: { distance: string; price: string }[]) => void
+  deliveryCosts: DeliveryPricing[],
+  setDeliveryCosts: (costs: DeliveryPricing[]) => void
 ) => {
   return (
     <Grid container alignItems="center" spacing={1}>
@@ -34,12 +35,12 @@ const renderDeliveryCostInputs = (
             <Grid item xs={5}>
               <TextField
                 label="Max. odległość od restauracji (km)"
-                value={cost.distance}
+                value={cost.maximumRange}
                 required
                 onChange={(e) => {
                   handleDeliveryCostChange(
                     index,
-                    "distance",
+                    "maximumRange",
                     e.target.value,
                     deliveryCosts,
                     setDeliveryCosts
@@ -52,7 +53,7 @@ const renderDeliveryCostInputs = (
             </Grid>
             <Grid item xs={5}>
               <TextField
-                label="Cena"
+                label="Cena (zł)"
                 value={cost.price}
                 required
                 onChange={(e) => {
@@ -94,24 +95,17 @@ const renderDeliveryCostInputs = (
 
 const handleRemoveDeliveryCost = (
   index: number,
-  deliveryCosts: { distance: string; price: string }[],
-  setDeliveryCosts: (costs: { distance: string; price: string }[]) => void
+  deliveryCosts: DeliveryPricing[],
+  setDeliveryCosts: (costs: DeliveryPricing[]) => void
 ) => {
-  let emptyFieldsInCostIndex = 0;
-  if (deliveryCosts[index].distance === "") {
-    emptyFieldsInCostIndex++;
-  }
-  if (deliveryCosts[index].price === "") {
-    emptyFieldsInCostIndex++;
-  }
   setDeliveryCosts(deliveryCosts.filter((_, i) => i !== index));
 };
 
 const handleAddDeliveryCost = (
-  deliveryCosts: { distance: string; price: string }[],
-  setDeliveryCosts: (costs: { distance: string; price: string }[]) => void
+  deliveryCosts: DeliveryPricing[],
+  setDeliveryCosts: (costs: DeliveryPricing[]) => void
 ) => {
-  setDeliveryCosts([...deliveryCosts, { distance: "", price: "" }]);
+  setDeliveryCosts([...deliveryCosts, { maximumRange: 0, price: 0 }]);
 };
 
 export const DeliveryCosts = () => {

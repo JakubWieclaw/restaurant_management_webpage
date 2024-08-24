@@ -29,6 +29,7 @@ import {
 import { NameLogo } from "../components/InitSystem/NameLogo";
 import { FinishModal } from "../components/InitSystem/FinishModal";
 import { DeliveryCosts } from "../components/InitSystem/DeliveryCosts";
+import { DeliveryPricing } from "../api";
 
 export const WizardContext = createContext<any>(null);
 
@@ -52,9 +53,7 @@ export const InitSystem = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
   const [mergeMonToFri, setMergeMonToFri] = useState<boolean>(true);
   const [openSummary, setOpenSummary] = useState(false); // State for modal open/close
-  const [deliveryCosts, setDeliveryCosts] = useState([
-    { distance: "", price: "" },
-  ]);
+  const [deliveryCosts, setDeliveryCosts] = useState<DeliveryPricing[]>([]);
   const [daysState, setDaysState] = useState<Record<string, DayState>>(
     daysOfWeek.concat(daysOfWeekAfterMerge).reduce((acc, day) => {
       acc[day] = { ...initialDayState };

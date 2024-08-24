@@ -9,22 +9,110 @@ import {
 } from "@mui/material";
 
 import { useContext } from "react";
+import { AxiosResponse } from "axios";
+import { toast, Slide } from "react-toastify";
 
+import {
+  ConfigAddCommand,
+  DeliveryPricing,
+  LocalTime,
+  OpeningHour,
+} from "../../api";
+import { configApi } from "../../utils/api";
 import { Transition } from "../../utils/Transision";
 import { WizardContext } from "../../pages/InitSystem";
-import { daysOfWeek, daysOfWeekAfterMerge } from "./OpeningHours";
+import { dayToEnum } from "../../utils/dayEnumTranslate";
+import { daysOfWeek, daysOfWeekAfterMerge, DayState } from "./OpeningHours";
 
 const modalActions = ["Chcę je poprawić", "Wszystko OK!"];
 
 const handleCloseSummary = (
   e: { target: any },
   modalActions: string[],
-  setOpenSummary: (open: boolean) => void
+  ctx: any
 ) => {
-  setOpenSummary(false);
+  ctx.setOpenSummary(false);
   if (e.target.textContent === modalActions[1]) {
-    // if user confirms
-    alert("Dane zostały wysłane na serwer");
+    let deliveryPricings: DeliveryPricing[] = [];
+    ctx.deliveryCosts.forEach((info: DeliveryPricing) => {
+      deliveryPricings.push({
+        maximumRange: info.maximumRange,
+        price: info.price,
+      });
+    });
+
+    let openingHours: OpeningHour[] = [];
+    Object.entries(ctx.daysState as Record<string, DayState>).forEach(
+      ([day, state]: [string, DayState]) => {
+        if (day !== daysOfWeekAfterMerge[0] && state.open) {
+          let openingTime: LocalTime;
+          openingTime = {
+            hour: state.startTime?.hour() ?? 0,
+            minute: state.startTime?.minute() ?? 0,
+          };
+
+          let closingTime: LocalTime;
+          closingTime = {
+            hour: state.endTime?.hour() ?? 0,
+            minute: state.endTime?.minute() ?? 0,
+            second: 0,
+            nano: 0,
+          };
+
+          openingHours.push({
+            day: dayToEnum(day),
+            openingTime,
+            closingTime,
+          });
+        }
+      }
+    );
+
+    const initData: ConfigAddCommand = {
+      restaurantName: ctx.restaurantName,
+      // logo: ctx.restaurantLogo,
+      // postalCode: ctx.postalCode,
+      postalCode: ctx.postalCode.replace(/-/g, ""),
+      city: ctx.city,
+      street: ctx.street,
+      //  remove - from ctx.phoneNumber,
+      phoneNumber: ctx.phoneNumber.replace(/-/g, ""),
+      email: ctx.email,
+      deliveryPricings: deliveryPricings,
+      openingHours: openingHours,
+    };
+
+    console.log(initData);
+
+    configApi
+      .initializeSystem(initData)
+      .then((response: AxiosResponse) => {
+        toast.success(response.data, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Slide,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error.response.data, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Slide,
+        });
+      });
   }
 }; // Function to close modal
 
@@ -77,12 +165,13 @@ export const FinishModal = () => {
       <Divider sx={{ my: 2 }} />
 
       <Typography variant="h6">Koszty dostawy:</Typography>
-      {ctx.deliveryCosts.map((cost: { distance: number; price: number }) => (
-        <Typography key={`deliveryCost-${cost.distance}-${cost.price}`}>
-          Max. odległość: {cost.distance} km, Cena: {cost.price} zł
-        </Typography>
-      ))}
-      {ctx.deliveryCosts.length === 0 && (
+      {ctx.deliveryCosts.length > 0 ? (
+        ctx.deliveryCosts.map((cost: DeliveryPricing) => (
+          <Typography key={`deliveryCost-${cost.maximumRange}-${cost.price}`}>
+            Max. odległość: {cost.maximumRange} km, Cena: {cost.price} zł
+          </Typography>
+        ))
+      ) : (
         <Typography>Brak kosztów dostawy</Typography>
       )}
     </span>
@@ -104,14 +193,14 @@ export const FinishModal = () => {
       <DialogActions>
         <Button
           onClick={(e) => {
-            handleCloseSummary(e, modalActions, ctx.setOpenSummary);
+            handleCloseSummary(e, modalActions, ctx);
           }}
         >
           {modalActions[0]}
         </Button>
         <Button
           onClick={(e) => {
-            handleCloseSummary(e, modalActions, ctx.setOpenSummary);
+            handleCloseSummary(e, modalActions, ctx);
           }}
           autoFocus
         >

@@ -70,6 +70,61 @@ export interface CategoryAddCommand {
 /**
  * 
  * @export
+ * @interface ConfigAddCommand
+ */
+export interface ConfigAddCommand {
+    /**
+     * Name of the restaurant
+     * @type {string}
+     * @memberof ConfigAddCommand
+     */
+    'restaurantName': string;
+    /**
+     * Postal code of the restaurant
+     * @type {string}
+     * @memberof ConfigAddCommand
+     */
+    'postalCode': string;
+    /**
+     * City of the restaurant
+     * @type {string}
+     * @memberof ConfigAddCommand
+     */
+    'city': string;
+    /**
+     * Street of the restaurant
+     * @type {string}
+     * @memberof ConfigAddCommand
+     */
+    'street': string;
+    /**
+     * Phone number of the restaurant
+     * @type {string}
+     * @memberof ConfigAddCommand
+     */
+    'phoneNumber': string;
+    /**
+     * Email of the restaurant
+     * @type {string}
+     * @memberof ConfigAddCommand
+     */
+    'email': string;
+    /**
+     * Opening hours of the restaurant
+     * @type {Array<OpeningHour>}
+     * @memberof ConfigAddCommand
+     */
+    'openingHours': Array<OpeningHour>;
+    /**
+     * Delivery prices of the restaurant
+     * @type {Array<DeliveryPricing>}
+     * @memberof ConfigAddCommand
+     */
+    'deliveryPricings': Array<DeliveryPricing>;
+}
+/**
+ * 
+ * @export
  * @interface Customer
  */
 export interface Customer {
@@ -109,6 +164,62 @@ export interface Customer {
      * @memberof Customer
      */
     'password': string;
+}
+/**
+ * Delivery prices of the restaurant
+ * @export
+ * @interface DeliveryPricing
+ */
+export interface DeliveryPricing {
+    /**
+     * 
+     * @type {number}
+     * @memberof DeliveryPricing
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DeliveryPricing
+     */
+    'maximumRange': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof DeliveryPricing
+     */
+    'price': number;
+}
+/**
+ * 
+ * @export
+ * @interface LocalTime
+ */
+export interface LocalTime {
+    /**
+     * 
+     * @type {number}
+     * @memberof LocalTime
+     */
+    'hour'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof LocalTime
+     */
+    'minute'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof LocalTime
+     */
+    'second'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof LocalTime
+     */
+    'nano'?: number;
 }
 /**
  * 
@@ -278,6 +389,50 @@ export const MealAddCommandUnitTypeEnum = {
 } as const;
 
 export type MealAddCommandUnitTypeEnum = typeof MealAddCommandUnitTypeEnum[keyof typeof MealAddCommandUnitTypeEnum];
+
+/**
+ * Opening hours of the restaurant
+ * @export
+ * @interface OpeningHour
+ */
+export interface OpeningHour {
+    /**
+     * 
+     * @type {number}
+     * @memberof OpeningHour
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof OpeningHour
+     */
+    'day': OpeningHourDayEnum;
+    /**
+     * 
+     * @type {LocalTime}
+     * @memberof OpeningHour
+     */
+    'openingTime': LocalTime;
+    /**
+     * 
+     * @type {LocalTime}
+     * @memberof OpeningHour
+     */
+    'closingTime': LocalTime;
+}
+
+export const OpeningHourDayEnum = {
+    Monday: 'MONDAY',
+    Tuesday: 'TUESDAY',
+    Wednesday: 'WEDNESDAY',
+    Thursday: 'THURSDAY',
+    Friday: 'FRIDAY',
+    Saturday: 'SATURDAY',
+    Sunday: 'SUNDAY'
+} as const;
+
+export type OpeningHourDayEnum = typeof OpeningHourDayEnum[keyof typeof OpeningHourDayEnum];
 
 
 /**
@@ -836,6 +991,364 @@ export class CategoryControllerApi extends BaseAPI {
      */
     public updateCategory(id: number, categoryAddCommand: CategoryAddCommand, options?: RawAxiosRequestConfig) {
         return CategoryControllerApiFp(this.configuration).updateCategory(id, categoryAddCommand, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ConfigControllerApi - axios parameter creator
+ * @export
+ */
+export const ConfigControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get config
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getConfig: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/config`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get delivery prices
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDeliveryPrices: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/config/delivery-prices`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get opening hours
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOpeningHours: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/config/opening-hours`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Initialize system
+         * @param {ConfigAddCommand} configAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        initializeSystem: async (configAddCommand: ConfigAddCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'configAddCommand' is not null or undefined
+            assertParamExists('initializeSystem', 'configAddCommand', configAddCommand)
+            const localVarPath = `/api/config/initialize-system`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(configAddCommand, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Remove config, delivery prices and opening hours, only for testing purposes
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeConfigs: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/config`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ConfigControllerApi - functional programming interface
+ * @export
+ */
+export const ConfigControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ConfigControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get config
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getConfig(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getConfig(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ConfigControllerApi.getConfig']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get delivery prices
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getDeliveryPrices(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getDeliveryPrices(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ConfigControllerApi.getDeliveryPrices']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get opening hours
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getOpeningHours(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getOpeningHours(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ConfigControllerApi.getOpeningHours']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Initialize system
+         * @param {ConfigAddCommand} configAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async initializeSystem(configAddCommand: ConfigAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.initializeSystem(configAddCommand, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ConfigControllerApi.initializeSystem']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Remove config, delivery prices and opening hours, only for testing purposes
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async removeConfigs(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.removeConfigs(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ConfigControllerApi.removeConfigs']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ConfigControllerApi - factory interface
+ * @export
+ */
+export const ConfigControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ConfigControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get config
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getConfig(options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.getConfig(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get delivery prices
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getDeliveryPrices(options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.getDeliveryPrices(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get opening hours
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOpeningHours(options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.getOpeningHours(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Initialize system
+         * @param {ConfigAddCommand} configAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        initializeSystem(configAddCommand: ConfigAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.initializeSystem(configAddCommand, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Remove config, delivery prices and opening hours, only for testing purposes
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        removeConfigs(options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.removeConfigs(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ConfigControllerApi - object-oriented interface
+ * @export
+ * @class ConfigControllerApi
+ * @extends {BaseAPI}
+ */
+export class ConfigControllerApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get config
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ConfigControllerApi
+     */
+    public getConfig(options?: RawAxiosRequestConfig) {
+        return ConfigControllerApiFp(this.configuration).getConfig(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get delivery prices
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ConfigControllerApi
+     */
+    public getDeliveryPrices(options?: RawAxiosRequestConfig) {
+        return ConfigControllerApiFp(this.configuration).getDeliveryPrices(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get opening hours
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ConfigControllerApi
+     */
+    public getOpeningHours(options?: RawAxiosRequestConfig) {
+        return ConfigControllerApiFp(this.configuration).getOpeningHours(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Initialize system
+     * @param {ConfigAddCommand} configAddCommand 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ConfigControllerApi
+     */
+    public initializeSystem(configAddCommand: ConfigAddCommand, options?: RawAxiosRequestConfig) {
+        return ConfigControllerApiFp(this.configuration).initializeSystem(configAddCommand, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Remove config, delivery prices and opening hours, only for testing purposes
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ConfigControllerApi
+     */
+    public removeConfigs(options?: RawAxiosRequestConfig) {
+        return ConfigControllerApiFp(this.configuration).removeConfigs(options).then((request) => request(this.axios, this.basePath));
     }
 }
 

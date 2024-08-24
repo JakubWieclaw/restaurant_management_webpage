@@ -19,6 +19,22 @@ for id in $category_ids; do
     echo
 done
 
+# INSERT USER
+curl -X 'POST' \
+    'http://localhost:8080/auth/register' \
+    -H 'accept: */*' \
+    -H 'Content-Type: application/json' \
+    -d '{
+  "id": 0,
+  "name": "Jan",
+  "surname": "Kowalski",
+  "email": "a@a",
+  "phone": "123123123",
+  "password": "asd"
+}'
+
+echo
+
 # INSERT CATEGORIES
 categories=(
     '["Pizza", "icons8-pizza.svg"]'
