@@ -11,6 +11,7 @@ import {
 import { useContext } from "react";
 import { AxiosResponse } from "axios";
 import { toast, Slide } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 import {
   ConfigAddCommand,
@@ -29,7 +30,8 @@ const modalActions = ["Chcę je poprawić", "Wszystko OK!"];
 const handleCloseSummary = (
   e: { target: any },
   modalActions: string[],
-  ctx: any
+  ctx: any,
+  navigate: (url: string) => void
 ) => {
   ctx.setOpenSummary(false);
   if (e.target.textContent === modalActions[1]) {
@@ -45,24 +47,10 @@ const handleCloseSummary = (
     Object.entries(ctx.daysState as Record<string, DayState>).forEach(
       ([day, state]: [string, DayState]) => {
         if (day !== daysOfWeekAfterMerge[0] && state.open) {
-          let openingTime: LocalTime;
-          openingTime = {
-            hour: state.startTime?.hour() ?? 0,
-            minute: state.startTime?.minute() ?? 0,
-          };
-
-          let closingTime: LocalTime;
-          closingTime = {
-            hour: state.endTime?.hour() ?? 0,
-            minute: state.endTime?.minute() ?? 0,
-            second: 0,
-            nano: 0,
-          };
-
           openingHours.push({
             day: dayToEnum(day),
-            openingTime,
-            closingTime,
+            openingTime: state.startTime?.format("HH:mm") as LocalTime,
+            closingTime: state.endTime?.format("HH:mm") as LocalTime,
           });
         }
       }
@@ -70,19 +58,15 @@ const handleCloseSummary = (
 
     const initData: ConfigAddCommand = {
       restaurantName: ctx.restaurantName,
-      // logo: ctx.restaurantLogo,
-      // postalCode: ctx.postalCode,
-      postalCode: ctx.postalCode.replace(/-/g, ""),
+      logoUrl: ctx.restaurantLogo?.name,
+      postalCode: ctx.postalCode,
       city: ctx.city,
       street: ctx.street,
-      //  remove - from ctx.phoneNumber,
-      phoneNumber: ctx.phoneNumber.replace(/-/g, ""),
+      phoneNumber: ctx.phoneNumber,
       email: ctx.email,
       deliveryPricings: deliveryPricings,
       openingHours: openingHours,
     };
-
-    console.log(initData);
 
     configApi
       .initializeSystem(initData)
@@ -98,25 +82,44 @@ const handleCloseSummary = (
           theme: "light",
           transition: Slide,
         });
+        navigate("/");
       })
       .catch((error) => {
-        console.log(error);
-        toast.error(error.response.data, {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Slide,
-        });
+        // if type of error is string then just show it
+        // if type of error is object then iterate over it and show each error
+        if (typeof error.response.data === "string") {
+          toast.error(error.response.data, {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Slide,
+          });
+        } else {
+          Object.entries(error.response.data).forEach(([key, value]) => {
+            toast.error(key + " - " + value, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Slide,
+            });
+          });
+        }
       });
   }
 }; // Function to close modal
 
 export const FinishModal = () => {
+  const navigate = useNavigate();
   const ctx = useContext(WizardContext);
 
   const summaryContent = (
@@ -193,14 +196,14 @@ export const FinishModal = () => {
       <DialogActions>
         <Button
           onClick={(e) => {
-            handleCloseSummary(e, modalActions, ctx);
+            handleCloseSummary(e, modalActions, ctx, navigate);
           }}
         >
           {modalActions[0]}
         </Button>
         <Button
           onClick={(e) => {
-            handleCloseSummary(e, modalActions, ctx);
+            handleCloseSummary(e, modalActions, ctx, navigate);
           }}
           autoFocus
         >

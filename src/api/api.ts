@@ -110,17 +110,23 @@ export interface ConfigAddCommand {
      */
     'email': string;
     /**
+     * URL for the logo
+     * @type {string}
+     * @memberof ConfigAddCommand
+     */
+    'logoUrl': string;
+    /**
      * Opening hours of the restaurant
      * @type {Array<OpeningHour>}
      * @memberof ConfigAddCommand
      */
-    'openingHours': Array<OpeningHour>;
+    'openingHours'?: Array<OpeningHour>;
     /**
      * Delivery prices of the restaurant
      * @type {Array<DeliveryPricing>}
      * @memberof ConfigAddCommand
      */
-    'deliveryPricings': Array<DeliveryPricing>;
+    'deliveryPricings'?: Array<DeliveryPricing>;
 }
 /**
  * 

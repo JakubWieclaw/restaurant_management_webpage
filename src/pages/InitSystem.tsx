@@ -68,7 +68,6 @@ export const InitSystem = () => {
     if (formRef.current?.checkValidity()) {
       if (activeStep < steps.length - 1) {
         let error = false;
-        console.log(activeStep);
         switch (activeStep) {
           case 0:
             break; // handled by internal HTML5 form validation
