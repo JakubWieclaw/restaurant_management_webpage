@@ -1,6 +1,12 @@
 import { Box, Typography, AppBar, Container, Toolbar } from "@mui/material";
 
+import { useSelector } from "react-redux";
+
+import { RootState } from "../store";
+
 export const AppFooter = () => {
+  const config = useSelector((state: RootState) => state.config).config;
+
   return (
     <Box
       component={"footer"}
@@ -14,7 +20,7 @@ export const AppFooter = () => {
         <Container>
           <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
             <Typography variant="h6" color="inherit">
-              {new Date().getFullYear()} &copy; SZR
+              {new Date().getFullYear()} &copy; {config.restaurantName}
             </Typography>
           </Toolbar>
         </Container>

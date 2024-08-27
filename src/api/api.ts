@@ -70,6 +70,61 @@ export interface CategoryAddCommand {
 /**
  * 
  * @export
+ * @interface Config
+ */
+export interface Config {
+    /**
+     * 
+     * @type {number}
+     * @memberof Config
+     */
+    'id'?: number;
+    /**
+     * Name of the restaurant
+     * @type {string}
+     * @memberof Config
+     */
+    'restaurantName': string;
+    /**
+     * Postal code of the restaurant
+     * @type {string}
+     * @memberof Config
+     */
+    'postalCode': string;
+    /**
+     * City of the restaurant
+     * @type {string}
+     * @memberof Config
+     */
+    'city': string;
+    /**
+     * Street of the restaurant
+     * @type {string}
+     * @memberof Config
+     */
+    'street': string;
+    /**
+     * Phone number of the restaurant
+     * @type {string}
+     * @memberof Config
+     */
+    'phoneNumber': string;
+    /**
+     * Email of the restaurant
+     * @type {string}
+     * @memberof Config
+     */
+    'email': string;
+    /**
+     * URL for the logo
+     * @type {string}
+     * @memberof Config
+     */
+    'logoUrl': string;
+}
+/**
+ * 
+ * @export
  * @interface ConfigAddCommand
  */
 export interface ConfigAddCommand {
@@ -1180,7 +1235,7 @@ export const ConfigControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getConfig(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async getConfig(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Config>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getConfig(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ConfigControllerApi.getConfig']?.[localVarOperationServerIndex]?.url;
@@ -1251,7 +1306,7 @@ export const ConfigControllerApiFactory = function (configuration?: Configuratio
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getConfig(options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        getConfig(options?: RawAxiosRequestConfig): AxiosPromise<Config> {
             return localVarFp.getConfig(options).then((request) => request(axios, basePath));
         },
         /**

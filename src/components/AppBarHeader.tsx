@@ -28,8 +28,8 @@ export const AppBarHeader = () => {
   const [anchorElMenu, setAnchorElMenu] = useState(null);
   const [anchorElProfile, setAnchorElProfile] = useState(null);
 
-  const appBarLogo = "icons8-meal.svg";
-  const appBarTitle = "SZR";
+  const config = useSelector((state: RootState) => state.config);
+
   const appBarMenuItems = [
     {
       label: "Inicjalizuj system",
@@ -90,7 +90,7 @@ export const AppBarHeader = () => {
                   width: 50,
                   marginRight: 1,
                 }}
-                src={appBarLogo}
+                src={config.config.logoUrl}
               ></Box>
 
               <Typography
@@ -100,7 +100,7 @@ export const AppBarHeader = () => {
                   letterSpacing: 3,
                 }}
               >
-                {appBarTitle}
+                {config.config.restaurantName}
               </Typography>
             </Link>
           </Box>
@@ -177,7 +177,7 @@ export const AppBarHeader = () => {
                   width: 50,
                   marginRight: 1,
                 }}
-                src={appBarLogo}
+                src={config.config.logoUrl}
               ></Box>
 
               <Typography
@@ -187,7 +187,7 @@ export const AppBarHeader = () => {
                   letterSpacing: 3,
                 }}
               >
-                {appBarTitle}
+                {config.config.restaurantName}
               </Typography>
             </Link>
           </Box>

@@ -17,10 +17,11 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 
-import { useEffect, useState } from "react";
-import { categoriesApi, mealsApi } from "../utils/api";
-import { Category, Meal } from "../api";
 import { AxiosResponse } from "axios";
+import { useEffect, useState, Fragment } from "react";
+
+import { Category, Meal } from "../api";
+import { categoriesApi, mealsApi } from "../utils/api";
 
 export const CategoriesManagement = () => {
   const [open, setOpen] = useState<boolean[]>([]);
@@ -91,7 +92,7 @@ export const CategoriesManagement = () => {
           aria-labelledby="nested-list-subheader"
         >
           {categories.map((category, idx) => (
-            <>
+            <Fragment key={category.name}>
               <ListItem
                 secondaryAction={
                   <Button variant="contained" sx={{ ml: "auto", mr: 0 }}>
@@ -131,7 +132,7 @@ export const CategoriesManagement = () => {
                   {meals.length > idx &&
                     meals[idx].map((meal) => (
                       <ListItem
-                        key={meal.id}
+                        key={meal.name}
                         secondaryAction={
                           <Button
                             variant="contained"
@@ -172,7 +173,7 @@ export const CategoriesManagement = () => {
                     ))}
                 </List>
               </Collapse>
-            </>
+            </Fragment>
           ))}
         </List>
       </Box>
