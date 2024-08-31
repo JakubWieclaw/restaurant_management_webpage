@@ -22,11 +22,18 @@ import { useEffect, useState, Fragment } from "react";
 
 import { Category, Meal } from "../api";
 import { categoriesApi, mealsApi } from "../utils/api";
+import { CategoryModal } from "../components/CategoriesManagement/CategoryModal";
 
 export const CategoriesManagement = () => {
   const [open, setOpen] = useState<boolean[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [meals, setMeals] = useState<Meal[][]>([]);
+  const [categoryIdxToEdit, setCategoryIdxToEdit] = useState<number | null>(
+    null
+  );
+  const [rerenderOnChange, setRerenderOnChange] = useState<boolean>(false);
+  const [categoryModalEditOpen, setCategoryModalEditOpen] =
+    useState<boolean>(false);
   const handleClick = (idx: number) => {
     setOpen((prev) => {
       const newOpen = [...prev];
@@ -56,6 +63,8 @@ export const CategoriesManagement = () => {
   };
 
   useEffect(() => {
+    console.log("Fetching categories");
+    console.log("RerenderOnChange: ", rerenderOnChange);
     categoriesApi
       .getAllCategories()
       .then((response: AxiosResponse) => {
@@ -69,7 +78,7 @@ export const CategoriesManagement = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, []);
+  }, [rerenderOnChange]);
 
   return (
     <Container maxWidth="md" sx={{ mt: 15 }}>
@@ -95,7 +104,14 @@ export const CategoriesManagement = () => {
             <Fragment key={category.name}>
               <ListItem
                 secondaryAction={
-                  <Button variant="contained" sx={{ ml: "auto", mr: 0 }}>
+                  <Button
+                    variant="contained"
+                    sx={{ ml: "auto", mr: 0 }}
+                    onClick={() => {
+                      setCategoryIdxToEdit(idx);
+                      setCategoryModalEditOpen(true);
+                    }}
+                  >
                     <EditIcon />
                   </Button>
                 }
@@ -108,7 +124,7 @@ export const CategoriesManagement = () => {
                   <ListItemIcon>
                     <Box
                       component={"img"}
-                      src={category.photographUrl}
+                      src={category?.photographUrl}
                       sx={{
                         width: 32,
                         height: 32,
@@ -119,17 +135,16 @@ export const CategoriesManagement = () => {
                   </ListItemIcon>
                   <ListItemText
                     primary={category.name}
-                    secondary={`Liczba dań: ${
-                      meals.length > idx ? meals[idx].length : 0
-                    }`}
+                    secondary={`Liczba dań: ${meals?.[idx]?.length || 0}`}
                   />
-                  {open ? <ExpandLess /> : <ExpandMore />}
+                  {open[idx] ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
               </ListItem>
 
               <Collapse in={open[idx]} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   {meals.length > idx &&
+                    Array.isArray(meals[idx]) &&
                     meals[idx].map((meal) => (
                       <ListItem
                         key={meal.name}
@@ -177,6 +192,30 @@ export const CategoriesManagement = () => {
           ))}
         </List>
       </Box>
+      <CategoryModal
+        open={categoryModalEditOpen}
+        setOpen={setCategoryModalEditOpen}
+        category={
+          categoryIdxToEdit !== null ? categories[categoryIdxToEdit] : null
+        }
+        setRerenderOnChange={setRerenderOnChange}
+        setCategory={(category: Category | null) => {
+          if (category !== null) {
+            setCategories((prev) => {
+              const newCategories = [...prev];
+              newCategories[categoryIdxToEdit as number] = category;
+              return newCategories;
+            });
+          } else {
+            // delete category
+            setCategories((prev) => {
+              const newCategories = [...prev];
+              newCategories.splice(categoryIdxToEdit as number, 1);
+              return newCategories;
+            });
+          }
+        }}
+      />
     </Container>
   );
 };

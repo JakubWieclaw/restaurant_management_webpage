@@ -27,7 +27,6 @@ export const NameLogo = () => {
           id="file-upload"
           type="file"
           hidden
-          // if there is not file while submitting form, then console.log("aha")
           onChange={(e) => {
             if (e.target.files) {
               ctx.setRestaurantLogo(e.target.files[0]);
