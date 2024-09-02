@@ -86,6 +86,19 @@ export const CategoriesManagement = () => {
         Zarządzanie kategoriami
       </Typography>
       <Divider />
+      <Box sx={{ display: "flex", justifyContent: "right" }}>
+        <Button
+          variant="outlined"
+          sx={{ mt: 2 }}
+          onClick={() => {
+            setCategoryModalEditOpen(true);
+            setCategoryIdxToEdit(null);
+          }}
+          color="success"
+        >
+          Dodaj kategorię
+        </Button>
+      </Box>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <List
           sx={{
@@ -206,11 +219,11 @@ export const CategoriesManagement = () => {
               newCategories[categoryIdxToEdit as number] = category;
               return newCategories;
             });
-          } else {
+          } else if (categoryIdxToEdit !== null) {
             // delete category
             setCategories((prev) => {
               const newCategories = [...prev];
-              newCategories.splice(categoryIdxToEdit as number, 1);
+              newCategories.splice(categoryIdxToEdit, 1);
               return newCategories;
             });
           }

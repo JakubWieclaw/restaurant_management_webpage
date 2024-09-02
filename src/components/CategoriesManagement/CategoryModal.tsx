@@ -15,7 +15,7 @@ import { useState, useEffect } from "react";
 import { AxiosResponse } from "axios";
 import { toast, Slide } from "react-toastify";
 
-import { Category } from "../../api";
+import { Category, CategoryAddCommand } from "../../api";
 import { Transition } from "../../utils/Transision";
 import { categoriesApi } from "../../utils/api";
 
@@ -39,9 +39,6 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
   }, [category]);
 
   const [categoryCopy, setCategoryCopy] = useState<Category | null>(category);
-  if (category === null) {
-    return null;
-  }
   // make a copy of category with useState
   return (
     <Dialog
@@ -53,13 +50,14 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
       aria-describedby="alert-dialog-slide-description"
     >
       <DialogTitle id="alert-dialog-title">
-        {"Kategoria: " + category.name}
+        {category ? "Kategoria: " + category.name : "Nowa kategoria"}
       </DialogTitle>
       <Box
         component={"form"}
         onSubmit={(e) => {
           e.preventDefault();
           if (categoryCopy?.id) {
+            // update category
             categoriesApi
               .updateCategory(categoryCopy.id, categoryCopy)
               .then((response: AxiosResponse) => {
@@ -82,6 +80,47 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
               })
               .catch((error) => {
                 toast.error(error.response.data, {
+                  position: "bottom-center",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                  transition: Slide,
+                });
+              });
+          } else if (category === null) {
+            // add category
+            const newCategory: CategoryAddCommand = {
+              name: categoryCopy?.name ?? "",
+              photographUrl: categoryCopy?.photographUrl ?? "",
+            };
+            categoriesApi
+              .addCategory(newCategory)
+              .then((response: AxiosResponse) => {
+                console.log(response);
+                if (response.status === 200) {
+                  toast.success("Kategoria dodana pomyślnie.", {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Slide,
+                  });
+                  setOpen(false);
+                  setCategory(categoryCopy);
+                  setRerenderOnChange((prev: boolean) => !prev);
+                }
+              })
+              .catch((error) => {
+                console.log(error.response.data);
+                toast.error(error.response.data.name, {
                   position: "bottom-center",
                   autoClose: 5000,
                   hideProgressBar: false,
@@ -118,16 +157,15 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
               flexDirection: "column",
               gap: 2,
               padding: 2,
-              // center
               alignItems: "center",
             }}
           >
             <TextField
               margin="normal"
-              required
               autoFocus
               label="Nazwa kategorii"
               fullWidth
+              required
               value={categoryCopy?.name ?? " "}
               onChange={(e) => {
                 setCategoryCopy({ ...categoryCopy, name: e.target.value });
@@ -138,6 +176,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
               id="file-upload"
               type="file"
               hidden
+              required={categoryCopy?.photographUrl ? false : true}
               onChange={(e) => {
                 console.log(e);
                 if (e.target.files) {
@@ -181,49 +220,58 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
           >
             Anuluj
           </Button>
-          <Button
-            onClick={() => {
-              if (categoryCopy?.id) {
-                categoriesApi
-                  .deleteCategoryById(categoryCopy.id)
-                  .then((e) => {
-                    setOpen(false);
-                    setCategory(null);
-                    toast.success(e.data, {
-                      position: "bottom-center",
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      theme: "light",
-                      transition: Slide,
-                    });
-                    setRerenderOnChange((prev: boolean) => !prev);
-                  })
-                  .catch((error) => {
-                    toast.error(error.response.data, {
-                      position: "bottom-center",
-                      autoClose: 5000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      theme: "light",
-                      transition: Slide,
-                    });
-                  });
-              }
-            }}
-            color="error"
-          >
-            Usuń
-          </Button>
-          <Button color="warning" type="submit">
-            Edytuj
-          </Button>
+
+          {category ? (
+            <>
+              <Button
+                onClick={() => {
+                  if (categoryCopy?.id) {
+                    categoriesApi
+                      .deleteCategoryById(categoryCopy.id)
+                      .then((e) => {
+                        setOpen(false);
+                        setCategory(null);
+                        toast.success(e.data, {
+                          position: "bottom-center",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                          transition: Slide,
+                        });
+                        setRerenderOnChange((prev: boolean) => !prev);
+                      })
+                      .catch((error) => {
+                        toast.error(error.response.data, {
+                          position: "bottom-center",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                          transition: Slide,
+                        });
+                      });
+                  }
+                }}
+                color="error"
+              >
+                Usuń
+              </Button>
+              <Button color="warning" type="submit">
+                Edytuj
+              </Button>
+            </>
+          ) : (
+            <Button color="success" type="submit">
+              Dodaj
+            </Button>
+          )}
         </DialogActions>
       </Box>
     </Dialog>
