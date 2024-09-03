@@ -1,27 +1,64 @@
-Run project in classic way:
+### Running the Project
 
-1. Install Node.js 22
+### Classic Method
 
-2. Install yarn
+1. **Install Node.js 22**
+2. **Install Yarn**
+3. **Install Vite via Yarn**
+4. Run the following command to install dependencies:
+   ```bash
+   yarn
+   ```
+5. Start the development server:
+   ```bash
+   yarn dev
+   ```
+   The project should be accessible at [http://localhost:5173](http://localhost:5173).
 
-3. Install vite via yarn
+### Backend Setup
 
-4. `yarn`
+1. Navigate to the `restaurant_management_backend` repository.
+2. Run the server using the provided script:
+   ```bash
+   ./doNotUse.sh
+   ```
 
-5. `yarn dev` - it should run at 5173 port
+### API Interface Update
 
-Run project via Docker image:
+1. On the frontend site, update the API interface by running the following script:
+   ```bash
+   ./updateApi.sh
+   ```
 
-(Remember do not run docker commands via `sudo` [solution for permission error](https://stackoverflow.com/questions/48957195/how-to-fix-docker-got-permission-denied-issue))
+### Inserting Test Data
 
-Terminal way:
+1. Insert test data into the database by running the following script:
+   ```bash
+   ./insertTestData.sh
+   ```
 
-1. docker pull bartox7777/restaurant-management-system
+### Docker Method
 
-2. docker run -p 5173:80 bartox7777/restaurant-management-system
+> **Note:** Do not run Docker commands using `sudo`. If you encounter a permission error, [refer to this solution](https://stackoverflow.com/questions/48957195/how-to-fix-docker-got-permission-denied-issue).
 
-GUI way: Docker desktop - just remember to set 5173 port
-![image](https://github.com/user-attachments/assets/f055f9be-42c2-429d-86f4-00de4dcb35c4)
+#### Terminal
+
+1. Pull the Docker image:
+   ```bash
+   docker pull bartox7777/restaurant-management-system
+   ```
+2. Run the Docker container:
+   ```bash
+   docker run -p 5173:80 bartox7777/restaurant-management-system
+   ```
+
+#### GUI (Docker Desktop)
+
+- Use Docker Desktop to run the container.
+- Make sure to set the port to `5173`.
+
+![Docker Desktop Example](https://github.com/user-attachments/assets/f055f9be-42c2-429d-86f4-00de4dcb35c4)
+
 
 
 
