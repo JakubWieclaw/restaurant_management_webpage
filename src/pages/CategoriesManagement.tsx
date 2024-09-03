@@ -23,6 +23,7 @@ import { useEffect, useState, Fragment } from "react";
 import { Category, Meal } from "../api";
 import { categoriesApi, mealsApi } from "../utils/api";
 import { CategoryModal } from "../components/CategoriesManagement/CategoryModal";
+import { DishModal } from "../components/CategoriesManagement/DishModal";
 
 export const CategoriesManagement = () => {
   const [open, setOpen] = useState<boolean[]>([]);
@@ -31,9 +32,11 @@ export const CategoriesManagement = () => {
   const [categoryIdxToEdit, setCategoryIdxToEdit] = useState<number | null>(
     null
   );
+  const [dishIdxToEdit, setDishIdxToEdit] = useState<number | null>(null);
   const [rerenderOnChange, setRerenderOnChange] = useState<boolean>(false);
-  const [categoryModalEditOpen, setCategoryModalEditOpen] =
-    useState<boolean>(false);
+  const [categoryModalOpen, setCategoryModalOpen] = useState<boolean>(false);
+  const [dishModalOpen, setDishModalOpen] = useState<boolean>(false);
+
   const handleClick = (idx: number) => {
     setOpen((prev) => {
       const newOpen = [...prev];
@@ -91,7 +94,7 @@ export const CategoriesManagement = () => {
           variant="outlined"
           sx={{ mt: 2 }}
           onClick={() => {
-            setCategoryModalEditOpen(true);
+            setCategoryModalOpen(true);
             setCategoryIdxToEdit(null);
           }}
           color="success"
@@ -122,7 +125,7 @@ export const CategoriesManagement = () => {
                     sx={{ ml: "auto", mr: 0 }}
                     onClick={() => {
                       setCategoryIdxToEdit(idx);
-                      setCategoryModalEditOpen(true);
+                      setCategoryModalOpen(true);
                     }}
                   >
                     <EditIcon />
@@ -158,7 +161,7 @@ export const CategoriesManagement = () => {
                 <List component="div" disablePadding>
                   {meals.length > idx &&
                     Array.isArray(meals[idx]) &&
-                    meals[idx].map((meal) => (
+                    meals[idx].map((meal, mealIdx) => (
                       <ListItem
                         key={meal.name}
                         secondaryAction={
@@ -166,6 +169,11 @@ export const CategoriesManagement = () => {
                             variant="contained"
                             sx={{ ml: "auto", mr: 0 }}
                             color="secondary"
+                            onClick={() => {
+                              setDishModalOpen(true);
+                              setCategoryIdxToEdit(idx);
+                              setDishIdxToEdit(mealIdx);
+                            }}
                           >
                             <DriveFileRenameOutlineIcon />
                           </Button>
@@ -206,8 +214,8 @@ export const CategoriesManagement = () => {
         </List>
       </Box>
       <CategoryModal
-        open={categoryModalEditOpen}
-        setOpen={setCategoryModalEditOpen}
+        open={categoryModalOpen}
+        setOpen={setCategoryModalOpen}
         category={
           categoryIdxToEdit !== null ? categories[categoryIdxToEdit] : null
         }
@@ -228,6 +236,35 @@ export const CategoriesManagement = () => {
             });
           }
         }}
+      />
+      <DishModal
+        open={dishModalOpen}
+        setOpen={setDishModalOpen}
+        dish={
+          dishIdxToEdit !== null && categoryIdxToEdit !== null
+            ? meals[categoryIdxToEdit][dishIdxToEdit]
+            : null
+        }
+        setDish={(dish: Meal | null) => {
+          if (dish !== null) {
+            setMeals((prev) => {
+              const newMeals = [...prev];
+              newMeals[categoryIdxToEdit as number][dishIdxToEdit as number] =
+                dish;
+              return newMeals;
+            });
+          } else if (dishIdxToEdit !== null && categoryIdxToEdit !== null) {
+            // delete dish
+            setMeals((prev) => {
+              const newMeals = [...prev];
+              newMeals[categoryIdxToEdit].splice(dishIdxToEdit, 1);
+              return newMeals;
+            });
+          }
+        }}
+        setRerenderOnChange={setRerenderOnChange}
+        categories={categories}
+        categoryIdx={categoryIdxToEdit as number}
       />
     </Container>
   );

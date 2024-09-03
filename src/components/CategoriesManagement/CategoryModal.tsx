@@ -176,7 +176,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
               id="file-upload"
               type="file"
               hidden
-              required={categoryCopy?.photographUrl ? false : true}
+              required={!categoryCopy?.photographUrl}
               onChange={(e) => {
                 console.log(e);
                 if (e.target.files) {
