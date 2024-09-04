@@ -5,11 +5,24 @@ import {
   DialogContent,
   TextField,
   FormGroup,
+  FormControl,
+  Select,
+  InputLabel,
+  MenuItem,
+  Button,
+  Typography,
+  DialogActions,
+  Chip,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
 } from "@mui/material";
+import ImageIcon from "@mui/icons-material/Image";
+import Autocomplete from "@mui/material/Autocomplete";
 
 import { useState, useEffect } from "react";
 
-import { Meal, Category } from "../../api";
+import { Meal, Category, MealUnitTypeEnum } from "../../api";
 import { Transition } from "../../utils/Transision";
 
 interface DishModalProps {
@@ -20,6 +33,8 @@ interface DishModalProps {
   categories: Category[];
   categoryIdx: number;
   setRerenderOnChange: any;
+  allIngredients: string[];
+  allAllergens: string[];
 }
 
 export const DishModal: React.FC<DishModalProps> = ({
@@ -30,12 +45,17 @@ export const DishModal: React.FC<DishModalProps> = ({
   categories,
   categoryIdx,
   setRerenderOnChange,
+  allIngredients: ingredients,
+  allAllergens: allergens,
 }) => {
   useEffect(() => {
     setDishCopy(dish);
   }, [dish]);
 
   const [dishCopy, setDishCopy] = useState<Meal | null>(dish);
+  const [selectedUnit, setSelectedUnit] = useState<MealUnitTypeEnum>(
+    MealUnitTypeEnum.Grams
+  );
   return (
     <Dialog
       open={open}
@@ -96,37 +116,252 @@ export const DishModal: React.FC<DishModalProps> = ({
                     categoryId: dishCopy?.categoryId ?? -1,
                   });
                 }}
-              />
-            </Box>
-            <Box>
-              <TextField
-                label="Kategoria"
-                value={categories[categoryIdx].name ?? " "}
-                onChange={(e) => {
-                  setDishCopy({
-                    ...dishCopy,
-                    categoryId: Number(e.target.value),
-                    name: dishCopy?.name ?? "",
-                  });
+                type="number"
+                inputProps={{
+                  min: 0,
+                  step: 0.01,
                 }}
               />
             </Box>
+            <Box
+              sx={{
+                width: "100%",
+              }}
+            >
+              <FormControl fullWidth>
+                <InputLabel id="category-select-label">Kategoria</InputLabel>
+                <Select
+                  id="category-select"
+                  labelId="category-select-label"
+                  value={dishCopy?.categoryId ?? -1}
+                  label="Kategoria"
+                  onChange={(e) => {
+                    setDishCopy({
+                      ...dishCopy,
+                      categoryId: Number(e.target.value),
+                      name: dishCopy?.name ?? "",
+                    });
+                  }}
+                >
+                  {categories.map((category) => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+            <Box
+              sx={{
+                width: "100%",
+                maxWidth: "230px",
+              }}
+            >
+              <Autocomplete
+                multiple
+                id="tags-outlined"
+                options={ingredients.map((ingredient) => ingredient)}
+                freeSolo
+                renderTags={(value: readonly string[], getTagProps) =>
+                  value.map((option: string, index: number) => {
+                    const { key, ...tagProps } = getTagProps({ index });
+                    return (
+                      <Chip
+                        variant="outlined"
+                        label={option}
+                        key={key}
+                        {...tagProps}
+                      />
+                    );
+                  })
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    label="Składniki"
+                    placeholder="..."
+                  />
+                )}
+              />
+            </Box>
+            <Box
+              sx={{
+                width: "100%",
+                maxWidth: "230px",
+              }}
+            >
+              <Autocomplete
+                multiple
+                id="tags-outlined"
+                options={allergens.map((allergen) => allergen)}
+                freeSolo
+                // renderTags={(value: readonly string[], getTagProps) =>
+                //   value.map((option: string, index: number) => {
+                //     const { key, ...tagProps } = getTagProps({ index });
+                //     return (
+                //       <Chip
+                //         variant="outlined"
+                //         label={option}
+                //         key={key}
+                //         {...tagProps}
+                //       />
+                //     );
+                //   })
+                // }
+
+                renderInput={(aha) => (
+                  <TextField
+                    {...aha}
+                    variant="outlined"
+                    label="Alergeny"
+                    placeholder="..."
+                  />
+                )}
+              />
+            </Box>
             <Box>
               <TextField
-                label="Zdjęcie"
-                value={dishCopy?.photographUrl ?? " "}
+                label="Kalorie (kcal)"
+                value={dishCopy?.calories ?? " "}
                 onChange={(e) => {
                   setDishCopy({
                     ...dishCopy,
-                    photographUrl: e.target.value,
+                    calories: Number(e.target.value),
                     name: dishCopy?.name ?? "",
                     categoryId: dishCopy?.categoryId ?? -1,
                   });
                 }}
+                type="number"
+                inputProps={{
+                  min: 0,
+                  step: 1,
+                }}
               />
+            </Box>
+            <Box>
+              <FormControl>
+                <RadioGroup
+                  row
+                  aria-labelledby="units"
+                  name="position"
+                  defaultValue="top"
+                >
+                  {Object.values(MealUnitTypeEnum).map((unit) => (
+                    <FormControlLabel
+                      key={unit}
+                      value={unit}
+                      control={<Radio size="small" />}
+                      label={<Typography variant="caption">{unit}</Typography>}
+                      labelPlacement="top"
+                      onChange={(e: any) => {
+                        setSelectedUnit(e.target.value as MealUnitTypeEnum);
+                      }}
+                      checked={selectedUnit === unit}
+                    />
+                  ))}
+                </RadioGroup>
+              </FormControl>
+            </Box>
+            <Box>
+              <TextField
+                label={`Wartość (${selectedUnit})`}
+                value={dishCopy?.weightOrVolume ?? " "}
+                onChange={(e) => {
+                  setDishCopy({
+                    ...dishCopy,
+                    weightOrVolume: Number(e.target.value),
+                    name: dishCopy?.name ?? "",
+                    categoryId: dishCopy?.categoryId ?? -1,
+                  });
+                }}
+                type="number"
+                inputProps={{
+                  min: 0,
+                  step: 1,
+                }}
+              />
+            </Box>
+            <Box>
+              <input
+                accept="image/*"
+                id="file-upload"
+                type="file"
+                hidden
+                required={!dishCopy?.photographUrl}
+                onChange={(e) => {
+                  console.log(e);
+                  if (e.target.files) {
+                    setDishCopy({
+                      ...dishCopy,
+                      photographUrl: e.target.files[0].name,
+                      name: dishCopy?.name ?? "",
+                      categoryId: dishCopy?.categoryId ?? -1,
+                    });
+                  }
+                }}
+              />
+              <label htmlFor="file-upload">
+                <Button
+                  startIcon={<ImageIcon />}
+                  variant="contained"
+                  component="span"
+                  sx={{
+                    mb: 1,
+                    py: 1,
+                  }}
+                >
+                  Ikonka *
+                </Button>
+                <br />
+              </label>
+              <Typography
+                variant="caption"
+                color={dishCopy?.photographUrl ? "GrayText" : "Red"}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                (
+                {dishCopy?.photographUrl
+                  ? dishCopy?.photographUrl
+                  : "Nie wybrano - wymagane"}
+                )
+              </Typography>
             </Box>
           </FormGroup>
         </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setOpen(false);
+            }}
+            autoFocus
+          >
+            Anuluj
+          </Button>
+          {dish ? (
+            <>
+              <Button
+                onClick={() => {
+                  // delete dish
+                  console.log("delete dish");
+                }}
+                color="error"
+              >
+                Usuń
+              </Button>
+              <Button type="submit" color="warning">
+                Zapisz
+              </Button>
+            </>
+          ) : (
+            <Button type="submit" color="success">
+              Dodaj
+            </Button>
+          )}
+        </DialogActions>
       </Box>
     </Dialog>
   );

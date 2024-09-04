@@ -37,6 +37,26 @@ export const CategoriesManagement = () => {
   const [categoryModalOpen, setCategoryModalOpen] = useState<boolean>(false);
   const [dishModalOpen, setDishModalOpen] = useState<boolean>(false);
 
+  const ingredients = Array.from(
+    new Set(
+      meals.flatMap((category) => category.flatMap((meal) => meal.ingredients))
+    )
+  )
+    .filter((ingredient): ingredient is string => ingredient !== undefined)
+    .sort((a, b) => {
+      return a.localeCompare(b);
+    });
+
+  const allergens = Array.from(
+    new Set(
+      meals.flatMap((category) => category.flatMap((meal) => meal.allergens))
+    )
+  )
+    .filter((allergen): allergen is string => allergen !== undefined)
+    .sort((a, b) => {
+      return a.localeCompare(b);
+    });
+
   const handleClick = (idx: number) => {
     setOpen((prev) => {
       const newOpen = [...prev];
@@ -265,6 +285,8 @@ export const CategoriesManagement = () => {
         setRerenderOnChange={setRerenderOnChange}
         categories={categories}
         categoryIdx={categoryIdxToEdit as number}
+        allIngredients={ingredients}
+        allAllergens={allergens}
       />
     </Container>
   );
