@@ -107,7 +107,13 @@ export const CategoriesManagement = () => {
         Zarządzanie kategoriami
       </Typography>
       <Divider />
-      <Box sx={{ display: "flex", justifyContent: "right" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "right",
+          gap: 1,
+        }}
+      >
         <Button
           variant="outlined"
           sx={{ mt: 2 }}
@@ -116,6 +122,7 @@ export const CategoriesManagement = () => {
             setCategoryIdxToEdit(null);
           }}
           color="success"
+          size="small"
         >
           Dodaj kategorię
         </Button>
@@ -127,6 +134,7 @@ export const CategoriesManagement = () => {
             setDishIdxToEdit(null);
           }}
           color="success"
+          size="small"
         >
           Dodaj posiłek
         </Button>
