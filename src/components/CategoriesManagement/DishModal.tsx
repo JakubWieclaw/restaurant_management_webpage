@@ -21,9 +21,12 @@ import ImageIcon from "@mui/icons-material/Image";
 import Autocomplete from "@mui/material/Autocomplete";
 
 import { useState, useEffect } from "react";
+import { toast, Slide } from "react-toastify";
 
-import { Meal, Category, MealUnitTypeEnum } from "../../api";
+import { Meal, Category, MealUnitTypeEnum, MealAddCommand } from "../../api";
 import { Transition } from "../../utils/Transision";
+import { mealsApi } from "../../utils/api";
+import { AxiosResponse } from "axios";
 
 interface DishModalProps {
   open: boolean;
@@ -31,7 +34,6 @@ interface DishModalProps {
   dish: Meal | null;
   setDish: (arg0: Meal | null) => void;
   categories: Category[];
-  categoryIdx: number;
   setRerenderOnChange: any;
   allIngredients: string[];
   allAllergens: string[];
@@ -43,7 +45,6 @@ export const DishModal: React.FC<DishModalProps> = ({
   dish,
   setDish,
   categories,
-  categoryIdx,
   setRerenderOnChange,
   allIngredients: ingredients,
   allAllergens: allergens,
@@ -72,13 +73,119 @@ export const DishModal: React.FC<DishModalProps> = ({
         component={"form"}
         onSubmit={(e) => {
           e.preventDefault();
+          if (!dishCopy?.photographUrl) {
+            toast.error("Ikonka jest wymagana.", {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Slide,
+            });
+            return;
+          }
           if (dishCopy?.id) {
             // update dish
-          } else {
+
+            mealsApi
+              .updateMeal(dishCopy.id, dishCopy as MealAddCommand)
+              .then((response) => {
+                if (response.status === 200) {
+                  toast.success("Danie zaktualizowane pomyślnie.", {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Slide,
+                  });
+                  setOpen(false);
+                  setDish({
+                    ...dishCopy,
+                    name: dishCopy.name ?? "",
+                    categoryId: dishCopy.categoryId ?? -1,
+                  });
+                  setRerenderOnChange((prev: boolean) => !prev);
+                }
+              })
+              .catch((_) => {
+                toast.info("Błąd podczas aktualizacji dania.", {
+                  position: "bottom-center",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                  transition: Slide,
+                });
+              });
+          } else if (dish === null) {
             // add dish
+            mealsApi
+              .addMeal(dishCopy as MealAddCommand)
+              .then((response) => {
+                if (response.status === 200) {
+                  toast.success("Danie dodane pomyślnie.", {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Slide,
+                  });
+                  setOpen(false);
+                  setDish({
+                    ...dishCopy,
+                    name: dishCopy?.name ?? "",
+                    categoryId: dishCopy?.categoryId ?? -1,
+                  });
+                  setRerenderOnChange((prev: boolean) => !prev);
+                }
+              })
+              .catch((error) => {
+                toast.error(
+                  error.response.data?.name ??
+                    JSON.stringify(error.response.data),
+                  {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Slide,
+                  }
+                );
+              });
+          } else {
+            toast.info(
+              "Nie udało się zaktualizować kategorii. Spróbuj ponownie.",
+              {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Slide,
+              }
+            );
           }
-          //   setOpen(false);
-          //   setRerenderOnChange((prev: boolean) => !prev);
         }}
       >
         <DialogContent id="alert-dialog-slide-description">
@@ -94,7 +201,8 @@ export const DishModal: React.FC<DishModalProps> = ({
             <Box>
               <TextField
                 label="Nazwa"
-                value={dishCopy?.name ?? " "}
+                value={dishCopy?.name ?? ""}
+                required
                 onChange={(e) => {
                   setDishCopy({
                     ...dishCopy,
@@ -107,7 +215,8 @@ export const DishModal: React.FC<DishModalProps> = ({
             <Box>
               <TextField
                 label="Cena (zł)"
-                value={dishCopy?.price ?? " "}
+                value={dishCopy?.price ?? ""}
+                required
                 onChange={(e) => {
                   setDishCopy({
                     ...dishCopy,
@@ -133,7 +242,12 @@ export const DishModal: React.FC<DishModalProps> = ({
                 <Select
                   id="category-select"
                   labelId="category-select-label"
-                  value={dishCopy?.categoryId ?? -1}
+                  value={
+                    dishCopy?.categoryId == null || dishCopy?.categoryId == -1
+                      ? ""
+                      : dishCopy?.categoryId
+                  }
+                  required
                   label="Kategoria"
                   onChange={(e) => {
                     setDishCopy({
@@ -158,12 +272,22 @@ export const DishModal: React.FC<DishModalProps> = ({
               }}
             >
               <Autocomplete
+                key={dishCopy?.id}
                 multiple
                 id="tags-outlined"
                 options={ingredients.map((ingredient) => ingredient)}
+                value={dishCopy?.ingredients ?? []}
+                onChange={(_, newValue) => {
+                  setDishCopy({
+                    ...dishCopy,
+                    ingredients: newValue,
+                    name: dishCopy?.name ?? "",
+                    categoryId: dishCopy?.categoryId ?? -1,
+                  });
+                }}
                 freeSolo
-                renderTags={(value: readonly string[], getTagProps) =>
-                  value.map((option: string, index: number) => {
+                renderTags={(value: readonly string[], getTagProps) => {
+                  return value.map((option: string, index: number) => {
                     const { key, ...tagProps } = getTagProps({ index });
                     return (
                       <Chip
@@ -173,8 +297,8 @@ export const DishModal: React.FC<DishModalProps> = ({
                         {...tagProps}
                       />
                     );
-                  })
-                }
+                  });
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -192,27 +316,36 @@ export const DishModal: React.FC<DishModalProps> = ({
               }}
             >
               <Autocomplete
+                key={dishCopy?.id}
                 multiple
                 id="tags-outlined"
                 options={allergens.map((allergen) => allergen)}
+                value={dishCopy?.allergens ?? []}
+                onChange={(_, newValue) => {
+                  setDishCopy({
+                    ...dishCopy,
+                    allergens: newValue,
+                    name: dishCopy?.name ?? "",
+                    categoryId: dishCopy?.categoryId ?? -1,
+                  });
+                }}
                 freeSolo
-                // renderTags={(value: readonly string[], getTagProps) =>
-                //   value.map((option: string, index: number) => {
-                //     const { key, ...tagProps } = getTagProps({ index });
-                //     return (
-                //       <Chip
-                //         variant="outlined"
-                //         label={option}
-                //         key={key}
-                //         {...tagProps}
-                //       />
-                //     );
-                //   })
-                // }
-
-                renderInput={(aha) => (
+                renderTags={(value: readonly string[], getTagProps) => {
+                  return value.map((option: string, index: number) => {
+                    const { key, ...tagProps } = getTagProps({ index });
+                    return (
+                      <Chip
+                        variant="outlined"
+                        label={option}
+                        key={key}
+                        {...tagProps}
+                      />
+                    );
+                  });
+                }}
+                renderInput={(params) => (
                   <TextField
-                    {...aha}
+                    {...params}
                     variant="outlined"
                     label="Alergeny"
                     placeholder="..."
@@ -223,7 +356,8 @@ export const DishModal: React.FC<DishModalProps> = ({
             <Box>
               <TextField
                 label="Kalorie (kcal)"
-                value={dishCopy?.calories ?? " "}
+                value={dishCopy?.calories ?? ""}
+                required
                 onChange={(e) => {
                   setDishCopy({
                     ...dishCopy,
@@ -266,7 +400,7 @@ export const DishModal: React.FC<DishModalProps> = ({
             <Box>
               <TextField
                 label={`Wartość (${selectedUnit})`}
-                value={dishCopy?.weightOrVolume ?? " "}
+                value={dishCopy?.weightOrVolume ?? ""}
                 onChange={(e) => {
                   setDishCopy({
                     ...dishCopy,
@@ -282,15 +416,21 @@ export const DishModal: React.FC<DishModalProps> = ({
                 }}
               />
             </Box>
-            <Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                mt: 2,
+                maxWidth: "230px",
+              }}
+            >
               <input
                 accept="image/*"
-                id="file-upload"
+                id="file-upload-dish"
                 type="file"
                 hidden
-                required={!dishCopy?.photographUrl}
-                onChange={(e) => {
-                  console.log(e);
+                onChange={(e: any) => {
                   if (e.target.files) {
                     setDishCopy({
                       ...dishCopy,
@@ -301,7 +441,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                   }
                 }}
               />
-              <label htmlFor="file-upload">
+              <label htmlFor="file-upload-dish">
                 <Button
                   startIcon={<ImageIcon />}
                   variant="contained"
@@ -346,7 +486,40 @@ export const DishModal: React.FC<DishModalProps> = ({
               <Button
                 onClick={() => {
                   // delete dish
-                  console.log("delete dish");
+                  if (!dishCopy?.id) return;
+                  mealsApi
+                    .deleteMealById(dishCopy.id)
+                    .then((response: AxiosResponse) => {
+                      if (response.status === 200) {
+                        toast.success(response.data, {
+                          position: "bottom-center",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                          transition: Slide,
+                        });
+                        setOpen(false);
+                        setDish(null);
+                        setRerenderOnChange((prev: boolean) => !prev);
+                      }
+                    })
+                    .catch((_) => {
+                      toast.error("Błąd podczas usuwania dania.", {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Slide,
+                      });
+                    });
                 }}
                 color="error"
               >

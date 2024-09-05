@@ -56,6 +56,20 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
         component={"form"}
         onSubmit={(e) => {
           e.preventDefault();
+          if (!categoryCopy?.photographUrl) {
+            toast.error("Ikonka jest wymagana.", {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Slide,
+            });
+            return;
+          }
           if (categoryCopy?.id) {
             // update category
             categoriesApi
@@ -100,7 +114,6 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
             categoriesApi
               .addCategory(newCategory)
               .then((response: AxiosResponse) => {
-                console.log(response);
                 if (response.status === 200) {
                   toast.success("Kategoria dodana pomyślnie.", {
                     position: "bottom-center",
@@ -119,7 +132,6 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
                 }
               })
               .catch((error) => {
-                console.log(error.response.data);
                 toast.error(error.response.data.name, {
                   position: "bottom-center",
                   autoClose: 5000,
@@ -176,9 +188,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
               id="file-upload"
               type="file"
               hidden
-              required={!categoryCopy?.photographUrl}
               onChange={(e) => {
-                console.log(e);
                 if (e.target.files) {
                   setCategoryCopy({
                     ...categoryCopy,

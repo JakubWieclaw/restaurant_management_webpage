@@ -86,8 +86,6 @@ export const CategoriesManagement = () => {
   };
 
   useEffect(() => {
-    console.log("Fetching categories");
-    console.log("RerenderOnChange: ", rerenderOnChange);
     categoriesApi
       .getAllCategories()
       .then((response: AxiosResponse) => {
@@ -120,6 +118,17 @@ export const CategoriesManagement = () => {
           color="success"
         >
           Dodaj kategorię
+        </Button>
+        <Button
+          variant="outlined"
+          sx={{ mt: 2 }}
+          onClick={() => {
+            setDishModalOpen(true);
+            setDishIdxToEdit(null);
+          }}
+          color="success"
+        >
+          Dodaj posiłek
         </Button>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
@@ -284,7 +293,6 @@ export const CategoriesManagement = () => {
         }}
         setRerenderOnChange={setRerenderOnChange}
         categories={categories}
-        categoryIdx={categoryIdxToEdit as number}
         allIngredients={ingredients}
         allAllergens={allergens}
       />
