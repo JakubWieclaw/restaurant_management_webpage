@@ -19,6 +19,7 @@ import { CategoriesManagement } from "./pages/CategoriesManagement";
 
 function App() {
   const dispatch = useDispatch();
+  // fetch user from redux
 
   useEffect(() => {
     configApi

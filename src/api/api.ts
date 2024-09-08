@@ -184,49 +184,6 @@ export interface ConfigAddCommand {
     'deliveryPricings'?: Array<DeliveryPricing>;
 }
 /**
- * 
- * @export
- * @interface Customer
- */
-export interface Customer {
-    /**
-     * 
-     * @type {number}
-     * @memberof Customer
-     */
-    'id'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Customer
-     */
-    'name'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Customer
-     */
-    'surname'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Customer
-     */
-    'email': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Customer
-     */
-    'phone'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Customer
-     */
-    'password': string;
-}
-/**
  * Delivery prices of the restaurant
  * @export
  * @interface DeliveryPricing
@@ -495,6 +452,55 @@ export const OpeningHourDayEnum = {
 
 export type OpeningHourDayEnum = typeof OpeningHourDayEnum[keyof typeof OpeningHourDayEnum];
 
+/**
+ * 
+ * @export
+ * @interface RegisterRequest
+ */
+export interface RegisterRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterRequest
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterRequest
+     */
+    'surname': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterRequest
+     */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterRequest
+     */
+    'phone': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterRequest
+     */
+    'password': string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RegisterRequest
+     */
+    'isAdmin'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof RegisterRequest
+     */
+    'admin'?: boolean;
+}
 
 /**
  * AuthControllerApi - axios parameter creator
@@ -539,13 +545,13 @@ export const AuthControllerApiAxiosParamCreator = function (configuration?: Conf
         },
         /**
          * 
-         * @param {Customer} customer 
+         * @param {RegisterRequest} registerRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        registerUser: async (customer: Customer, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'customer' is not null or undefined
-            assertParamExists('registerUser', 'customer', customer)
+        registerUser: async (registerRequest: RegisterRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'registerRequest' is not null or undefined
+            assertParamExists('registerUser', 'registerRequest', registerRequest)
             const localVarPath = `/auth/register`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -565,7 +571,7 @@ export const AuthControllerApiAxiosParamCreator = function (configuration?: Conf
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(customer, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(registerRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -596,12 +602,12 @@ export const AuthControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {Customer} customer 
+         * @param {RegisterRequest} registerRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async registerUser(customer: Customer, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.registerUser(customer, options);
+        async registerUser(registerRequest: RegisterRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.registerUser(registerRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthControllerApi.registerUser']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -627,12 +633,12 @@ export const AuthControllerApiFactory = function (configuration?: Configuration,
         },
         /**
          * 
-         * @param {Customer} customer 
+         * @param {RegisterRequest} registerRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        registerUser(customer: Customer, options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.registerUser(customer, options).then((request) => request(axios, basePath));
+        registerUser(registerRequest: RegisterRequest, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.registerUser(registerRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -657,13 +663,13 @@ export class AuthControllerApi extends BaseAPI {
 
     /**
      * 
-     * @param {Customer} customer 
+     * @param {RegisterRequest} registerRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthControllerApi
      */
-    public registerUser(customer: Customer, options?: RawAxiosRequestConfig) {
-        return AuthControllerApiFp(this.configuration).registerUser(customer, options).then((request) => request(this.axios, this.basePath));
+    public registerUser(registerRequest: RegisterRequest, options?: RawAxiosRequestConfig) {
+        return AuthControllerApiFp(this.configuration).registerUser(registerRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1070,7 +1076,7 @@ export const ConfigControllerApiAxiosParamCreator = function (configuration?: Co
          * @throws {RequiredError}
          */
         getConfig: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/config`;
+            const localVarPath = `/admin/api/config`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1100,7 +1106,7 @@ export const ConfigControllerApiAxiosParamCreator = function (configuration?: Co
          * @throws {RequiredError}
          */
         getDeliveryPrices: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/config/delivery-prices`;
+            const localVarPath = `/admin/api/config/delivery-prices`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1130,7 +1136,7 @@ export const ConfigControllerApiAxiosParamCreator = function (configuration?: Co
          * @throws {RequiredError}
          */
         getOpeningHours: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/config/opening-hours`;
+            const localVarPath = `/admin/api/config/opening-hours`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1163,7 +1169,7 @@ export const ConfigControllerApiAxiosParamCreator = function (configuration?: Co
         initializeSystem: async (configAddCommand: ConfigAddCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'configAddCommand' is not null or undefined
             assertParamExists('initializeSystem', 'configAddCommand', configAddCommand)
-            const localVarPath = `/api/config/initialize-system`;
+            const localVarPath = `/admin/api/config/initialize-system`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1196,7 +1202,7 @@ export const ConfigControllerApiAxiosParamCreator = function (configuration?: Co
          * @throws {RequiredError}
          */
         removeConfigs: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/config`;
+            const localVarPath = `/admin/api/config`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1625,6 +1631,43 @@ export const MealControllerApiAxiosParamCreator = function (configuration?: Conf
         },
         /**
          * 
+         * @summary Search meals by name
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchMealsByName: async (name: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('searchMealsByName', 'name', name)
+            const localVarPath = `/api/meals/search`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Update a meal by id
          * @param {number} id 
          * @param {MealAddCommand} mealAddCommand 
@@ -1752,6 +1795,19 @@ export const MealControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Search meals by name
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async searchMealsByName(name: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchMealsByName(name, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['MealControllerApi.searchMealsByName']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Update a meal by id
          * @param {number} id 
          * @param {MealAddCommand} mealAddCommand 
@@ -1832,6 +1888,16 @@ export const MealControllerApiFactory = function (configuration?: Configuration,
          */
         getMealsByCategory(categoryId: number, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.getMealsByCategory(categoryId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Search meals by name
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchMealsByName(name: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.searchMealsByName(name, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1923,6 +1989,18 @@ export class MealControllerApi extends BaseAPI {
      */
     public getMealsByCategory(categoryId: number, options?: RawAxiosRequestConfig) {
         return MealControllerApiFp(this.configuration).getMealsByCategory(categoryId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Search meals by name
+     * @param {string} name 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MealControllerApi
+     */
+    public searchMealsByName(name: string, options?: RawAxiosRequestConfig) {
+        return MealControllerApiFp(this.configuration).searchMealsByName(name, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
