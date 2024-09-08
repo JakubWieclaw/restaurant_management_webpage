@@ -22,6 +22,9 @@ export const Menu = () => {
         const categoriesResponse = await categoriesApi.getAllCategories();
         const categoriesData: Category[] =
           categoriesResponse.data as Category[];
+        if (categoriesData.length !== 0) {
+          setCategory(categoriesData[0].name);
+        }
         const categoriesMap: { [key: string]: string } = Object.fromEntries(
           categoriesData.map((category: Category) => [
             category.id,
