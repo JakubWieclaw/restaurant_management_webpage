@@ -45,7 +45,11 @@ export const LoginRegister = () => {
           .login({ email: email, password: password })
           .then((response) => {
             if (response.status === 200) {
-              dispatch(login({ token: response.data }));
+              dispatch(
+                login({ response: response.data } as {
+                  response: { token: string; isAdmin: boolean };
+                })
+              );
               toast.success("Zalogowano pomyślnie", {
                 position: "bottom-center",
                 autoClose: 5000,

@@ -333,8 +333,8 @@ export interface Meal {
 }
 
 export const MealUnitTypeEnum = {
-    Grams: 'GRAMS',
-    Milliliters: 'MILLILITERS'
+    Gramy: 'GRAMY',
+    Millilitry: 'MILLILITRY'
 } as const;
 
 export type MealUnitTypeEnum = typeof MealUnitTypeEnum[keyof typeof MealUnitTypeEnum];
@@ -402,8 +402,8 @@ export interface MealAddCommand {
 }
 
 export const MealAddCommandUnitTypeEnum = {
-    Grams: 'GRAMS',
-    Milliliters: 'MILLILITERS'
+    Gramy: 'GRAMY',
+    Millilitry: 'MILLILITRY'
 } as const;
 
 export type MealAddCommandUnitTypeEnum = typeof MealAddCommandUnitTypeEnum[keyof typeof MealAddCommandUnitTypeEnum];
@@ -594,7 +594,7 @@ export const AuthControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async login(loginRequest: LoginRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+        async login(loginRequest: LoginRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.login(loginRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthControllerApi.login']?.[localVarOperationServerIndex]?.url;
@@ -628,7 +628,7 @@ export const AuthControllerApiFactory = function (configuration?: Configuration,
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        login(loginRequest: LoginRequest, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+        login(loginRequest: LoginRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
             return localVarFp.login(loginRequest, options).then((request) => request(axios, basePath));
         },
         /**

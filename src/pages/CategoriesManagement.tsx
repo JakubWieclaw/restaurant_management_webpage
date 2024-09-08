@@ -36,26 +36,8 @@ export const CategoriesManagement = () => {
   const [rerenderOnChange, setRerenderOnChange] = useState<boolean>(false);
   const [categoryModalOpen, setCategoryModalOpen] = useState<boolean>(false);
   const [dishModalOpen, setDishModalOpen] = useState<boolean>(false);
-
-  const ingredients = Array.from(
-    new Set(
-      meals.flatMap((category) => category.flatMap((meal) => meal.ingredients))
-    )
-  )
-    .filter((ingredient): ingredient is string => ingredient !== undefined)
-    .sort((a, b) => {
-      return a.localeCompare(b);
-    });
-
-  const allergens = Array.from(
-    new Set(
-      meals.flatMap((category) => category.flatMap((meal) => meal.allergens))
-    )
-  )
-    .filter((allergen): allergen is string => allergen !== undefined)
-    .sort((a, b) => {
-      return a.localeCompare(b);
-    });
+  const [allergens, setAllergens] = useState<string[]>([]);
+  const [ingredients, setIngredients] = useState<string[]>([]);
 
   const handleClick = (idx: number) => {
     setOpen((prev) => {
@@ -100,6 +82,40 @@ export const CategoriesManagement = () => {
         console.error(error);
       });
   }, [rerenderOnChange]);
+
+  useEffect(() => {
+    if (meals) {
+      setIngredients(
+        Array.from(
+          new Set(
+            meals.flatMap((category) =>
+              category.flatMap((meal) => meal.ingredients)
+            )
+          )
+        )
+          .filter(
+            (ingredient): ingredient is string => ingredient !== undefined
+          )
+          .sort((a, b) => {
+            return a.localeCompare(b);
+          })
+      );
+
+      setAllergens(
+        Array.from(
+          new Set(
+            meals.flatMap((category) =>
+              category.flatMap((meal) => meal.allergens)
+            )
+          )
+        )
+          .filter((allergen): allergen is string => allergen !== undefined)
+          .sort((a, b) => {
+            return a.localeCompare(b);
+          })
+      );
+    }
+  }, [meals]);
 
   return (
     <Container maxWidth="md" sx={{ mt: 15 }}>

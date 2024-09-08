@@ -105,7 +105,7 @@ export const Filters: React.FC<FiltersProps> = ({
               return <Chip key={key} label={option} {...tagProps} />;
             })
           }
-          style={{ width: 500 }}
+          fullWidth
           renderInput={(params) => <TextField {...params} />}
         />
       </ListItem>

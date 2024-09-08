@@ -1,6 +1,7 @@
 export interface UserState {
   loggedIn: boolean;
   token: string;
+  isAdmin: boolean;
   //   userInfo: UserInfo | null;
 }
 

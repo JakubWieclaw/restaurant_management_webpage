@@ -123,6 +123,7 @@ categories=(
 )
 
 first_category_id=""
+second_category_id=""
 
 for category in "${categories[@]}"; do
   name=$(echo $category | cut -d',' -f1 | tr -d '[]\" ')
@@ -139,6 +140,8 @@ for category in "${categories[@]}"; do
 
   if [ -z "$first_category_id" ]; then
     first_category_id=$(echo $response | jq -r '.id')
+  elif [ -z "$second_category_id" ]; then
+    second_category_id=$(echo $response | jq -r '.id')
   fi
 done
 # INSERT PIZZA DISHES
@@ -172,8 +175,47 @@ for dish in "${dishes[@]}"; do
     \"photographUrl\": \"$image\",
     \"ingredients\": $ingredients,
     \"weightOrVolume\": $weightOrVolume,
-    \"unitType\": \"GRAMS\",
+    \"unitType\": \"GRAMY\",
     \"categoryId\": $first_category_id,
+    \"allergens\": $allergens,
+    \"calories\": $calories
+  }"
+  echo
+done
+
+# INSERT SPAGHETTI DISHES
+dishes=(
+  '{"name": "Carbonara", "price": 24.99, "ingredients": ["Makaron", "Boczek", "Żółtko", "Ser"], "image": "food/spaghetti1.jpg", "allergens": ["Nabiał", "Gluten", "Jajka"]}'
+  '{"name": "Bolognese", "price": 26.99, "ingredients": ["Makaron", "Mięso mielone", "Sos pomidorowy"], "image": "food/spaghetti2.jpg", "allergens": ["Nabiał", "Gluten"]}'
+  '{"name": "Frutti di Mare", "price": 28.99, "ingredients": ["Makaron", "Owoce morza", "Sos pomidorowy"], "image": "food/spaghetti3.jpg", "allergens": ["Nabiał", "Gluten"]}'
+  '{"name": "Aglio e Olio", "price": 22.99, "ingredients": ["Makaron", "Czosnek", "Oliwa"], "image": "food/spaghetti4.jpg", "allergens": ["Nabiał", "Gluten"]}'
+  '{"name": "Pesto", "price": 25.99, "ingredients": ["Makaron", "Pesto", "Orzechy", "Ser"], "image": "food/spaghetti5.jpg", "allergens": ["Nabiał", "Orzechy", "Gluten"]}'
+  '{"name": "Arrabiata", "price": 23.99, "ingredients": ["Makaron", "Sos pomidorowy", "Papryczki chili"], "image": "food/spaghetti6.jpg", "allergens": ["Nabiał", "Gluten"]}'
+  '{"name": "Alfredo", "price": 27.99, "ingredients": ["Makaron", "Śmietana", "Ser"], "image": "food/spaghetti7.jpg", "allergens": ["Nabiał", "Gluten"]}'
+)
+
+for dish in "${dishes[@]}"; do
+  name=$(echo $dish | jq -r '.name')
+  price=$(echo $dish | jq -r '.price')
+  ingredients=$(echo $dish | jq -r '.ingredients | @json')
+  image=$(echo $dish | jq -r '.image')
+  allergens=$(echo $dish | jq -r '.allergens | @json')
+
+  weightOrVolume=$((RANDOM % 500 + 100))
+  calories=$((RANDOM % 1000 + 500))
+
+  curl -X 'POST' \
+    'http://localhost:8080/api/meals/add' \
+    -H 'accept: */*' \
+    -H 'Content-Type: application/json' \
+    -d "{
+    \"name\": \"$name\",
+    \"price\": $price,
+    \"photographUrl\": \"$image\",
+    \"ingredients\": $ingredients,
+    \"weightOrVolume\": $weightOrVolume,
+    \"unitType\": \"GRAMY\",
+    \"categoryId\": $second_category_id,
     \"allergens\": $allergens,
     \"calories\": $calories
   }"

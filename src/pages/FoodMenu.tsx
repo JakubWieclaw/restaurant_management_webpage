@@ -1,4 +1,12 @@
-import { Container, Grid, Divider, Typography } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Divider,
+  Typography,
+  TextField,
+  List,
+  ListItem,
+} from "@mui/material";
 
 import { useEffect, useState } from "react";
 
@@ -12,47 +20,72 @@ import { Category, Meal } from "../api";
 export const Menu = () => {
   const [minStars, setMinStars] = useState<number>(1);
   const [minMaxPrice, setMinMaxPrice] = useState<number[]>([0, 1000]);
-  const [category, setCategory] = useState<string>("Pizza");
+  const [category, setCategory] = useState<string>("");
   const [excludedIngredients, setExcludedIngredients] = useState<string[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);
+  const [searchPhrase, setSearchPhrase] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const categoriesResponse = await categoriesApi.getAllCategories();
-        const categoriesData: Category[] =
-          categoriesResponse.data as Category[];
-        if (categoriesData.length !== 0) {
-          setCategory(categoriesData[0].name);
+        if (searchPhrase === "") {
+          const categoriesResponse = await categoriesApi.getAllCategories();
+          const categoriesData: Category[] =
+            categoriesResponse.data as Category[];
+          if (category === "") {
+            setCategory(categoriesData[0].name);
+          }
+          const categoriesMap: { [key: string]: string } = Object.fromEntries(
+            categoriesData.map((category: Category) => [
+              category.id,
+              category.name,
+            ])
+          );
+
+          const mealsResponse = await mealsApi.getAllMeals();
+          const meals: Meal[] = mealsResponse.data as Meal[];
+
+          setDishes(
+            meals.map((meal: Meal) => ({
+              id: meal.id ?? 0,
+              name: meal.name,
+              price: meal.price ?? 0,
+              ingredients: meal.ingredients ?? [],
+              category: categoriesMap[meal.categoryId] ?? "",
+              image: meal.photographUrl ?? "",
+              rating: 5,
+            }))
+          );
+        } else {
+          const mealsResponse = await mealsApi.searchMealsByName(searchPhrase);
+          const meals: Meal[] = mealsResponse.data as Meal[];
+
+          console.log(meals);
+
+          setDishes(
+            meals.map((meal: Meal) => ({
+              id: meal.id ?? 0,
+              name: meal.name,
+              price: meal.price ?? 0,
+              ingredients: meal.ingredients ?? [],
+              category: category,
+              image: meal.photographUrl ?? "",
+              rating: 5,
+            }))
+          );
         }
-        const categoriesMap: { [key: string]: string } = Object.fromEntries(
-          categoriesData.map((category: Category) => [
-            category.id,
-            category.name,
-          ])
-        );
-
-        const mealsResponse = await mealsApi.getAllMeals();
-        const meals: Meal[] = mealsResponse.data as Meal[];
-
-        setDishes(
-          meals.map((meal: Meal) => ({
-            id: meal.id ?? 0,
-            name: meal.name,
-            price: meal.price ?? 0,
-            ingredients: meal.ingredients ?? [],
-            category: categoriesMap[meal.categoryId] ?? "",
-            image: meal.photographUrl ?? "",
-            rating: 5,
-          }))
-        );
       } catch (error) {
         console.error("Error fetching data", error);
+        setDishes([]);
       }
     };
 
     fetchData();
-  }, []);
+  }, [searchPhrase]);
+
+  useEffect(() => {
+    setSearchPhrase("");
+  }, [category]);
 
   const filteredDishes = dishes.filter(
     (dish) =>
@@ -80,8 +113,19 @@ export const Menu = () => {
           <Grid item xs={12}>
             <Divider sx={{ marginTop: 3 }} />
 
-            <Typography variant="h2" sx={{ m: 5, textAlign: "center" }}>
-              {category}
+            <Typography variant="h2" sx={{ mt: 5, textAlign: "center" }}>
+              {searchPhrase === ""
+                ? category
+                : "Wyszukiwanie dla: " + searchPhrase}
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              color="textSecondary"
+              sx={{ mb: 5, textAlign: "center" }}
+            >
+              {filteredDishes.length === 0
+                ? "Brak wyników"
+                : "Liczba dań: " + filteredDishes.length}
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -96,6 +140,36 @@ export const Menu = () => {
                   borderColor: { xs: "transparent", md: "divider" },
                 }}
               >
+                <List>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      textAlign: "center",
+                    }}
+                  >
+                    Wyszukaj po nazwie
+                  </Typography>
+                  <ListItem>
+                    <TextField
+                      fullWidth
+                      variant="outlined"
+                      sx={{
+                        my: 1,
+                      }}
+                      placeholder="Hawajska"
+                      value={searchPhrase}
+                      onChange={(event) => setSearchPhrase(event.target.value)}
+                      type="search"
+                    />
+                  </ListItem>
+                </List>
+
+                <Divider
+                  sx={{
+                    mb: 2,
+                    mt: 2,
+                  }}
+                />
                 <Typography
                   variant="h5"
                   sx={{
