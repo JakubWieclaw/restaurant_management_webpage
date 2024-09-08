@@ -6,7 +6,7 @@ import { toast, Slide } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, createContext, useMemo } from "react";
 
-import { authApi } from "../utils/api";
+import { authApi, configApi } from "../utils/api";
 import { AppDispatch } from "../store";
 import { login } from "../reducers/slices/userSlice";
 import { Login } from "../components/LoginRegister/Login";
@@ -39,6 +39,8 @@ export const LoginRegister = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    let registerAsAdmin = false;
+
     switch (loginRegisterState) {
       case LoginRegisterState.Login:
         await authApi
@@ -115,6 +117,13 @@ export const LoginRegister = () => {
           });
           return;
         }
+
+        await configApi
+          .getConfig()
+          .then((_) => {})
+          .catch((_) => {
+            registerAsAdmin = true;
+          });
         await authApi
           .registerUser({
             email: email,
@@ -122,10 +131,11 @@ export const LoginRegister = () => {
             surname: surname,
             phone: phoneNumber,
             password: password,
+            admin: registerAsAdmin,
           })
           .then((response) => {
             if (response.status === 200) {
-              toast.success("Zarejestrowano pomyślnie", {
+              toast.success(response.data, {
                 position: "bottom-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -137,6 +147,23 @@ export const LoginRegister = () => {
                 transition: Slide,
               });
               setLoginRegisterState(LoginRegisterState.Login);
+              if (registerAsAdmin) {
+                navigate("/initialize-system");
+                toast.info(
+                  "Zarejestrowano administratora. Przejdź do inicjalizacji systemu.",
+                  {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Slide,
+                  }
+                );
+              }
             }
           })
           .catch((error: any) => {

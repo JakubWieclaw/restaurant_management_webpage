@@ -1,11 +1,5 @@
-export interface UserState {
-  loggedIn: boolean;
-  token: string;
-  isAdmin: boolean;
-  //   userInfo: UserInfo | null;
-}
+import { LoginResponse } from "../api";
 
-// export interface UserInfo {
-//   name: string;
-//   age: number;
-// }
+export interface UserState {
+  loginResponse: LoginResponse | null;
+}

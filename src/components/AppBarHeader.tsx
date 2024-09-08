@@ -255,7 +255,7 @@ export const AppBarHeader = () => {
               open={Boolean(anchorElProfile)}
               onClose={() => setAnchorElProfile(null)}
             >
-              {user.loggedIn ? (
+              {user.loginResponse !== null ? (
                 <MenuItem onClick={handleLogout}>Wyloguj się</MenuItem>
               ) : (
                 <MenuItem onClick={handleLogin}>Zaloguj się</MenuItem>

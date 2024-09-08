@@ -3,10 +3,11 @@ import { Container } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Route, Routes } from "react-router-dom";
 import { toast, ToastContainer, Slide } from "react-toastify";
 
+import { RootState } from "./store";
 import { Cart } from "./pages/Cart";
 import { Menu } from "./pages/FoodMenu";
 import { configApi } from "./utils/api";
@@ -19,7 +20,7 @@ import { CategoriesManagement } from "./pages/CategoriesManagement";
 
 function App() {
   const dispatch = useDispatch();
-  // fetch user from redux
+  const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     configApi
@@ -30,10 +31,26 @@ function App() {
         }
       })
       .catch((error) => {
-        if (!window.location.href.includes("/initialize-system")) {
+        if (user.loginResponse === null) {
+          if (!window.location.href.includes("/auth")) {
+            window.location.href = "/auth";
+          }
+        } else if (!window.location.href.includes("/initialize-system")) {
           window.location.href = "/initialize-system";
         }
+
         toast.info(error.response.data, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Slide,
+        });
+        toast.info("Zarejestruj się, aby utworzyć konto administratora.", {
           position: "bottom-center",
           autoClose: 5000,
           hideProgressBar: false,

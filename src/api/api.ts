@@ -184,6 +184,55 @@ export interface ConfigAddCommand {
     'deliveryPricings'?: Array<DeliveryPricing>;
 }
 /**
+ * 
+ * @export
+ * @interface Customer
+ */
+export interface Customer {
+    /**
+     * 
+     * @type {number}
+     * @memberof Customer
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
+    'surname': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
+    'phone': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
+    'password': string;
+    /**
+     * 
+     * @type {Privilege}
+     * @memberof Customer
+     */
+    'privilege'?: Privilege;
+}
+/**
  * Delivery prices of the restaurant
  * @export
  * @interface DeliveryPricing
@@ -257,6 +306,31 @@ export interface LoginRequest {
      * @memberof LoginRequest
      */
     'password'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface LoginResponse
+ */
+export interface LoginResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof LoginResponse
+     */
+    'token'?: string;
+    /**
+     * 
+     * @type {Customer}
+     * @memberof LoginResponse
+     */
+    'customer'?: Customer;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof LoginResponse
+     */
+    'admin'?: boolean;
 }
 /**
  * Model of a meal
@@ -455,6 +529,25 @@ export type OpeningHourDayEnum = typeof OpeningHourDayEnum[keyof typeof OpeningH
 /**
  * 
  * @export
+ * @interface Privilege
+ */
+export interface Privilege {
+    /**
+     * 
+     * @type {number}
+     * @memberof Privilege
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Privilege
+     */
+    'privilegeName'?: string;
+}
+/**
+ * 
+ * @export
  * @interface RegisterRequest
  */
 export interface RegisterRequest {
@@ -493,13 +586,20 @@ export interface RegisterRequest {
      * @type {boolean}
      * @memberof RegisterRequest
      */
-    'isAdmin'?: boolean;
+    'admin'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface UploadPhotoRequest
+ */
+export interface UploadPhotoRequest {
     /**
      * 
-     * @type {boolean}
-     * @memberof RegisterRequest
+     * @type {File}
+     * @memberof UploadPhotoRequest
      */
-    'admin'?: boolean;
+    'file': File;
 }
 
 /**
@@ -510,6 +610,7 @@ export const AuthControllerApiAxiosParamCreator = function (configuration?: Conf
     return {
         /**
          * 
+         * @summary Log in
          * @param {LoginRequest} loginRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -545,6 +646,7 @@ export const AuthControllerApiAxiosParamCreator = function (configuration?: Conf
         },
         /**
          * 
+         * @summary Register a new user
          * @param {RegisterRequest} registerRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -590,11 +692,12 @@ export const AuthControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Log in
          * @param {LoginRequest} loginRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async login(loginRequest: LoginRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async login(loginRequest: LoginRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LoginResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.login(loginRequest, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthControllerApi.login']?.[localVarOperationServerIndex]?.url;
@@ -602,6 +705,7 @@ export const AuthControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Register a new user
          * @param {RegisterRequest} registerRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -624,15 +728,17 @@ export const AuthControllerApiFactory = function (configuration?: Configuration,
     return {
         /**
          * 
+         * @summary Log in
          * @param {LoginRequest} loginRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        login(loginRequest: LoginRequest, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        login(loginRequest: LoginRequest, options?: RawAxiosRequestConfig): AxiosPromise<LoginResponse> {
             return localVarFp.login(loginRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
+         * @summary Register a new user
          * @param {RegisterRequest} registerRequest 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -652,6 +758,7 @@ export const AuthControllerApiFactory = function (configuration?: Configuration,
 export class AuthControllerApi extends BaseAPI {
     /**
      * 
+     * @summary Log in
      * @param {LoginRequest} loginRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -663,6 +770,7 @@ export class AuthControllerApi extends BaseAPI {
 
     /**
      * 
+     * @summary Register a new user
      * @param {RegisterRequest} registerRequest 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2169,6 +2277,186 @@ export class MessagesControllerApi extends BaseAPI {
      */
     public postMessages(options?: RawAxiosRequestConfig) {
         return MessagesControllerApiFp(this.configuration).postMessages(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * PhotoControllerApi - axios parameter creator
+ * @export
+ */
+export const PhotoControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Download a photo from the server
+         * @summary Download a photo
+         * @param {string} filename 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        downloadPhoto: async (filename: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'filename' is not null or undefined
+            assertParamExists('downloadPhoto', 'filename', filename)
+            const localVarPath = `/api/photos/download`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (filename !== undefined) {
+                localVarQueryParameter['filename'] = filename;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Upload a photo to the server
+         * @summary Upload a photo
+         * @param {UploadPhotoRequest} [uploadPhotoRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        uploadPhoto: async (uploadPhotoRequest?: UploadPhotoRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/photos/upload`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(uploadPhotoRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * PhotoControllerApi - functional programming interface
+ * @export
+ */
+export const PhotoControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = PhotoControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Download a photo from the server
+         * @summary Download a photo
+         * @param {string} filename 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async downloadPhoto(filename: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.downloadPhoto(filename, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoControllerApi.downloadPhoto']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Upload a photo to the server
+         * @summary Upload a photo
+         * @param {UploadPhotoRequest} [uploadPhotoRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async uploadPhoto(uploadPhotoRequest?: UploadPhotoRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.uploadPhoto(uploadPhotoRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['PhotoControllerApi.uploadPhoto']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * PhotoControllerApi - factory interface
+ * @export
+ */
+export const PhotoControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = PhotoControllerApiFp(configuration)
+    return {
+        /**
+         * Download a photo from the server
+         * @summary Download a photo
+         * @param {string} filename 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        downloadPhoto(filename: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.downloadPhoto(filename, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Upload a photo to the server
+         * @summary Upload a photo
+         * @param {UploadPhotoRequest} [uploadPhotoRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        uploadPhoto(uploadPhotoRequest?: UploadPhotoRequest, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.uploadPhoto(uploadPhotoRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * PhotoControllerApi - object-oriented interface
+ * @export
+ * @class PhotoControllerApi
+ * @extends {BaseAPI}
+ */
+export class PhotoControllerApi extends BaseAPI {
+    /**
+     * Download a photo from the server
+     * @summary Download a photo
+     * @param {string} filename 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoControllerApi
+     */
+    public downloadPhoto(filename: string, options?: RawAxiosRequestConfig) {
+        return PhotoControllerApiFp(this.configuration).downloadPhoto(filename, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Upload a photo to the server
+     * @summary Upload a photo
+     * @param {UploadPhotoRequest} [uploadPhotoRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PhotoControllerApi
+     */
+    public uploadPhoto(uploadPhotoRequest?: UploadPhotoRequest, options?: RawAxiosRequestConfig) {
+        return PhotoControllerApiFp(this.configuration).uploadPhoto(uploadPhotoRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
