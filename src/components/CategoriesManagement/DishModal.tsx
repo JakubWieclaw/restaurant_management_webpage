@@ -55,7 +55,7 @@ export const DishModal: React.FC<DishModalProps> = ({
 
   const [dishCopy, setDishCopy] = useState<Meal | null>(dish);
   const [selectedUnit, setSelectedUnit] = useState<MealUnitTypeEnum>(
-    MealUnitTypeEnum.Grams
+    MealUnitTypeEnum.Gramy
   );
   return (
     <Dialog
