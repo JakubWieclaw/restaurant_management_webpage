@@ -20,14 +20,14 @@ for id in $category_ids; do
 done
 
 curl -X 'DELETE' \
-  'http://localhost:8080/api/config' \
+  'http://localhost:8080/admin/api/config' \
   -H 'accept: */*'
 
 echo
 
 # INITIALIZE CONFIG
 curl -X 'POST' \
-  'http://localhost:8080/api/config/initialize-system' \
+  'http://localhost:8080/admin/api/config/initialize-system' \
   -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
