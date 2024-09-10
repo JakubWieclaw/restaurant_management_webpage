@@ -408,7 +408,7 @@ export interface Meal {
 
 export const MealUnitTypeEnum = {
     Gramy: 'GRAMY',
-    Millilitry: 'MILLILITRY'
+    Mililitry: 'MILILITRY'
 } as const;
 
 export type MealUnitTypeEnum = typeof MealUnitTypeEnum[keyof typeof MealUnitTypeEnum];
@@ -477,7 +477,7 @@ export interface MealAddCommand {
 
 export const MealAddCommandUnitTypeEnum = {
     Gramy: 'GRAMY',
-    Millilitry: 'MILLILITRY'
+    Mililitry: 'MILILITRY'
 } as const;
 
 export type MealAddCommandUnitTypeEnum = typeof MealAddCommandUnitTypeEnum[keyof typeof MealAddCommandUnitTypeEnum];
@@ -587,19 +587,6 @@ export interface RegisterRequest {
      * @memberof RegisterRequest
      */
     'admin'?: boolean;
-}
-/**
- * 
- * @export
- * @interface UploadPhotoRequest
- */
-export interface UploadPhotoRequest {
-    /**
-     * 
-     * @type {File}
-     * @memberof UploadPhotoRequest
-     */
-    'file': File;
 }
 
 /**
@@ -2326,13 +2313,13 @@ export const PhotoControllerApiAxiosParamCreator = function (configuration?: Con
             };
         },
         /**
-         * Upload a photo to the server
-         * @summary Upload a photo
-         * @param {UploadPhotoRequest} [uploadPhotoRequest] 
+         * Uploads an image file
+         * @summary Upload a file
+         * @param {File} [file] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        uploadPhoto: async (uploadPhotoRequest?: UploadPhotoRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        uploadPhoto: async (file?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/photos/upload`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2344,15 +2331,20 @@ export const PhotoControllerApiAxiosParamCreator = function (configuration?: Con
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
 
+            if (file !== undefined) { 
+                localVarFormParams.append('file', file as any);
+            }
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(uploadPhotoRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = localVarFormParams;
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -2383,14 +2375,14 @@ export const PhotoControllerApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
-         * Upload a photo to the server
-         * @summary Upload a photo
-         * @param {UploadPhotoRequest} [uploadPhotoRequest] 
+         * Uploads an image file
+         * @summary Upload a file
+         * @param {File} [file] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async uploadPhoto(uploadPhotoRequest?: UploadPhotoRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.uploadPhoto(uploadPhotoRequest, options);
+        async uploadPhoto(file?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.uploadPhoto(file, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PhotoControllerApi.uploadPhoto']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -2416,14 +2408,14 @@ export const PhotoControllerApiFactory = function (configuration?: Configuration
             return localVarFp.downloadPhoto(filename, options).then((request) => request(axios, basePath));
         },
         /**
-         * Upload a photo to the server
-         * @summary Upload a photo
-         * @param {UploadPhotoRequest} [uploadPhotoRequest] 
+         * Uploads an image file
+         * @summary Upload a file
+         * @param {File} [file] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        uploadPhoto(uploadPhotoRequest?: UploadPhotoRequest, options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.uploadPhoto(uploadPhotoRequest, options).then((request) => request(axios, basePath));
+        uploadPhoto(file?: File, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.uploadPhoto(file, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -2448,15 +2440,15 @@ export class PhotoControllerApi extends BaseAPI {
     }
 
     /**
-     * Upload a photo to the server
-     * @summary Upload a photo
-     * @param {UploadPhotoRequest} [uploadPhotoRequest] 
+     * Uploads an image file
+     * @summary Upload a file
+     * @param {File} [file] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PhotoControllerApi
      */
-    public uploadPhoto(uploadPhotoRequest?: UploadPhotoRequest, options?: RawAxiosRequestConfig) {
-        return PhotoControllerApiFp(this.configuration).uploadPhoto(uploadPhotoRequest, options).then((request) => request(this.axios, this.basePath));
+    public uploadPhoto(file?: File, options?: RawAxiosRequestConfig) {
+        return PhotoControllerApiFp(this.configuration).uploadPhoto(file, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

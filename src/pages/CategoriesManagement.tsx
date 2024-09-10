@@ -21,7 +21,7 @@ import { AxiosResponse } from "axios";
 import { useEffect, useState, Fragment } from "react";
 
 import { Category, Meal } from "../api";
-import { categoriesApi, mealsApi } from "../utils/api";
+import { categoriesApi, mealsApi, apiUrl } from "../utils/api";
 import { CategoryModal } from "../components/CategoriesManagement/CategoryModal";
 import { DishModal } from "../components/CategoriesManagement/DishModal";
 
@@ -49,6 +49,8 @@ export const CategoriesManagement = () => {
       return [...prev, []];
     });
   };
+
+  console.log(apiUrl);
 
   const fetchMealsByCategory = (category: Category, idx: number) => {
     if (category.id !== undefined) {
@@ -84,13 +86,15 @@ export const CategoriesManagement = () => {
   }, [rerenderOnChange]);
 
   useEffect(() => {
-    if (meals) {
+    if (meals !== undefined) {
       setIngredients(
         Array.from(
           new Set(
-            meals.flatMap((category) =>
-              category.flatMap((meal) => meal.ingredients)
-            )
+            meals.flatMap((category) => {
+              if (category) {
+                return category.flatMap((meal) => meal.ingredients);
+              }
+            })
           )
         )
           .filter(
@@ -104,9 +108,11 @@ export const CategoriesManagement = () => {
       setAllergens(
         Array.from(
           new Set(
-            meals.flatMap((category) =>
-              category.flatMap((meal) => meal.allergens)
-            )
+            meals.flatMap((category) => {
+              if (category) {
+                return category.flatMap((meal) => meal.allergens);
+              }
+            })
           )
         )
           .filter((allergen): allergen is string => allergen !== undefined)

@@ -17,7 +17,7 @@ import { toast, Slide } from "react-toastify";
 
 import { Category, CategoryAddCommand } from "../../api";
 import { Transition } from "../../utils/Transision";
-import { categoriesApi } from "../../utils/api";
+import { categoriesApi, photoApi, photoDownloadUrl } from "../../utils/api";
 
 interface CategoryModalProps {
   open: boolean;
@@ -39,7 +39,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
   }, [category]);
 
   const [categoryCopy, setCategoryCopy] = useState<Category | null>(category);
-  // make a copy of category with useState
+  const [photo, setPhoto] = useState<File | null>(null);
   return (
     <Dialog
       open={open}
@@ -56,7 +56,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
         component={"form"}
         onSubmit={(e) => {
           e.preventDefault();
-          if (!categoryCopy?.photographUrl) {
+          if (!categoryCopy?.photographUrl || !photo) {
             toast.error("Ikonka jest wymagana.", {
               position: "bottom-center",
               autoClose: 5000,
@@ -72,27 +72,48 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
           }
           if (categoryCopy?.id) {
             // update category
-            categoriesApi
-              .updateCategory(categoryCopy.id, categoryCopy)
+            photoApi
+              .uploadPhoto(photo)
               .then((response: AxiosResponse) => {
                 if (response.status === 200) {
-                  toast.success("Kategoria zaktualizowana pomyślnie.", {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Slide,
-                  });
-                  setOpen(false);
-                  setCategory(categoryCopy);
-                  setRerenderOnChange((prev: boolean) => !prev);
+                  categoryCopy.photographUrl = photoDownloadUrl + response.data;
+                  categoriesApi
+                    .updateCategory(categoryCopy.id!, categoryCopy)
+                    .then((response: AxiosResponse) => {
+                      if (response.status === 200) {
+                        toast.success("Kategoria zaktualizowana pomyślnie.", {
+                          position: "bottom-center",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                          transition: Slide,
+                        });
+                        setOpen(false);
+                        setCategory(categoryCopy);
+                        setRerenderOnChange((prev: boolean) => !prev);
+                      }
+                    })
+                    .catch((error) => {
+                      toast.error(error.response.data, {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Slide,
+                      });
+                    });
                 }
               })
               .catch((error) => {
+                console.log(error);
                 toast.error(error.response.data, {
                   position: "bottom-center",
                   autoClose: 5000,
@@ -109,30 +130,52 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
             // add category
             const newCategory: CategoryAddCommand = {
               name: categoryCopy?.name ?? "",
-              photographUrl: categoryCopy?.photographUrl ?? "",
+              photographUrl: categoryCopy?.photographUrl
+                ? photoDownloadUrl + categoryCopy.photographUrl
+                : "",
             };
-            categoriesApi
-              .addCategory(newCategory)
+            photoApi
+              .uploadPhoto(photo)
               .then((response: AxiosResponse) => {
                 if (response.status === 200) {
-                  toast.success("Kategoria dodana pomyślnie.", {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Slide,
-                  });
-                  setOpen(false);
-                  setCategory(categoryCopy);
-                  setRerenderOnChange((prev: boolean) => !prev);
+                  newCategory.photographUrl = photoDownloadUrl + response.data;
+                  categoriesApi
+                    .addCategory(newCategory)
+                    .then((response: AxiosResponse) => {
+                      if (response.status === 200) {
+                        toast.success("Kategoria dodana pomyślnie.", {
+                          position: "bottom-center",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                          transition: Slide,
+                        });
+                        setOpen(false);
+                        setCategory(categoryCopy);
+                        setRerenderOnChange((prev: boolean) => !prev);
+                      }
+                    })
+                    .catch((error) => {
+                      toast.error(error.response.data.name, {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Slide,
+                      });
+                    });
                 }
               })
               .catch((error) => {
-                toast.error(error.response.data.name, {
+                toast.error(error.response.data, {
                   position: "bottom-center",
                   autoClose: 5000,
                   hideProgressBar: false,
@@ -190,6 +233,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
               hidden
               onChange={(e) => {
                 if (e.target.files) {
+                  setPhoto(e.target.files[0]);
                   setCategoryCopy({
                     ...categoryCopy,
                     photographUrl: e.target.files[0].name,

@@ -25,7 +25,7 @@ import { toast, Slide } from "react-toastify";
 
 import { Meal, Category, MealUnitTypeEnum, MealAddCommand } from "../../api";
 import { Transition } from "../../utils/Transision";
-import { mealsApi } from "../../utils/api";
+import { mealsApi, photoApi, photoDownloadUrl } from "../../utils/api";
 import { AxiosResponse } from "axios";
 
 interface DishModalProps {
@@ -57,6 +57,7 @@ export const DishModal: React.FC<DishModalProps> = ({
   const [selectedUnit, setSelectedUnit] = useState<MealUnitTypeEnum>(
     MealUnitTypeEnum.Gramy
   );
+  const [photo, setPhoto] = useState<File | null>(null);
   return (
     <Dialog
       open={open}
@@ -73,7 +74,7 @@ export const DishModal: React.FC<DishModalProps> = ({
         component={"form"}
         onSubmit={(e) => {
           e.preventDefault();
-          if (!dishCopy?.photographUrl) {
+          if (!dishCopy?.photographUrl || !photo) {
             toast.error("Ikonka jest wymagana.", {
               position: "bottom-center",
               autoClose: 5000,
@@ -89,12 +90,57 @@ export const DishModal: React.FC<DishModalProps> = ({
           }
           if (dishCopy?.id) {
             // update dish
-
-            mealsApi
-              .updateMeal(dishCopy.id, dishCopy as MealAddCommand)
+            photoApi
+              .uploadPhoto(photo)
               .then((response) => {
                 if (response.status === 200) {
-                  toast.success("Danie zaktualizowane pomyślnie.", {
+                  mealsApi
+                    .updateMeal(dishCopy.id!, {
+                      ...dishCopy,
+                      photographUrl: photoDownloadUrl + dishCopy.photographUrl,
+                    } as MealAddCommand)
+                    .then((response) => {
+                      if (response.status === 200) {
+                        toast.success("Danie zaktualizowane pomyślnie.", {
+                          position: "bottom-center",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                          transition: Slide,
+                        });
+                        setOpen(false);
+                        setDish({
+                          ...dishCopy,
+                          name: dishCopy.name ?? "",
+                          categoryId: dishCopy.categoryId ?? -1,
+                        });
+                        setRerenderOnChange((prev: boolean) => !prev);
+                      }
+                    })
+                    .catch((_) => {
+                      toast.info("Błąd podczas aktualizacji dania.", {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Slide,
+                      });
+                    });
+                }
+              })
+              .catch((error) => {
+                toast.error(
+                  error.response.data?.name ??
+                    JSON.stringify(error.response.data),
+                  {
                     position: "bottom-center",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -104,53 +150,59 @@ export const DishModal: React.FC<DishModalProps> = ({
                     progress: undefined,
                     theme: "light",
                     transition: Slide,
-                  });
-                  setOpen(false);
-                  setDish({
-                    ...dishCopy,
-                    name: dishCopy.name ?? "",
-                    categoryId: dishCopy.categoryId ?? -1,
-                  });
-                  setRerenderOnChange((prev: boolean) => !prev);
-                }
-              })
-              .catch((_) => {
-                toast.info("Błąd podczas aktualizacji dania.", {
-                  position: "bottom-center",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                  transition: Slide,
-                });
+                  }
+                );
               });
           } else if (dish === null) {
             // add dish
-            mealsApi
-              .addMeal(dishCopy as MealAddCommand)
+            photoApi
+              .uploadPhoto(photo)
               .then((response) => {
                 if (response.status === 200) {
-                  toast.success("Danie dodane pomyślnie.", {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Slide,
-                  });
-                  setOpen(false);
-                  setDish({
-                    ...dishCopy,
-                    name: dishCopy?.name ?? "",
-                    categoryId: dishCopy?.categoryId ?? -1,
-                  });
-                  setRerenderOnChange((prev: boolean) => !prev);
+                  mealsApi
+                    .addMeal({
+                      ...dishCopy,
+                      photographUrl: photoDownloadUrl + dishCopy.photographUrl,
+                    } as MealAddCommand)
+                    .then((response) => {
+                      if (response.status === 200) {
+                        toast.success("Danie dodane pomyślnie.", {
+                          position: "bottom-center",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                          transition: Slide,
+                        });
+                        setOpen(false);
+                        setDish({
+                          ...dishCopy,
+                          name: dishCopy?.name ?? "",
+                          categoryId: dishCopy?.categoryId ?? -1,
+                        });
+                        setRerenderOnChange((prev: boolean) => !prev);
+                      }
+                    })
+                    .catch((error) => {
+                      toast.error(
+                        error.response.data?.name ??
+                          JSON.stringify(error.response.data),
+                        {
+                          position: "bottom-center",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                          transition: Slide,
+                        }
+                      );
+                    });
                 }
               })
               .catch((error) => {
@@ -432,6 +484,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                 hidden
                 onChange={(e: any) => {
                   if (e.target.files) {
+                    setPhoto(e.target.files[0]);
                     setDishCopy({
                       ...dishCopy,
                       photographUrl: e.target.files[0].name,

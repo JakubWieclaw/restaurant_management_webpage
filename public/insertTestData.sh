@@ -125,9 +125,19 @@ categories=(
 first_category_id=""
 second_category_id=""
 
+photoDownloadUrl="http://localhost:8080/api/photos/download?filename="
+
 for category in "${categories[@]}"; do
   name=$(echo $category | cut -d',' -f1 | tr -d '[]\" ')
   photographUrl=$(echo $category | cut -d',' -f2 | tr -d '[]\" ')
+
+  curl -X 'POST' \
+    'http://localhost:8080/api/photos/upload' \
+    -H 'accept: */*' \
+    -H 'Content-Type: multipart/form-data' \
+    -F "file=@$photographUrl;type=image/jpeg"
+
+  echo
 
   response=$(curl -s -X 'POST' \
     'http://localhost:8080/api/categories/add' \
@@ -135,7 +145,7 @@ for category in "${categories[@]}"; do
     -H 'Content-Type: application/json' \
     -d "{
     \"name\": \"$name\",
-    \"photographUrl\": \"$photographUrl\"
+    \"photographUrl\": \"$photoDownloadUrl$photographUrl\"
   }")
 
   if [ -z "$first_category_id" ]; then
@@ -146,13 +156,13 @@ for category in "${categories[@]}"; do
 done
 # INSERT PIZZA DISHES
 dishes=(
-  '{"name": "Pepperoni", "price": 23.99, "ingredients": ["Sos pomidorowy", "Ser", "Pepperoni"], "image": "food/pizza4.jpg", "allergens": ["Nabiał", "Gluten"]}'
-  '{"name": "Diavola", "price": 27.99, "ingredients": ["Sos pomidorowy", "Ser", "Salami", "Oliwki"], "image": "food/pizza5.jpg", "allergens": ["Nabiał", "Orzechy"]}'
-  '{"name": "Vegetariana", "price": 22.99, "ingredients": ["Sos pomidorowy", "Ser", "Papryka", "Pieczarki", "Oliwki"], "image": "food/pizza6.jpg", "allergens": ["Nabiał", "Soja"]}'
-  '{"name": "Prosciutto", "price": 26.99, "ingredients": ["Sos pomidorowy", "Ser", "Szynka", "Rukola"], "image": "food/pizza7.jpg", "allergens": ["Nabiał", "Gluten", "Jajka"]}'
-  '{"name": "Margherita", "price": 20.99, "ingredients": ["Sos pomidorowy", "Ser", "Bazylia"], "image": "food/pizza1.jpg", "allergens": ["Nabiał", "Gluten"]}'
-  '{"name": "Capriciosa", "price": 25.99, "ingredients": ["Sos pomidorowy", "Ser", "Szynka", "Pieczarki"], "image": "food/pizza2.jpg", "allergens": ["Nabiał", "Gluten"]}'
-  '{"name": "Hawajska", "price": 24.99, "ingredients": ["Sos pomidorowy", "Ser", "Szynka", "Ananas"], "image": "food/pizza3.jpg", "allergens": ["Nabiał", "Gluten"]}'
+  '{"name": "Pepperoni", "price": 23.99, "ingredients": ["Sos pomidorowy", "Ser", "Pepperoni"], "image": "pizza4.jpg", "allergens": ["Nabiał", "Gluten"]}'
+  '{"name": "Diavola", "price": 27.99, "ingredients": ["Sos pomidorowy", "Ser", "Salami", "Oliwki"], "image": "pizza5.jpg", "allergens": ["Nabiał", "Orzechy"]}'
+  '{"name": "Vegetariana", "price": 22.99, "ingredients": ["Sos pomidorowy", "Ser", "Papryka", "Pieczarki", "Oliwki"], "image": "pizza6.jpg", "allergens": ["Nabiał", "Soja"]}'
+  '{"name": "Prosciutto", "price": 26.99, "ingredients": ["Sos pomidorowy", "Ser", "Szynka", "Rukola"], "image": "pizza7.jpg", "allergens": ["Nabiał", "Gluten", "Jajka"]}'
+  '{"name": "Margherita", "price": 20.99, "ingredients": ["Sos pomidorowy", "Ser", "Bazylia"], "image": "pizza1.jpg", "allergens": ["Nabiał", "Gluten"]}'
+  '{"name": "Capriciosa", "price": 25.99, "ingredients": ["Sos pomidorowy", "Ser", "Szynka", "Pieczarki"], "image": "pizza2.jpg", "allergens": ["Nabiał", "Gluten"]}'
+  '{"name": "Hawajska", "price": 24.99, "ingredients": ["Sos pomidorowy", "Ser", "Szynka", "Ananas"], "image": "pizza3.jpg", "allergens": ["Nabiał", "Gluten"]}'
 )
 
 for dish in "${dishes[@]}"; do
@@ -166,13 +176,21 @@ for dish in "${dishes[@]}"; do
   calories=$((RANDOM % 1000 + 500))
 
   curl -X 'POST' \
+    'http://localhost:8080/api/photos/upload' \
+    -H 'accept: */*' \
+    -H 'Content-Type: multipart/form-data' \
+    -F "file=@$image;type=image/jpeg"
+
+  echo
+
+  curl -X 'POST' \
     'http://localhost:8080/api/meals/add' \
     -H 'accept: */*' \
     -H 'Content-Type: application/json' \
     -d "{
     \"name\": \"$name\",
     \"price\": $price,
-    \"photographUrl\": \"$image\",
+    \"photographUrl\": \"$photoDownloadUrl$image\",
     \"ingredients\": $ingredients,
     \"weightOrVolume\": $weightOrVolume,
     \"unitType\": \"GRAMY\",
@@ -185,13 +203,13 @@ done
 
 # INSERT SPAGHETTI DISHES
 dishes=(
-  '{"name": "Carbonara", "price": 24.99, "ingredients": ["Makaron", "Boczek", "Żółtko", "Ser"], "image": "food/spaghetti1.jpg", "allergens": ["Nabiał", "Gluten", "Jajka"]}'
-  '{"name": "Bolognese", "price": 26.99, "ingredients": ["Makaron", "Mięso mielone", "Sos pomidorowy"], "image": "food/spaghetti2.jpg", "allergens": ["Nabiał", "Gluten"]}'
-  '{"name": "Frutti di Mare", "price": 28.99, "ingredients": ["Makaron", "Owoce morza", "Sos pomidorowy"], "image": "food/spaghetti3.jpg", "allergens": ["Nabiał", "Gluten"]}'
-  '{"name": "Aglio e Olio", "price": 22.99, "ingredients": ["Makaron", "Czosnek", "Oliwa"], "image": "food/spaghetti4.jpg", "allergens": ["Nabiał", "Gluten"]}'
-  '{"name": "Pesto", "price": 25.99, "ingredients": ["Makaron", "Pesto", "Orzechy", "Ser"], "image": "food/spaghetti5.jpg", "allergens": ["Nabiał", "Orzechy", "Gluten"]}'
-  '{"name": "Arrabiata", "price": 23.99, "ingredients": ["Makaron", "Sos pomidorowy", "Papryczki chili"], "image": "food/spaghetti6.jpg", "allergens": ["Nabiał", "Gluten"]}'
-  '{"name": "Alfredo", "price": 27.99, "ingredients": ["Makaron", "Śmietana", "Ser"], "image": "food/spaghetti7.jpg", "allergens": ["Nabiał", "Gluten"]}'
+  '{"name": "Carbonara", "price": 24.99, "ingredients": ["Makaron", "Boczek", "Żółtko", "Ser"], "image": "spaghetti1.jpg", "allergens": ["Nabiał", "Gluten", "Jajka"]}'
+  '{"name": "Bolognese", "price": 26.99, "ingredients": ["Makaron", "Mięso mielone", "Sos pomidorowy"], "image": "spaghetti2.jpg", "allergens": ["Nabiał", "Gluten"]}'
+  '{"name": "Frutti di Mare", "price": 28.99, "ingredients": ["Makaron", "Owoce morza", "Sos pomidorowy"], "image": "spaghetti3.jpg", "allergens": ["Nabiał", "Gluten"]}'
+  '{"name": "Aglio e Olio", "price": 22.99, "ingredients": ["Makaron", "Czosnek", "Oliwa"], "image": "spaghetti4.jpg", "allergens": ["Nabiał", "Gluten"]}'
+  '{"name": "Pesto", "price": 25.99, "ingredients": ["Makaron", "Pesto", "Orzechy", "Ser"], "image": "spaghetti5.jpg", "allergens": ["Nabiał", "Orzechy", "Gluten"]}'
+  '{"name": "Arrabiata", "price": 23.99, "ingredients": ["Makaron", "Sos pomidorowy", "Papryczki chili"], "image": "spaghetti6.jpg", "allergens": ["Nabiał", "Gluten"]}'
+  '{"name": "Alfredo", "price": 27.99, "ingredients": ["Makaron", "Śmietana", "Ser"], "image": "spaghetti7.jpg", "allergens": ["Nabiał", "Gluten"]}'
 )
 
 for dish in "${dishes[@]}"; do
@@ -205,13 +223,19 @@ for dish in "${dishes[@]}"; do
   calories=$((RANDOM % 1000 + 500))
 
   curl -X 'POST' \
+    'http://localhost:8080/api/photos/upload' \
+    -H 'accept: */*' \
+    -H 'Content-Type: multipart/form-data' \
+    -F "file=@$image;type=image/jpeg"
+
+  curl -X 'POST' \
     'http://localhost:8080/api/meals/add' \
     -H 'accept: */*' \
     -H 'Content-Type: application/json' \
     -d "{
     \"name\": \"$name\",
     \"price\": $price,
-    \"photographUrl\": \"$image\",
+    \"photographUrl\": \"$photoDownloadUrl$image\",
     \"ingredients\": $ingredients,
     \"weightOrVolume\": $weightOrVolume,
     \"unitType\": \"GRAMY\",
