@@ -27,6 +27,7 @@ export const NameLogo = () => {
           id="file-upload"
           type="file"
           hidden
+          required
           onChange={(e) => {
             if (e.target.files) {
               ctx.setRestaurantLogo(e.target.files[0]);

@@ -25,6 +25,14 @@ curl -X 'DELETE' \
 
 echo
 
+# INSERT IMAGE
+
+curl -X 'POST' \
+  'http://localhost:8080/api/photos/upload' \
+  -H 'accept: */*' \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'file=@icons8-meal.png;type=image/jpeg'
+
 # INITIALIZE CONFIG
 curl -X 'POST' \
   'http://localhost:8080/admin/api/config/initialize-system' \
@@ -37,7 +45,7 @@ curl -X 'POST' \
   "street": "ul. Marszałkowska 1",
   "phoneNumber": "123456789",
   "email": "a@a",
-  "logoUrl": "icons8-meal.svg",
+  "logoUrl": "icons8-meal.png",
   "openingHours": [
     {
       "day": "MONDAY",
@@ -111,15 +119,15 @@ echo
 
 # INSERT CATEGORIES
 categories=(
-  '["Pizza", "icons8-pizza.svg"]'
-  '["Spaghetti", "icons8-spaghetti.svg"]'
-  '["Sałatki", "icons8-salad.svg"]'
-  '["Burgery", "icons8-burger.svg"]'
-  '["Desery", "icons8-dessert.svg"]'
-  '["Napoje", "icons8-coffee-cup.svg"]'
-  '["Sushi", "icons8-sushi.svg"]'
-  '["Zupy", "icons8-noodles.svg"]'
-  '["Kanapki", "icons8-sandwich.svg"]'
+  '["Pizza", "icons8-pizza.png"]'
+  '["Spaghetti", "icons8-spaghetti.png"]'
+  '["Sałatki", "icons8-salad.png"]'
+  '["Burgery", "icons8-burger.png"]'
+  '["Desery", "icons8-dessert.png"]'
+  '["Napoje", "icons8-coffee-cup.png"]'
+  '["Sushi", "icons8-sushi.png"]'
+  '["Zupy", "icons8-noodles.png"]'
+  '["Kanapki", "icons8-sandwich.png"]'
 )
 
 first_category_id=""

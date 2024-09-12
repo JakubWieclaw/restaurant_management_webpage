@@ -17,6 +17,7 @@ import { LoginRegister } from "./pages/LoginRegister";
 import { AppBarHeader } from "./components/AppBarHeader";
 import { setConfig } from "./reducers/slices/configSlice";
 import { CategoriesManagement } from "./pages/CategoriesManagement";
+import { Contact } from "./pages/Contact";
 
 function App() {
   const dispatch = useDispatch();
@@ -72,6 +73,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/auth" element={<LoginRegister />} />
           <Route path="/initialize-system" element={<InitSystem />} />
+          <Route path="/contact" element={<Contact />} />
           <Route
             path="/categories-management"
             element={<CategoriesManagement />}

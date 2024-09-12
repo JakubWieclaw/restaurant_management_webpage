@@ -39,6 +39,10 @@ export const AppBarHeader = () => {
       label: "Zarządzaj kategoriami",
       link: "/categories-management",
     },
+    {
+      label: "Kontakt",
+      link: "/contact",
+    },
   ];
 
   const dispatch: AppDispatch = useDispatch();
