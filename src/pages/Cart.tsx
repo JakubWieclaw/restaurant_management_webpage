@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 
 import { RootState } from "../store";
 import { CartContent } from "../components/Cart/CartContent";
+import { DeliverySelection } from "../components/Cart/DeliverySelection";
 
 export const Cart = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -34,6 +35,8 @@ export const Cart = () => {
     switch (activeStep) {
       case 0:
         return <CartContent />;
+      case 1:
+        return <DeliverySelection />;
       default:
         return null;
     }
@@ -84,7 +87,9 @@ export const Cart = () => {
           ))}
         </Stepper>
       </Box>
+
       {inputs(activeStep)}
+
       <Grid container sx={{ py: 5 }} justifyContent="space-between">
         <Grid item>
           <Button
