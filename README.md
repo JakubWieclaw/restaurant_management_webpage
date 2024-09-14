@@ -34,7 +34,7 @@
 
 1. Insert test data into the database by running the following script:
    ```bash
-   ./insertTestData.sh
+   cd public; ./insertTestData.sh
    ```
 
 ### Docker Method
