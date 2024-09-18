@@ -18,17 +18,55 @@ import { useState, useEffect } from "react";
 
 import { configApi } from "../../utils/api";
 import { DeliveryPricing } from "../../api";
-import { AutocompleteDistanceService } from "./AutocompleteDistanceService";
+import {
+  AutocompleteDistanceService,
+  PlaceType,
+} from "./AutocompleteDistanceService";
 
-export const DeliverySelection = () => {
-  const handleToggle = (value: string) => () => {
+interface DeliverySelectionProps {
+  setAddress: (address: string) => void;
+  checked: string;
+  setChecked: (value: string) => void;
+  deliveryCost: number | null;
+  setDeliveryCost: (value: number) => void;
+  inputValue: string;
+  setInputValue: (value: string) => void;
+  value: PlaceType | null;
+  setValue: (value: PlaceType | null) => void;
+  options: readonly PlaceType[];
+  setOptions: (value: readonly PlaceType[]) => void;
+}
+
+enum DeliveryOption {
+  Personal = "personal",
+  Courier = "courier",
+}
+
+export const DeliverySelection: React.FC<DeliverySelectionProps> = ({
+  setAddress,
+  checked,
+  setChecked,
+  deliveryCost,
+  setDeliveryCost,
+  inputValue,
+  setInputValue,
+  value,
+  setValue,
+  options,
+  setOptions,
+}) => {
+  const handleToggle = (value: DeliveryOption) => () => {
+    if (value === DeliveryOption.Personal) {
+      setDeliveryCost(0);
+      setAddress(DeliveryOption.Personal);
+    } else {
+      setAddress("");
+    }
     setChecked(value);
   };
 
-  const [checked, setChecked] = useState("");
   const [distanceString, setDistanceString] = useState("");
   const [deliveryPrices, setDeliveryPrices] = useState<DeliveryPricing[]>([]);
-  const [deliveryCost, setDeliveryCost] = useState<number | null>(null);
 
   useEffect(() => {
     configApi
@@ -54,21 +92,30 @@ export const DeliverySelection = () => {
         }
       }
     }
+    if (
+      deliveryCost !== null &&
+      deliveryCost > 0 &&
+      checked === DeliveryOption.Courier &&
+      _deliveryCost >= 0
+    ) {
+      _deliveryCost = deliveryCost;
+    }
     setDeliveryCost(_deliveryCost);
+    if (_deliveryCost < 0) {
+      setAddress("");
+    }
   };
 
   const personalCollection = () => {
-    const deliveryType = "personal";
-
     return (
       <ListItem
-        key={deliveryType}
+        key={DeliveryOption.Personal}
         secondaryAction={
           <Radio
             edge="end"
-            onChange={handleToggle(deliveryType)}
-            checked={checked === deliveryType}
-            inputProps={{ "aria-labelledby": deliveryType }}
+            onChange={handleToggle(DeliveryOption.Personal)}
+            checked={checked === DeliveryOption.Personal}
+            inputProps={{ "aria-labelledby": DeliveryOption.Personal }}
             name="radio-button"
           />
         }
@@ -78,14 +125,14 @@ export const DeliverySelection = () => {
           },
         }}
       >
-        <ListItemButton onClick={handleToggle(deliveryType)}>
+        <ListItemButton onClick={handleToggle(DeliveryOption.Personal)}>
           <ListItemAvatar>
             <Avatar>
               <StorefrontIcon />
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            id={deliveryType}
+            id={DeliveryOption.Personal}
             primary={"Odbiór osobisty"}
             secondary="Cena: 0 zł"
           />
@@ -95,18 +142,16 @@ export const DeliverySelection = () => {
   };
 
   const courierDelivery = () => {
-    const deliveryType = "courier";
-
     return (
       <>
         <ListItem
-          key={deliveryType}
+          key={DeliveryOption.Courier}
           secondaryAction={
             <Radio
               edge="end"
-              onChange={handleToggle(deliveryType)}
-              checked={checked === deliveryType}
-              inputProps={{ "aria-labelledby": deliveryType }}
+              onChange={handleToggle(DeliveryOption.Courier)}
+              checked={checked === DeliveryOption.Courier}
+              inputProps={{ "aria-labelledby": DeliveryOption.Courier }}
               name="radio-button"
             />
           }
@@ -116,14 +161,14 @@ export const DeliverySelection = () => {
             },
           }}
         >
-          <ListItemButton onClick={handleToggle(deliveryType)}>
+          <ListItemButton onClick={handleToggle(DeliveryOption.Courier)}>
             <ListItemAvatar>
               <Avatar>
                 <DeliveryDiningIcon />
               </Avatar>
             </ListItemAvatar>
             <ListItemText
-              id={deliveryType}
+              id={DeliveryOption.Courier}
               primary={"Dostawa kurierem"}
               secondary={
                 deliveryCost === null ? (
@@ -138,11 +183,15 @@ export const DeliverySelection = () => {
               }
             />
           </ListItemButton>
-          {checked === deliveryType &&
+          {checked === DeliveryOption.Courier &&
             distanceString !== "" &&
             distanceString + " od restauracji"}
         </ListItem>
-        <Collapse in={checked === deliveryType} timeout="auto" unmountOnExit>
+        <Collapse
+          in={checked === DeliveryOption.Courier}
+          timeout="auto"
+          unmountOnExit
+        >
           <List component="div" disablePadding>
             <ListItem
               key="autocomplete"
@@ -160,6 +209,13 @@ export const DeliverySelection = () => {
                     calculateDeliveryPrice(distance);
                   }
                 }}
+                setAddress={setAddress}
+                inputValue={inputValue}
+                setInputValue={setInputValue}
+                value={value}
+                setValue={setValue}
+                options={options}
+                setOptions={setOptions}
               />
             </ListItem>
           </List>

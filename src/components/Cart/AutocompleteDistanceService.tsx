@@ -45,17 +45,29 @@ export interface PlaceType {
 
 interface AutocompleteDistanceServiceProps {
   setDistanceString: (value: string) => void;
+  setAddress: (value: string) => void;
+  inputValue: string;
+  setInputValue: (value: string) => void;
+  value: PlaceType | null;
+  setValue: (value: PlaceType | null) => void;
+  options: readonly PlaceType[];
+  setOptions: (value: readonly PlaceType[]) => void;
 }
 
 export const AutocompleteDistanceService: React.FC<
   AutocompleteDistanceServiceProps
-> = ({ setDistanceString }) => {
+> = ({
+  setDistanceString,
+  setAddress,
+  inputValue,
+  setInputValue,
+  value,
+  setValue,
+  options,
+  setOptions,
+}) => {
   const loaded = useRef(false);
   const config = useSelector((state: RootState) => state.config);
-
-  const [value, setValue] = useState<PlaceType | null>(null);
-  const [inputValue, setInputValue] = useState("");
-  const [options, setOptions] = useState<readonly PlaceType[]>([]);
 
   const fetch = useMemo(
     () =>
@@ -127,7 +139,11 @@ export const AutocompleteDistanceService: React.FC<
           distanceRequest,
           (response: any) => {
             if (response.rows[0].elements[0].status === "OK") {
-              setDistanceString(response.rows[0].elements[0].distance.text);
+              console.log(response);
+              setAddress(value?.description ?? "");
+              setDistanceString(
+                response.rows[0].elements[0].distance.text.replace(",", "")
+              );
             }
           }
         );
@@ -143,7 +159,7 @@ export const AutocompleteDistanceService: React.FC<
     if (!document.querySelector("#google-maps")) {
       loadScript(
         `https://maps.googleapis.com/maps/api/js?key=${
-          import.meta.env.GOOGLE_API_KEY
+          import.meta.env.VITE_GOOGLE_API_KEY
         }&libraries=places`,
         document.querySelector("head"),
         "google-maps"
@@ -171,6 +187,7 @@ export const AutocompleteDistanceService: React.FC<
         setValue(newValue);
       }}
       onInputChange={(_, newInputValue) => {
+        console.log(newInputValue);
         setInputValue(newInputValue);
       }}
       renderInput={(params) => (

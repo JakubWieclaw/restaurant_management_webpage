@@ -10,15 +10,24 @@ import {
   StepLabel,
 } from "@mui/material";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import { RootState } from "../store";
 import { CartContent } from "../components/Cart/CartContent";
+import { ContentSummary } from "../components/Cart/OrderSummary";
 import { DeliverySelection } from "../components/Cart/DeliverySelection";
+import { PlaceType } from "../components/Cart/AutocompleteDistanceService";
 
 export const Cart = () => {
+  const [address, setAddress] = useState("");
+  const [checked, setChecked] = useState("");
   const [activeStep, setActiveStep] = useState(0);
+  const [inputValue, setInputValue] = useState("");
+  const [deliveryCost, setDeliveryCost] = useState<number | null>(null);
+  const [value, setValue] = useState<PlaceType | null>(null);
+  const [options, setOptions] = useState<readonly PlaceType[]>([]);
+
   const steps = ["Koszyk", "Wybór dostawy", "Podsumowanie"];
 
   const handleNext = (e: any) => {
@@ -36,7 +45,23 @@ export const Cart = () => {
       case 0:
         return <CartContent />;
       case 1:
-        return <DeliverySelection />;
+        return (
+          <DeliverySelection
+            setAddress={setAddress}
+            checked={checked}
+            setChecked={setChecked}
+            deliveryCost={deliveryCost}
+            setDeliveryCost={setDeliveryCost}
+            inputValue={inputValue}
+            setInputValue={setInputValue}
+            value={value}
+            setValue={setValue}
+            options={options}
+            setOptions={setOptions}
+          />
+        );
+      case 2:
+        return <ContentSummary shippingCost={deliveryCost ?? 0} />;
       default:
         return null;
     }
@@ -104,9 +129,13 @@ export const Cart = () => {
           <Button
             variant="contained"
             onClick={handleNext}
-            disabled={cart.items.length === 0}
+            disabled={
+              cart.items.length === 0 || (activeStep === 1 && address === "")
+            }
           >
-            {activeStep === steps.length - 1 ? "Zakończ" : "Następny"}
+            {activeStep === steps.length - 1
+              ? "Przejdź do płatności"
+              : "Następny"}
           </Button>
         </Grid>
       </Grid>
