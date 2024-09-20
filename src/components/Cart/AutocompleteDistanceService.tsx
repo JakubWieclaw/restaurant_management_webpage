@@ -10,7 +10,7 @@ import parse from "autosuggest-highlight/parse";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 import { useSelector } from "react-redux";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { RootState } from "../../store";
 
