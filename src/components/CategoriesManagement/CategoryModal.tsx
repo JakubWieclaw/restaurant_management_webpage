@@ -56,7 +56,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
         component={"form"}
         onSubmit={(e) => {
           e.preventDefault();
-          if (!categoryCopy?.photographUrl || !photo) {
+          if (!categoryCopy?.photographUrl && !photo) {
             toast.error("Ikonka jest wymagana.", {
               position: "bottom-center",
               autoClose: 5000,
@@ -72,48 +72,52 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
           }
           if (categoryCopy?.id) {
             // update category
-            photoApi
-              .uploadPhoto(photo)
+            if (photo) {
+              // if new photo
+              photoApi
+                .uploadPhoto(photo)
+                .then((response: AxiosResponse) => {
+                  if (response.status === 200) {
+                    categoryCopy.photographUrl =
+                      photoDownloadUrl + response.data;
+                  }
+                })
+                .catch((error) => {
+                  console.log(error);
+                  toast.error(error.response.data, {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Slide,
+                  });
+                });
+            }
+            categoriesApi
+              .updateCategory(categoryCopy.id, categoryCopy)
               .then((response: AxiosResponse) => {
                 if (response.status === 200) {
-                  categoryCopy.photographUrl = photoDownloadUrl + response.data;
-                  categoriesApi
-                    .updateCategory(categoryCopy.id!, categoryCopy)
-                    .then((response: AxiosResponse) => {
-                      if (response.status === 200) {
-                        toast.success("Kategoria zaktualizowana pomyślnie.", {
-                          position: "bottom-center",
-                          autoClose: 5000,
-                          hideProgressBar: false,
-                          closeOnClick: true,
-                          pauseOnHover: true,
-                          draggable: true,
-                          progress: undefined,
-                          theme: "light",
-                          transition: Slide,
-                        });
-                        setOpen(false);
-                        setCategory(categoryCopy);
-                        setRerenderOnChange((prev: boolean) => !prev);
-                      }
-                    })
-                    .catch((error) => {
-                      toast.error(error.response.data, {
-                        position: "bottom-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                        transition: Slide,
-                      });
-                    });
+                  toast.success("Kategoria zaktualizowana pomyślnie.", {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Slide,
+                  });
+                  setOpen(false);
+                  setCategory(categoryCopy);
+                  setRerenderOnChange((prev: boolean) => !prev);
                 }
               })
               .catch((error) => {
-                console.log(error);
                 toast.error(error.response.data, {
                   position: "bottom-center",
                   autoClose: 5000,
@@ -134,16 +138,35 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
                 ? photoDownloadUrl + categoryCopy.photographUrl
                 : "",
             };
-            photoApi
-              .uploadPhoto(photo)
-              .then((response: AxiosResponse) => {
-                if (response.status === 200) {
-                  newCategory.photographUrl = photoDownloadUrl + response.data;
-                  categoriesApi
-                    .addCategory(newCategory)
-                    .then((response: AxiosResponse) => {
-                      if (response.status === 200) {
-                        toast.success("Kategoria dodana pomyślnie.", {
+            if (photo) {
+              photoApi
+                .uploadPhoto(photo)
+                .then((response: AxiosResponse) => {
+                  if (response.status === 200) {
+                    newCategory.photographUrl =
+                      photoDownloadUrl + response.data;
+                    categoriesApi
+                      .addCategory(newCategory)
+                      .then((response: AxiosResponse) => {
+                        if (response.status === 200) {
+                          toast.success("Kategoria dodana pomyślnie.", {
+                            position: "bottom-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                            transition: Slide,
+                          });
+                          setOpen(false);
+                          setCategory(categoryCopy);
+                          setRerenderOnChange((prev: boolean) => !prev);
+                        }
+                      })
+                      .catch((error) => {
+                        toast.error(error.response.data.name, {
                           position: "bottom-center",
                           autoClose: 5000,
                           hideProgressBar: false,
@@ -154,39 +177,35 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
                           theme: "light",
                           transition: Slide,
                         });
-                        setOpen(false);
-                        setCategory(categoryCopy);
-                        setRerenderOnChange((prev: boolean) => !prev);
-                      }
-                    })
-                    .catch((error) => {
-                      toast.error(error.response.data.name, {
-                        position: "bottom-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                        transition: Slide,
                       });
-                    });
-                }
-              })
-              .catch((error) => {
-                toast.error(error.response.data, {
-                  position: "bottom-center",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                  transition: Slide,
+                  }
+                })
+                .catch((error) => {
+                  toast.error(error.response.data, {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Slide,
+                  });
                 });
+            } else {
+              toast.error("Ikonka jest wymagana.", {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Slide,
               });
+            }
           } else {
             toast.info(
               "Nie udało się zaktualizować kategorii. Spróbuj ponownie.",

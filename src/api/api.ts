@@ -184,55 +184,6 @@ export interface ConfigAddCommand {
     'deliveryPricings'?: Array<DeliveryPricing>;
 }
 /**
- * 
- * @export
- * @interface Customer
- */
-export interface Customer {
-    /**
-     * 
-     * @type {number}
-     * @memberof Customer
-     */
-    'id'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Customer
-     */
-    'name': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Customer
-     */
-    'surname': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Customer
-     */
-    'email': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Customer
-     */
-    'phone': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Customer
-     */
-    'password': string;
-    /**
-     * 
-     * @type {Privilege}
-     * @memberof Customer
-     */
-    'privilege'?: Privilege;
-}
-/**
  * Delivery prices of the restaurant
  * @export
  * @interface DeliveryPricing
@@ -291,46 +242,64 @@ export interface LocalTime {
 /**
  * 
  * @export
- * @interface LoginRequest
+ * @interface LoginCommand
  */
-export interface LoginRequest {
+export interface LoginCommand {
     /**
      * 
      * @type {string}
-     * @memberof LoginRequest
+     * @memberof LoginCommand
      */
-    'email'?: string;
+    'email': string;
     /**
      * 
      * @type {string}
-     * @memberof LoginRequest
+     * @memberof LoginCommand
      */
-    'password'?: string;
+    'password': string;
 }
 /**
  * 
  * @export
- * @interface LoginResponse
+ * @interface LoginResponseDTO
  */
-export interface LoginResponse {
+export interface LoginResponseDTO {
     /**
      * 
      * @type {string}
-     * @memberof LoginResponse
+     * @memberof LoginResponseDTO
      */
     'token'?: string;
     /**
      * 
-     * @type {Customer}
-     * @memberof LoginResponse
+     * @type {number}
+     * @memberof LoginResponseDTO
      */
-    'customer'?: Customer;
+    'customerId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LoginResponseDTO
+     */
+    'customerName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LoginResponseDTO
+     */
+    'customerSurname'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LoginResponseDTO
+     */
+    'customerEmail'?: string;
     /**
      * 
      * @type {boolean}
-     * @memberof LoginResponse
+     * @memberof LoginResponseDTO
      */
-    'admin'?: boolean;
+    'isAdmin'?: boolean;
 }
 /**
  * Model of a meal
@@ -529,62 +498,136 @@ export type OpeningHourDayEnum = typeof OpeningHourDayEnum[keyof typeof OpeningH
 /**
  * 
  * @export
- * @interface Privilege
+ * @interface OpinionAddCommand
  */
-export interface Privilege {
+export interface OpinionAddCommand {
     /**
      * 
      * @type {number}
-     * @memberof Privilege
+     * @memberof OpinionAddCommand
      */
-    'id'?: number;
+    'mealId': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof OpinionAddCommand
+     */
+    'customerId': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof OpinionAddCommand
+     */
+    'rating'?: number;
     /**
      * 
      * @type {string}
-     * @memberof Privilege
+     * @memberof OpinionAddCommand
      */
-    'privilegeName'?: string;
+    'comment'?: string;
 }
 /**
  * 
  * @export
- * @interface RegisterRequest
+ * @interface OpinionResponseDTO
  */
-export interface RegisterRequest {
+export interface OpinionResponseDTO {
+    /**
+     * 
+     * @type {number}
+     * @memberof OpinionResponseDTO
+     */
+    'customerId'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof OpinionResponseDTO
+     */
+    'rating'?: number;
     /**
      * 
      * @type {string}
-     * @memberof RegisterRequest
+     * @memberof OpinionResponseDTO
+     */
+    'comment'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface RegisterResponseDTO
+ */
+export interface RegisterResponseDTO {
+    /**
+     * 
+     * @type {number}
+     * @memberof RegisterResponseDTO
+     */
+    'customerId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterResponseDTO
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterResponseDTO
+     */
+    'surname'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterResponseDTO
+     */
+    'email'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterResponseDTO
+     */
+    'phone'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface RegisterUserCommand
+ */
+export interface RegisterUserCommand {
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterUserCommand
      */
     'name': string;
     /**
      * 
      * @type {string}
-     * @memberof RegisterRequest
+     * @memberof RegisterUserCommand
      */
     'surname': string;
     /**
      * 
      * @type {string}
-     * @memberof RegisterRequest
+     * @memberof RegisterUserCommand
      */
     'email': string;
     /**
      * 
      * @type {string}
-     * @memberof RegisterRequest
+     * @memberof RegisterUserCommand
      */
     'phone': string;
     /**
      * 
      * @type {string}
-     * @memberof RegisterRequest
+     * @memberof RegisterUserCommand
      */
     'password': string;
     /**
      * 
      * @type {boolean}
-     * @memberof RegisterRequest
+     * @memberof RegisterUserCommand
      */
     'admin'?: boolean;
 }
@@ -597,14 +640,50 @@ export const AuthControllerApiAxiosParamCreator = function (configuration?: Conf
     return {
         /**
          * 
-         * @summary Log in
-         * @param {LoginRequest} loginRequest 
+         * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        login: async (loginRequest: LoginRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'loginRequest' is not null or undefined
-            assertParamExists('login', 'loginRequest', loginRequest)
+        forgotPassword: async (email: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'email' is not null or undefined
+            assertParamExists('forgotPassword', 'email', email)
+            const localVarPath = `/auth/forgot-password`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (email !== undefined) {
+                localVarQueryParameter['email'] = email;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Log in
+         * @param {LoginCommand} loginCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        login: async (loginCommand: LoginCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'loginCommand' is not null or undefined
+            assertParamExists('login', 'loginCommand', loginCommand)
             const localVarPath = `/auth/login`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -624,7 +703,7 @@ export const AuthControllerApiAxiosParamCreator = function (configuration?: Conf
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(loginRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(loginCommand, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -634,13 +713,13 @@ export const AuthControllerApiAxiosParamCreator = function (configuration?: Conf
         /**
          * 
          * @summary Register a new user
-         * @param {RegisterRequest} registerRequest 
+         * @param {RegisterUserCommand} registerUserCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        registerUser: async (registerRequest: RegisterRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'registerRequest' is not null or undefined
-            assertParamExists('registerUser', 'registerRequest', registerRequest)
+        registerUser: async (registerUserCommand: RegisterUserCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'registerUserCommand' is not null or undefined
+            assertParamExists('registerUser', 'registerUserCommand', registerUserCommand)
             const localVarPath = `/auth/register`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -660,7 +739,86 @@ export const AuthControllerApiAxiosParamCreator = function (configuration?: Conf
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(registerRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(registerUserCommand, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} token 
+         * @param {string} newPassword 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        resetPassword: async (token: string, newPassword: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'token' is not null or undefined
+            assertParamExists('resetPassword', 'token', token)
+            // verify required parameter 'newPassword' is not null or undefined
+            assertParamExists('resetPassword', 'newPassword', newPassword)
+            const localVarPath = `/auth/password-reset`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+            if (newPassword !== undefined) {
+                localVarQueryParameter['newPassword'] = newPassword;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} token 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        resetPasswordForm: async (token: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'token' is not null or undefined
+            assertParamExists('resetPasswordForm', 'token', token)
+            const localVarPath = `/auth/password-reset`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (token !== undefined) {
+                localVarQueryParameter['token'] = token;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -679,13 +837,25 @@ export const AuthControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Log in
-         * @param {LoginRequest} loginRequest 
+         * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async login(loginRequest: LoginRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LoginResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.login(loginRequest, options);
+        async forgotPassword(email: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.forgotPassword(email, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthControllerApi.forgotPassword']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Log in
+         * @param {LoginCommand} loginCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async login(loginCommand: LoginCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LoginResponseDTO>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.login(loginCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthControllerApi.login']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -693,14 +863,39 @@ export const AuthControllerApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Register a new user
-         * @param {RegisterRequest} registerRequest 
+         * @param {RegisterUserCommand} registerUserCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async registerUser(registerRequest: RegisterRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.registerUser(registerRequest, options);
+        async registerUser(registerUserCommand: RegisterUserCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<RegisterResponseDTO>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.registerUser(registerUserCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthControllerApi.registerUser']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} token 
+         * @param {string} newPassword 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async resetPassword(token: string, newPassword: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.resetPassword(token, newPassword, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthControllerApi.resetPassword']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} token 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async resetPasswordForm(token: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.resetPasswordForm(token, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthControllerApi.resetPasswordForm']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -715,23 +910,51 @@ export const AuthControllerApiFactory = function (configuration?: Configuration,
     return {
         /**
          * 
-         * @summary Log in
-         * @param {LoginRequest} loginRequest 
+         * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        login(loginRequest: LoginRequest, options?: RawAxiosRequestConfig): AxiosPromise<LoginResponse> {
-            return localVarFp.login(loginRequest, options).then((request) => request(axios, basePath));
+        forgotPassword(email: string, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.forgotPassword(email, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Log in
+         * @param {LoginCommand} loginCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        login(loginCommand: LoginCommand, options?: RawAxiosRequestConfig): AxiosPromise<LoginResponseDTO> {
+            return localVarFp.login(loginCommand, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Register a new user
-         * @param {RegisterRequest} registerRequest 
+         * @param {RegisterUserCommand} registerUserCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        registerUser(registerRequest: RegisterRequest, options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.registerUser(registerRequest, options).then((request) => request(axios, basePath));
+        registerUser(registerUserCommand: RegisterUserCommand, options?: RawAxiosRequestConfig): AxiosPromise<RegisterResponseDTO> {
+            return localVarFp.registerUser(registerUserCommand, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} token 
+         * @param {string} newPassword 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        resetPassword(token: string, newPassword: string, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.resetPassword(token, newPassword, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} token 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        resetPasswordForm(token: string, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+            return localVarFp.resetPasswordForm(token, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -745,26 +968,60 @@ export const AuthControllerApiFactory = function (configuration?: Configuration,
 export class AuthControllerApi extends BaseAPI {
     /**
      * 
-     * @summary Log in
-     * @param {LoginRequest} loginRequest 
+     * @param {string} email 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthControllerApi
      */
-    public login(loginRequest: LoginRequest, options?: RawAxiosRequestConfig) {
-        return AuthControllerApiFp(this.configuration).login(loginRequest, options).then((request) => request(this.axios, this.basePath));
+    public forgotPassword(email: string, options?: RawAxiosRequestConfig) {
+        return AuthControllerApiFp(this.configuration).forgotPassword(email, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Log in
+     * @param {LoginCommand} loginCommand 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthControllerApi
+     */
+    public login(loginCommand: LoginCommand, options?: RawAxiosRequestConfig) {
+        return AuthControllerApiFp(this.configuration).login(loginCommand, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary Register a new user
-     * @param {RegisterRequest} registerRequest 
+     * @param {RegisterUserCommand} registerUserCommand 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof AuthControllerApi
      */
-    public registerUser(registerRequest: RegisterRequest, options?: RawAxiosRequestConfig) {
-        return AuthControllerApiFp(this.configuration).registerUser(registerRequest, options).then((request) => request(this.axios, this.basePath));
+    public registerUser(registerUserCommand: RegisterUserCommand, options?: RawAxiosRequestConfig) {
+        return AuthControllerApiFp(this.configuration).registerUser(registerUserCommand, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} token 
+     * @param {string} newPassword 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthControllerApi
+     */
+    public resetPassword(token: string, newPassword: string, options?: RawAxiosRequestConfig) {
+        return AuthControllerApiFp(this.configuration).resetPassword(token, newPassword, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} token 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthControllerApi
+     */
+    public resetPasswordForm(token: string, options?: RawAxiosRequestConfig) {
+        return AuthControllerApiFp(this.configuration).resetPasswordForm(token, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -967,7 +1224,7 @@ export const CategoryControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async addCategory(categoryAddCommand: CategoryAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async addCategory(categoryAddCommand: CategoryAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Category>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.addCategory(categoryAddCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CategoryControllerApi.addCategory']?.[localVarOperationServerIndex]?.url;
@@ -992,7 +1249,7 @@ export const CategoryControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAllCategories(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async getAllCategories(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Category>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAllCategories(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CategoryControllerApi.getAllCategories']?.[localVarOperationServerIndex]?.url;
@@ -1019,7 +1276,7 @@ export const CategoryControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateCategory(id: number, categoryAddCommand: CategoryAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async updateCategory(id: number, categoryAddCommand: CategoryAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Category>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.updateCategory(id, categoryAddCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CategoryControllerApi.updateCategory']?.[localVarOperationServerIndex]?.url;
@@ -1042,7 +1299,7 @@ export const CategoryControllerApiFactory = function (configuration?: Configurat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addCategory(categoryAddCommand: CategoryAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        addCategory(categoryAddCommand: CategoryAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<Category> {
             return localVarFp.addCategory(categoryAddCommand, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1061,7 +1318,7 @@ export const CategoryControllerApiFactory = function (configuration?: Configurat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAllCategories(options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        getAllCategories(options?: RawAxiosRequestConfig): AxiosPromise<Array<Category>> {
             return localVarFp.getAllCategories(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1082,7 +1339,7 @@ export const CategoryControllerApiFactory = function (configuration?: Configurat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateCategory(id: number, categoryAddCommand: CategoryAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        updateCategory(id: number, categoryAddCommand: CategoryAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<Category> {
             return localVarFp.updateCategory(id, categoryAddCommand, options).then((request) => request(axios, basePath));
         },
     };
@@ -1348,7 +1605,7 @@ export const ConfigControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getDeliveryPrices(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async getDeliveryPrices(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DeliveryPricing>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getDeliveryPrices(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ConfigControllerApi.getDeliveryPrices']?.[localVarOperationServerIndex]?.url;
@@ -1360,7 +1617,7 @@ export const ConfigControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getOpeningHours(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async getOpeningHours(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<OpeningHour>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getOpeningHours(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ConfigControllerApi.getOpeningHours']?.[localVarOperationServerIndex]?.url;
@@ -1373,7 +1630,7 @@ export const ConfigControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async initializeSystem(configAddCommand: ConfigAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async initializeSystem(configAddCommand: ConfigAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.initializeSystem(configAddCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ConfigControllerApi.initializeSystem']?.[localVarOperationServerIndex]?.url;
@@ -1385,7 +1642,7 @@ export const ConfigControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async removeConfigs(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async removeConfigs(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.removeConfigs(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ConfigControllerApi.removeConfigs']?.[localVarOperationServerIndex]?.url;
@@ -1416,7 +1673,7 @@ export const ConfigControllerApiFactory = function (configuration?: Configuratio
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getDeliveryPrices(options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        getDeliveryPrices(options?: RawAxiosRequestConfig): AxiosPromise<Array<DeliveryPricing>> {
             return localVarFp.getDeliveryPrices(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1425,7 +1682,7 @@ export const ConfigControllerApiFactory = function (configuration?: Configuratio
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getOpeningHours(options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        getOpeningHours(options?: RawAxiosRequestConfig): AxiosPromise<Array<OpeningHour>> {
             return localVarFp.getOpeningHours(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1435,7 +1692,7 @@ export const ConfigControllerApiFactory = function (configuration?: Configuratio
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        initializeSystem(configAddCommand: ConfigAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        initializeSystem(configAddCommand: ConfigAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<string> {
             return localVarFp.initializeSystem(configAddCommand, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1444,7 +1701,7 @@ export const ConfigControllerApiFactory = function (configuration?: Configuratio
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        removeConfigs(options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        removeConfigs(options?: RawAxiosRequestConfig): AxiosPromise<string> {
             return localVarFp.removeConfigs(options).then((request) => request(axios, basePath));
         },
     };
@@ -1818,7 +2075,7 @@ export const MealControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async addMeal(mealAddCommand: MealAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async addMeal(mealAddCommand: MealAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Meal>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.addMeal(mealAddCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['MealControllerApi.addMeal']?.[localVarOperationServerIndex]?.url;
@@ -1844,7 +2101,7 @@ export const MealControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async deleteMealById(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async deleteMealById(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.deleteMealById(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['MealControllerApi.deleteMealById']?.[localVarOperationServerIndex]?.url;
@@ -1856,7 +2113,7 @@ export const MealControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAllMeals(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async getAllMeals(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Meal>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAllMeals(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['MealControllerApi.getAllMeals']?.[localVarOperationServerIndex]?.url;
@@ -1882,7 +2139,7 @@ export const MealControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMealsByCategory(categoryId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async getMealsByCategory(categoryId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Meal>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getMealsByCategory(categoryId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['MealControllerApi.getMealsByCategory']?.[localVarOperationServerIndex]?.url;
@@ -1909,7 +2166,7 @@ export const MealControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateMeal(id: number, mealAddCommand: MealAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async updateMeal(id: number, mealAddCommand: MealAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Meal>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.updateMeal(id, mealAddCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['MealControllerApi.updateMeal']?.[localVarOperationServerIndex]?.url;
@@ -1932,7 +2189,7 @@ export const MealControllerApiFactory = function (configuration?: Configuration,
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addMeal(mealAddCommand: MealAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        addMeal(mealAddCommand: MealAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<Meal> {
             return localVarFp.addMeal(mealAddCommand, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1952,7 +2209,7 @@ export const MealControllerApiFactory = function (configuration?: Configuration,
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        deleteMealById(id: number, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        deleteMealById(id: number, options?: RawAxiosRequestConfig): AxiosPromise<string> {
             return localVarFp.deleteMealById(id, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1961,7 +2218,7 @@ export const MealControllerApiFactory = function (configuration?: Configuration,
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAllMeals(options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        getAllMeals(options?: RawAxiosRequestConfig): AxiosPromise<Array<Meal>> {
             return localVarFp.getAllMeals(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1981,7 +2238,7 @@ export const MealControllerApiFactory = function (configuration?: Configuration,
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMealsByCategory(categoryId: number, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        getMealsByCategory(categoryId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<Meal>> {
             return localVarFp.getMealsByCategory(categoryId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2002,7 +2259,7 @@ export const MealControllerApiFactory = function (configuration?: Configuration,
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateMeal(id: number, mealAddCommand: MealAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        updateMeal(id: number, mealAddCommand: MealAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<Meal> {
             return localVarFp.updateMeal(id, mealAddCommand, options).then((request) => request(axios, basePath));
         },
     };
@@ -2115,18 +2372,59 @@ export class MealControllerApi extends BaseAPI {
 
 
 /**
- * MessagesControllerApi - axios parameter creator
+ * OpinionControllerApi - axios parameter creator
  * @export
  */
-export const MessagesControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+export const OpinionControllerApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Add opinion
+         * @param {OpinionAddCommand} opinionAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMessages: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/messages`;
+        addOpinion: async (opinionAddCommand: OpinionAddCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'opinionAddCommand' is not null or undefined
+            assertParamExists('addOpinion', 'opinionAddCommand', opinionAddCommand)
+            const localVarPath = `/api/opinions/add`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(opinionAddCommand, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get average rating for meal
+         * @param {number} mealId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAverageRating: async (mealId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'mealId' is not null or undefined
+            assertParamExists('getAverageRating', 'mealId', mealId)
+            const localVarPath = `/api/opinions/average-rating/{mealId}`
+                .replace(`{${"mealId"}}`, encodeURIComponent(String(mealId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -2151,11 +2449,16 @@ export const MessagesControllerApiAxiosParamCreator = function (configuration?: 
         },
         /**
          * 
+         * @summary Get opinions for customer
+         * @param {number} customerId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postMessages: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/messages`;
+        getOpinionsForCustomer: async (customerId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'customerId' is not null or undefined
+            assertParamExists('getOpinionsForCustomer', 'customerId', customerId)
+            const localVarPath = `/api/opinions/customer/{customerId}`
+                .replace(`{${"customerId"}}`, encodeURIComponent(String(customerId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -2163,7 +2466,7 @@ export const MessagesControllerApiAxiosParamCreator = function (configuration?: 
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -2178,92 +2481,279 @@ export const MessagesControllerApiAxiosParamCreator = function (configuration?: 
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Get opinions for meal
+         * @param {number} mealId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOpinionsForMeal: async (mealId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'mealId' is not null or undefined
+            assertParamExists('getOpinionsForMeal', 'mealId', mealId)
+            const localVarPath = `/api/opinions/meal/{mealId}`
+                .replace(`{${"mealId"}}`, encodeURIComponent(String(mealId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Update opinion for customer
+         * @param {OpinionAddCommand} opinionAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateOpinion: async (opinionAddCommand: OpinionAddCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'opinionAddCommand' is not null or undefined
+            assertParamExists('updateOpinion', 'opinionAddCommand', opinionAddCommand)
+            const localVarPath = `/api/opinions/update`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(opinionAddCommand, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
 /**
- * MessagesControllerApi - functional programming interface
+ * OpinionControllerApi - functional programming interface
  * @export
  */
-export const MessagesControllerApiFp = function(configuration?: Configuration) {
-    const localVarAxiosParamCreator = MessagesControllerApiAxiosParamCreator(configuration)
+export const OpinionControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = OpinionControllerApiAxiosParamCreator(configuration)
     return {
         /**
          * 
+         * @summary Add opinion
+         * @param {OpinionAddCommand} opinionAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getMessages(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getMessages(options);
+        async addOpinion(opinionAddCommand: OpinionAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpinionResponseDTO>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addOpinion(opinionAddCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['MessagesControllerApi.getMessages']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['OpinionControllerApi.addOpinion']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
+         * @summary Get average rating for meal
+         * @param {number} mealId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async postMessages(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.postMessages(options);
+        async getAverageRating(mealId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAverageRating(mealId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['MessagesControllerApi.postMessages']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['OpinionControllerApi.getAverageRating']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get opinions for customer
+         * @param {number} customerId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getOpinionsForCustomer(customerId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<OpinionResponseDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getOpinionsForCustomer(customerId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['OpinionControllerApi.getOpinionsForCustomer']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get opinions for meal
+         * @param {number} mealId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getOpinionsForMeal(mealId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<OpinionResponseDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getOpinionsForMeal(mealId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['OpinionControllerApi.getOpinionsForMeal']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Update opinion for customer
+         * @param {OpinionAddCommand} opinionAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateOpinion(opinionAddCommand: OpinionAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpinionResponseDTO>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateOpinion(opinionAddCommand, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['OpinionControllerApi.updateOpinion']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
 };
 
 /**
- * MessagesControllerApi - factory interface
+ * OpinionControllerApi - factory interface
  * @export
  */
-export const MessagesControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
-    const localVarFp = MessagesControllerApiFp(configuration)
+export const OpinionControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = OpinionControllerApiFp(configuration)
     return {
         /**
          * 
+         * @summary Add opinion
+         * @param {OpinionAddCommand} opinionAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getMessages(options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.getMessages(options).then((request) => request(axios, basePath));
+        addOpinion(opinionAddCommand: OpinionAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<OpinionResponseDTO> {
+            return localVarFp.addOpinion(opinionAddCommand, options).then((request) => request(axios, basePath));
         },
         /**
          * 
+         * @summary Get average rating for meal
+         * @param {number} mealId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        postMessages(options?: RawAxiosRequestConfig): AxiosPromise<string> {
-            return localVarFp.postMessages(options).then((request) => request(axios, basePath));
+        getAverageRating(mealId: number, options?: RawAxiosRequestConfig): AxiosPromise<number> {
+            return localVarFp.getAverageRating(mealId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get opinions for customer
+         * @param {number} customerId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOpinionsForCustomer(customerId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<OpinionResponseDTO>> {
+            return localVarFp.getOpinionsForCustomer(customerId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get opinions for meal
+         * @param {number} mealId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOpinionsForMeal(mealId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<OpinionResponseDTO>> {
+            return localVarFp.getOpinionsForMeal(mealId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Update opinion for customer
+         * @param {OpinionAddCommand} opinionAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateOpinion(opinionAddCommand: OpinionAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<OpinionResponseDTO> {
+            return localVarFp.updateOpinion(opinionAddCommand, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * MessagesControllerApi - object-oriented interface
+ * OpinionControllerApi - object-oriented interface
  * @export
- * @class MessagesControllerApi
+ * @class OpinionControllerApi
  * @extends {BaseAPI}
  */
-export class MessagesControllerApi extends BaseAPI {
+export class OpinionControllerApi extends BaseAPI {
     /**
      * 
+     * @summary Add opinion
+     * @param {OpinionAddCommand} opinionAddCommand 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof MessagesControllerApi
+     * @memberof OpinionControllerApi
      */
-    public getMessages(options?: RawAxiosRequestConfig) {
-        return MessagesControllerApiFp(this.configuration).getMessages(options).then((request) => request(this.axios, this.basePath));
+    public addOpinion(opinionAddCommand: OpinionAddCommand, options?: RawAxiosRequestConfig) {
+        return OpinionControllerApiFp(this.configuration).addOpinion(opinionAddCommand, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
+     * @summary Get average rating for meal
+     * @param {number} mealId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
-     * @memberof MessagesControllerApi
+     * @memberof OpinionControllerApi
      */
-    public postMessages(options?: RawAxiosRequestConfig) {
-        return MessagesControllerApiFp(this.configuration).postMessages(options).then((request) => request(this.axios, this.basePath));
+    public getAverageRating(mealId: number, options?: RawAxiosRequestConfig) {
+        return OpinionControllerApiFp(this.configuration).getAverageRating(mealId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get opinions for customer
+     * @param {number} customerId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OpinionControllerApi
+     */
+    public getOpinionsForCustomer(customerId: number, options?: RawAxiosRequestConfig) {
+        return OpinionControllerApiFp(this.configuration).getOpinionsForCustomer(customerId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get opinions for meal
+     * @param {number} mealId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OpinionControllerApi
+     */
+    public getOpinionsForMeal(mealId: number, options?: RawAxiosRequestConfig) {
+        return OpinionControllerApiFp(this.configuration).getOpinionsForMeal(mealId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Update opinion for customer
+     * @param {OpinionAddCommand} opinionAddCommand 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OpinionControllerApi
+     */
+    public updateOpinion(opinionAddCommand: OpinionAddCommand, options?: RawAxiosRequestConfig) {
+        return OpinionControllerApiFp(this.configuration).updateOpinion(opinionAddCommand, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -2368,7 +2858,7 @@ export const PhotoControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async downloadPhoto(filename: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+        async downloadPhoto(filename: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<File>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.downloadPhoto(filename, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['PhotoControllerApi.downloadPhoto']?.[localVarOperationServerIndex]?.url;
@@ -2404,7 +2894,7 @@ export const PhotoControllerApiFactory = function (configuration?: Configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        downloadPhoto(filename: string, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+        downloadPhoto(filename: string, options?: RawAxiosRequestConfig): AxiosPromise<File> {
             return localVarFp.downloadPhoto(filename, options).then((request) => request(axios, basePath));
         },
         /**

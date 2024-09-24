@@ -74,7 +74,7 @@ export const DishModal: React.FC<DishModalProps> = ({
         component={"form"}
         onSubmit={(e) => {
           e.preventDefault();
-          if (!dishCopy?.photographUrl || !photo) {
+          if (!dishCopy?.photographUrl && !photo) {
             toast.error("Ikonka jest wymagana.", {
               position: "bottom-center",
               autoClose: 5000,
@@ -90,57 +90,38 @@ export const DishModal: React.FC<DishModalProps> = ({
           }
           if (dishCopy?.id) {
             // update dish
-            photoApi
-              .uploadPhoto(photo)
+            if (photo) {
+              photoApi
+                .uploadPhoto(photo)
+                .then((response) => {
+                  if (response.status === 200) {
+                    dishCopy.photographUrl = photoDownloadUrl + response.data;
+                  }
+                })
+                .catch((error) => {
+                  toast.error(
+                    error.response.data?.name ??
+                      JSON.stringify(error.response.data),
+                    {
+                      position: "bottom-center",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "light",
+                      transition: Slide,
+                    }
+                  );
+                });
+            }
+
+            mealsApi
+              .updateMeal(dishCopy.id, dishCopy as MealAddCommand)
               .then((response) => {
                 if (response.status === 200) {
-                  mealsApi
-                    .updateMeal(dishCopy.id!, {
-                      ...dishCopy,
-                      photographUrl: photoDownloadUrl + dishCopy.photographUrl,
-                    } as MealAddCommand)
-                    .then((response) => {
-                      if (response.status === 200) {
-                        toast.success("Danie zaktualizowane pomyślnie.", {
-                          position: "bottom-center",
-                          autoClose: 5000,
-                          hideProgressBar: false,
-                          closeOnClick: true,
-                          pauseOnHover: true,
-                          draggable: true,
-                          progress: undefined,
-                          theme: "light",
-                          transition: Slide,
-                        });
-                        setOpen(false);
-                        setDish({
-                          ...dishCopy,
-                          name: dishCopy.name ?? "",
-                          categoryId: dishCopy.categoryId ?? -1,
-                        });
-                        setRerenderOnChange((prev: boolean) => !prev);
-                      }
-                    })
-                    .catch((_) => {
-                      toast.info("Błąd podczas aktualizacji dania.", {
-                        position: "bottom-center",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                        transition: Slide,
-                      });
-                    });
-                }
-              })
-              .catch((error) => {
-                toast.error(
-                  error.response.data?.name ??
-                    JSON.stringify(error.response.data),
-                  {
+                  toast.success("Danie zaktualizowane pomyślnie.", {
                     position: "bottom-center",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -150,78 +131,112 @@ export const DishModal: React.FC<DishModalProps> = ({
                     progress: undefined,
                     theme: "light",
                     transition: Slide,
-                  }
-                );
+                  });
+                  setOpen(false);
+                  setDish({
+                    ...dishCopy,
+                    name: dishCopy.name ?? "",
+                    categoryId: dishCopy.categoryId ?? -1,
+                  });
+                  setRerenderOnChange((prev: boolean) => !prev);
+                }
+              })
+              .catch((_) => {
+                toast.info("Błąd podczas aktualizacji dania.", {
+                  position: "bottom-center",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                  transition: Slide,
+                });
               });
           } else if (dish === null) {
             // add dish
-            photoApi
-              .uploadPhoto(photo)
-              .then((response) => {
-                if (response.status === 200) {
-                  mealsApi
-                    .addMeal({
-                      ...dishCopy,
-                      photographUrl: photoDownloadUrl + dishCopy.photographUrl,
-                    } as MealAddCommand)
-                    .then((response) => {
-                      if (response.status === 200) {
-                        toast.success("Danie dodane pomyślnie.", {
-                          position: "bottom-center",
-                          autoClose: 5000,
-                          hideProgressBar: false,
-                          closeOnClick: true,
-                          pauseOnHover: true,
-                          draggable: true,
-                          progress: undefined,
-                          theme: "light",
-                          transition: Slide,
-                        });
-                        setOpen(false);
-                        setDish({
-                          ...dishCopy,
-                          name: dishCopy?.name ?? "",
-                          categoryId: dishCopy?.categoryId ?? -1,
-                        });
-                        setRerenderOnChange((prev: boolean) => !prev);
-                      }
-                    })
-                    .catch((error) => {
-                      toast.error(
-                        error.response.data?.name ??
-                          JSON.stringify(error.response.data),
-                        {
-                          position: "bottom-center",
-                          autoClose: 5000,
-                          hideProgressBar: false,
-                          closeOnClick: true,
-                          pauseOnHover: true,
-                          draggable: true,
-                          progress: undefined,
-                          theme: "light",
-                          transition: Slide,
+            if (photo) {
+              photoApi
+                .uploadPhoto(photo)
+                .then((response) => {
+                  if (response.status === 200) {
+                    mealsApi
+                      .addMeal({
+                        ...dishCopy,
+                        photographUrl: photoDownloadUrl + response.data,
+                      } as MealAddCommand)
+                      .then((response) => {
+                        if (response.status === 200) {
+                          toast.success("Danie dodane pomyślnie.", {
+                            position: "bottom-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                            transition: Slide,
+                          });
+                          setOpen(false);
+                          setDish({
+                            ...dishCopy,
+                            name: dishCopy?.name ?? "",
+                            categoryId: dishCopy?.categoryId ?? -1,
+                          });
+                          setRerenderOnChange((prev: boolean) => !prev);
                         }
-                      );
-                    });
-                }
-              })
-              .catch((error) => {
-                toast.error(
-                  error.response.data?.name ??
-                    JSON.stringify(error.response.data),
-                  {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Slide,
+                      })
+                      .catch((error) => {
+                        toast.error(
+                          error.response.data?.name ??
+                            JSON.stringify(error.response.data),
+                          {
+                            position: "bottom-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                            transition: Slide,
+                          }
+                        );
+                      });
                   }
-                );
+                })
+                .catch((error) => {
+                  toast.error(
+                    error.response.data?.name ??
+                      JSON.stringify(error.response.data),
+                    {
+                      position: "bottom-center",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "light",
+                      transition: Slide,
+                    }
+                  );
+                });
+            } else {
+              toast.error("Ikonka jest wymagana.", {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Slide,
               });
+            }
           } else {
             toast.info(
               "Nie udało się zaktualizować kategorii. Spróbuj ponownie.",

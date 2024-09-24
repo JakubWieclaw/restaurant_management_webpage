@@ -1,18 +1,18 @@
 import Grid from "@mui/material/Grid";
 import { Container, Box, Typography } from "@mui/material";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast, Slide } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, createContext, useMemo } from "react";
 
+import { AppDispatch, RootState } from "../store";
 import { authApi, configApi } from "../utils/api";
-import { AppDispatch } from "../store";
 import { login } from "../reducers/slices/userSlice";
 import { Login } from "../components/LoginRegister/Login";
+import { validatePhoneNumber } from "../utils/validations";
 import { Register } from "../components/LoginRegister/Register";
 import { ForgetPassword } from "../components/LoginRegister/ForgetPassword";
-import { validatePhoneNumber } from "../utils/validations";
 
 export enum LoginRegisterState {
   Login,
@@ -135,17 +135,23 @@ export const LoginRegister = () => {
           })
           .then((response) => {
             if (response.status === 200) {
-              toast.success(response.data, {
-                position: "bottom-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-                transition: Slide,
-              });
+              console.log(response);
+              toast.success(
+                typeof response.data === "string"
+                  ? response.data
+                  : "Użytkownik pomyślnie zarejestrowany.",
+                {
+                  position: "bottom-center",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                  transition: Slide,
+                }
+              );
               setLoginRegisterState(LoginRegisterState.Login);
               if (registerAsAdmin) {
                 navigate("/initialize-system");
@@ -189,9 +195,13 @@ export const LoginRegister = () => {
           });
 
         setPassword("");
+        setPasswordRepeat("");
         break;
       case LoginRegisterState.ForgetPassword:
-        console.log("ForgetPassword");
+        authApi
+          .forgotPassword(email)
+          .then()
+          .catch((_: any) => {});
         setPassword("");
         break;
       default:
@@ -216,6 +226,8 @@ export const LoginRegister = () => {
     }
   };
 
+  const config = useSelector((state: RootState) => state.config);
+
   return (
     <Container maxWidth="sm" sx={{ mt: 15 }}>
       <Box component={"form"} onSubmit={handleSubmit} ref={formRef}>
@@ -228,14 +240,14 @@ export const LoginRegister = () => {
           <Grid item xs={12}>
             <Box
               component={"img"}
-              src="/icons8-restaurant.svg"
+              src={config.config.logoUrl}
               sx={{
                 width: "20%",
               }}
             ></Box>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant="h4">System Zarządzania Restauracją</Typography>
+            <Typography variant="h4">{config.config.restaurantName}</Typography>
           </Grid>
           <authContext.Provider
             value={useMemo(

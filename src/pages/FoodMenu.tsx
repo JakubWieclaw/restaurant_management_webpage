@@ -30,9 +30,8 @@ export const Menu = () => {
       try {
         if (searchPhrase === "") {
           const categoriesResponse = await categoriesApi.getAllCategories();
-          const categoriesData: Category[] =
-            categoriesResponse.data as Category[];
-          if (category === "") {
+          const categoriesData: Category[] = categoriesResponse.data;
+          if (category === "" && categoriesData.length > 0) {
             setCategory(categoriesData[0].name);
           }
           const categoriesMap: { [key: string]: string } = Object.fromEntries(
@@ -43,7 +42,7 @@ export const Menu = () => {
           );
 
           const mealsResponse = await mealsApi.getAllMeals();
-          const meals: Meal[] = mealsResponse.data as Meal[];
+          const meals: Meal[] = mealsResponse.data;
 
           setDishes(
             meals.map((meal: Meal) => ({

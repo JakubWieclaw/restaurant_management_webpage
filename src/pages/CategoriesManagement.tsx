@@ -21,7 +21,7 @@ import { AxiosResponse } from "axios";
 import { useEffect, useState, Fragment } from "react";
 
 import { Category, Meal } from "../api";
-import { categoriesApi, mealsApi, apiUrl } from "../utils/api";
+import { categoriesApi, mealsApi } from "../utils/api";
 import { CategoryModal } from "../components/CategoriesManagement/CategoryModal";
 import { DishModal } from "../components/CategoriesManagement/DishModal";
 
@@ -49,8 +49,6 @@ export const CategoriesManagement = () => {
       return [...prev, []];
     });
   };
-
-  console.log(apiUrl);
 
   const fetchMealsByCategory = (category: Category, idx: number) => {
     if (category.id !== undefined) {

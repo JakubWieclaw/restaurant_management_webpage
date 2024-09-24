@@ -1,5 +1,5 @@
-import { LoginResponse } from "../api";
+import { LoginResponseDTO } from "../api";
 
 export interface UserState {
-  loginResponse: LoginResponse | null;
+  loginResponse: LoginResponseDTO | null;
 }

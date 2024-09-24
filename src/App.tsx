@@ -18,6 +18,7 @@ import { AppBarHeader } from "./components/AppBarHeader";
 import { setConfig } from "./reducers/slices/configSlice";
 import { CategoriesManagement } from "./pages/CategoriesManagement";
 import { Contact } from "./pages/Contact";
+import { PasswordReset } from "./pages/PasswordReset";
 
 function App() {
   const dispatch = useDispatch();
@@ -74,6 +75,7 @@ function App() {
           <Route path="/auth" element={<LoginRegister />} />
           <Route path="/initialize-system" element={<InitSystem />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/auth/password-reset" element={<PasswordReset />} />
           <Route
             path="/categories-management"
             element={<CategoriesManagement />}
