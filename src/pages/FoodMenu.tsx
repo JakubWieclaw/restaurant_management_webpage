@@ -11,7 +11,7 @@ import {
 import { useEffect, useState } from "react";
 
 import { Dish } from "../types/dish";
-import { categoriesApi, mealsApi } from "../utils/api";
+import { categoriesApi, mealsApi, opinionApi } from "../utils/api";
 import { Filters } from "../components/FoodMenu/Filters/Filters";
 import { DishesList } from "../components/FoodMenu/DishesList/DishesList";
 import { CategorySelector } from "../components/FoodMenu/CategorySelector/CategorySelector";
@@ -24,6 +24,17 @@ export const Menu = () => {
   const [excludedIngredients, setExcludedIngredients] = useState<string[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [searchPhrase, setSearchPhrase] = useState<string>("");
+
+  const fetchRating = async (meal: Meal) => {
+    let rating = 5; // 1 is minimum rating - bugs otherwise
+    await opinionApi
+      .getAverageRating(meal.id!)
+      .then((response) => {
+        rating = response.data;
+      })
+      .catch((_) => {});
+    return rating;
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,34 +55,36 @@ export const Menu = () => {
           const mealsResponse = await mealsApi.getAllMeals();
           const meals: Meal[] = mealsResponse.data;
 
-          setDishes(
-            meals.map((meal: Meal) => ({
+          const dishes = await Promise.all(
+            meals.map(async (meal: Meal) => ({
               id: meal.id ?? 0,
               name: meal.name,
               price: meal.price ?? 0,
               ingredients: meal.ingredients ?? [],
               category: categoriesMap[meal.categoryId] ?? "",
               image: meal.photographUrl ?? "",
-              rating: 5,
+              rating: await fetchRating(meal),
             }))
           );
+          setDishes(dishes);
         } else {
           const mealsResponse = await mealsApi.searchMealsByName(searchPhrase);
           const meals: Meal[] = mealsResponse.data as Meal[];
 
           console.log(meals);
 
-          setDishes(
-            meals.map((meal: Meal) => ({
+          const dishes = await Promise.all(
+            meals.map(async (meal: Meal) => ({
               id: meal.id ?? 0,
               name: meal.name,
               price: meal.price ?? 0,
               ingredients: meal.ingredients ?? [],
               category: category,
               image: meal.photographUrl ?? "",
-              rating: 5,
+              rating: await fetchRating(meal),
             }))
           );
+          setDishes(dishes);
         }
       } catch (error) {
         console.error("Error fetching data", error);

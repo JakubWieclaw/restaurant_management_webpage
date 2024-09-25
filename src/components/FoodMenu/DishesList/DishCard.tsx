@@ -7,6 +7,7 @@ import {
   Button,
   Grid,
   Rating,
+  Box,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
@@ -54,6 +55,7 @@ export const DishCard: React.FC<DishCardProps> = ({ dish }) => {
 
   return (
     <>
+      {/* go to rates after clicking the dish */}
       <Card>
         <CardMedia
           image={dish.image}
@@ -82,21 +84,49 @@ export const DishCard: React.FC<DishCardProps> = ({ dish }) => {
         </CardContent>
 
         <CardActions>
-          <Rating
-            name="read-only"
-            sx={{ mr: "auto", ml: 0 }}
-            value={dish.rating}
-            readOnly
-          />
-          <Button
-            variant="contained"
-            sx={{ ml: "auto", mr: 0 }}
-            onClick={() => {
-              setOpen(true);
+          <Grid
+            container
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            <ShoppingCartIcon />
-          </Button>
+            <Grid item>
+              <Box sx={{ width: 200, display: "flex", alignItems: "center" }}>
+                <Rating
+                  name="read-only"
+                  value={dish.rating}
+                  readOnly
+                  precision={0.5}
+                  sx={{
+                    padding: "0.5rem",
+                  }}
+                />
+                <Box
+                  sx={{
+                    fontSize: "1.2rem",
+                    fontWeight: "bold",
+                    color: "text.secondary",
+                    mt: 0.5,
+                  }}
+                >
+                  ({dish.rating.toFixed(2)})
+                </Box>
+              </Box>
+            </Grid>
+            <Grid item>
+              <Button
+                variant="contained"
+                sx={{ ml: "auto" }}
+                onClick={() => {
+                  setOpen(true);
+                }}
+              >
+                <ShoppingCartIcon />
+              </Button>
+            </Grid>
+          </Grid>
         </CardActions>
       </Card>
       <DishDialog
