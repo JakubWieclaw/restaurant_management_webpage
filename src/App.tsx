@@ -19,6 +19,7 @@ import { setConfig } from "./reducers/slices/configSlice";
 import { CategoriesManagement } from "./pages/CategoriesManagement";
 import { Contact } from "./pages/Contact";
 import { PasswordReset } from "./pages/PasswordReset";
+import { DishDetails } from "./pages/DishDetails";
 
 function App() {
   const dispatch = useDispatch();
@@ -72,9 +73,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Menu />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/auth" element={<LoginRegister />} />
-          <Route path="/initialize-system" element={<InitSystem />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/auth" element={<LoginRegister />} />
+          <Route path="/dish-details/:id" element={<DishDetails />} />
+          <Route path="/initialize-system" element={<InitSystem />} />
           <Route path="/auth/password-reset" element={<PasswordReset />} />
           <Route
             path="/categories-management"

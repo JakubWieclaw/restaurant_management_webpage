@@ -17,6 +17,17 @@ import { DishesList } from "../components/FoodMenu/DishesList/DishesList";
 import { CategorySelector } from "../components/FoodMenu/CategorySelector/CategorySelector";
 import { Category, Meal } from "../api";
 
+export const fetchRating = async (meal: Meal) => {
+  let rating = 5; // 1 is minimum rating - bugs otherwise
+  await opinionApi
+    .getAverageRating(meal.id!)
+    .then((response) => {
+      rating = response.data;
+    })
+    .catch((_) => {});
+  return rating;
+};
+
 export const Menu = () => {
   const [minStars, setMinStars] = useState<number>(1);
   const [minMaxPrice, setMinMaxPrice] = useState<number[]>([0, 1000]);
@@ -24,17 +35,6 @@ export const Menu = () => {
   const [excludedIngredients, setExcludedIngredients] = useState<string[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [searchPhrase, setSearchPhrase] = useState<string>("");
-
-  const fetchRating = async (meal: Meal) => {
-    let rating = 5; // 1 is minimum rating - bugs otherwise
-    await opinionApi
-      .getAverageRating(meal.id!)
-      .then((response) => {
-        rating = response.data;
-      })
-      .catch((_) => {});
-    return rating;
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,6 +64,7 @@ export const Menu = () => {
               category: categoriesMap[meal.categoryId] ?? "",
               image: meal.photographUrl ?? "",
               rating: await fetchRating(meal),
+              allergens: meal.allergens ?? [],
             }))
           );
           setDishes(dishes);
@@ -82,6 +83,7 @@ export const Menu = () => {
               category: category,
               image: meal.photographUrl ?? "",
               rating: await fetchRating(meal),
+              allergens: meal.allergens ?? [],
             }))
           );
           setDishes(dishes);

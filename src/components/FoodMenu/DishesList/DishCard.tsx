@@ -19,6 +19,7 @@ import { Dish } from "../../../types/dish";
 import { DishDialog } from "./DishDialog";
 import { CartItem } from "../../../types/cartTypes";
 import { addToCart } from "../../../reducers/slices/cartSlice";
+import { Link } from "react-router-dom";
 
 interface DishCardProps {
   dish: Dish;
@@ -57,31 +58,39 @@ export const DishCard: React.FC<DishCardProps> = ({ dish }) => {
     <>
       {/* go to rates after clicking the dish */}
       <Card>
-        <CardMedia
-          image={dish.image}
-          title={dish.name}
-          sx={{
-            height: 200,
-            width: 400,
-            objectFit: "cover",
-            ":hover": { transform: "scale(1.1)" },
+        <Link
+          to={`/dish-details/${dish.id}`}
+          style={{
+            textDecoration: "none",
+            color: "inherit",
           }}
-        />
-        <CardContent>
-          <Grid container justifyContent="space-between">
-            <Grid item>
-              <Typography variant="h5">{dish.name}</Typography>
-              <Typography variant="body2" color="text.secondary">
-                {dish.ingredients.join(", ")}
-              </Typography>
+        >
+          <CardMedia
+            image={dish.image}
+            title={dish.name}
+            sx={{
+              height: 200,
+              width: 400,
+              objectFit: "cover",
+              ":hover": { transform: "scale(1.1)" },
+            }}
+          />
+          <CardContent>
+            <Grid container justifyContent="space-between">
+              <Grid item>
+                <Typography variant="h5">{dish.name}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {dish.ingredients.join(", ")}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="h6" color="text.secondary">
+                  {dish.price} zł
+                </Typography>
+              </Grid>
             </Grid>
-            <Grid item>
-              <Typography variant="h6" color="text.secondary">
-                {dish.price} zł
-              </Typography>
-            </Grid>
-          </Grid>
-        </CardContent>
+          </CardContent>
+        </Link>
 
         <CardActions>
           <Grid

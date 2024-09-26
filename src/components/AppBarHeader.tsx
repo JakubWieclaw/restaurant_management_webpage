@@ -23,6 +23,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { RootState, AppDispatch } from "../store";
 import { logout } from "../reducers/slices/userSlice";
+import { photoDownloadUrl } from "../utils/api";
 
 export const AppBarHeader = () => {
   const [anchorElMenu, setAnchorElMenu] = useState(null);
@@ -94,7 +95,7 @@ export const AppBarHeader = () => {
                   width: 50,
                   marginRight: 1,
                 }}
-                src={config.config.logoUrl}
+                src={photoDownloadUrl + config.config.logoUrl}
               ></Box>
 
               <Typography
