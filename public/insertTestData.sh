@@ -117,6 +117,20 @@ curl -X 'POST' \
 
 echo
 
+# INSERT 2 USER
+curl -X 'POST' \
+  'http://localhost:8080/auth/register' \
+  -H 'accept: */*' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "id": 0,
+  "name": "Jan",
+  "surname": "Kowalski",
+  "email": "b@b",
+  "phone": "123123123",
+  "password": "asd"
+}'
+
 # INSERT CATEGORIES
 categories=(
   '["Pizza", "icons8-pizza.png"]'
@@ -132,8 +146,6 @@ categories=(
 
 first_category_id=""
 second_category_id=""
-
-photoDownloadUrl="http://localhost:8080/api/photos/download?filename="
 
 for category in "${categories[@]}"; do
   name=$(echo $category | cut -d',' -f1 | tr -d '[]\" ')
@@ -153,7 +165,7 @@ for category in "${categories[@]}"; do
     -H 'Content-Type: application/json' \
     -d "{
     \"name\": \"$name\",
-    \"photographUrl\": \"$photoDownloadUrl$photographUrl\"
+    \"photographUrl\": \"$photographUrl\"
   }")
 
   if [ -z "$first_category_id" ]; then
@@ -198,7 +210,7 @@ for dish in "${dishes[@]}"; do
     -d "{
     \"name\": \"$name\",
     \"price\": $price,
-    \"photographUrl\": \"$photoDownloadUrl$image\",
+    \"photographUrl\": \"$image\",
     \"ingredients\": $ingredients,
     \"weightOrVolume\": $weightOrVolume,
     \"unitType\": \"GRAMY\",
@@ -243,7 +255,7 @@ for dish in "${dishes[@]}"; do
     -d "{
     \"name\": \"$name\",
     \"price\": $price,
-    \"photographUrl\": \"$photoDownloadUrl$image\",
+    \"photographUrl\": \"$image\",
     \"ingredients\": $ingredients,
     \"weightOrVolume\": $weightOrVolume,
     \"unitType\": \"GRAMY\",

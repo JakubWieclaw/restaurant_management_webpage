@@ -170,7 +170,7 @@ export const Menu = () => {
                     fullWidth
                     sx={{
                       mb: 2,
-                      width: "50%",
+                      width: "60%",
                     }}
                     onClick={() => {
                       setChatOpen(true);

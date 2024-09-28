@@ -5,6 +5,7 @@ import {
   DialogTitle,
   Button,
   TextField,
+  CircularProgress,
 } from "@mui/material";
 
 import {
@@ -18,7 +19,7 @@ import {
 import { useState } from "react";
 
 import { Transition } from "../utils/Transision";
-import { mealsApi } from "../utils/api";
+import { configApi, mealsApi } from "../utils/api";
 
 const apiKey = import.meta.env.VITE_GOOGLE_AI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);
@@ -41,12 +42,27 @@ async function run(
   message: string,
   setResponse: (response: string) => void,
   previousMessages: string[],
-  setPreviousMessages: (previousMessages: string[]) => void
+  setPreviousMessages: (previousMessages: string[]) => void,
+  setLoading: (loading: boolean) => void
 ) {
   const availableMeals = await mealsApi.getAllMeals().then((response) => {
     return JSON.stringify(response.data);
   });
-  let tmp = 1;
+
+  const restaurantConfig = await configApi.getConfig().then((response) => {
+    return JSON.stringify(response.data);
+  });
+
+  const restaurantHours = await configApi.getOpeningHours().then((response) => {
+    return JSON.stringify(response.data);
+  });
+
+  const restaurantDelivery = await configApi
+    .getDeliveryPrices()
+    .then((response) => {
+      return JSON.stringify(response.data);
+    });
+
   const chatSession = model.startChat({
     generationConfig,
     // safetySettings: Adjust safety settings
@@ -72,17 +88,33 @@ async function run(
     ],
 
     history: previousMessages.map((message) => {
-      tmp += 1;
       return {
-        role: tmp % 2 === 0 ? "user" : "model",
+        role: "user",
         parts: [{ text: message } as TextPart] as Part[],
       };
     }) as Content[],
   });
+  // console.log(
+  //   previousMessages.map((message) => {
+  //     tmp += 1;
+  //     return {
+  //       role: tmp % 2 === 0 ? "user" : "model",
+  //       parts: [{ text: message } as TextPart] as Part[],
+  //     };
+  //   }) as Content[]
+  // );
 
-  const result = await chatSession.sendMessage(availableMeals + message);
+  const result = await chatSession.sendMessage(
+    availableMeals +
+      restaurantConfig +
+      restaurantDelivery +
+      restaurantHours +
+      message
+  );
   setResponse(result.response.text());
-  setPreviousMessages([...previousMessages, result.response.text()]);
+  // setPreviousMessages([...previousMessages, result.response.text()]);
+  setLoading(false);
+
   return result.response.text();
 }
 
@@ -95,6 +127,7 @@ export const AIChat: React.FC<AIChatProps> = ({ openChat, setOpenChat }) => {
   const [message, setMessage] = useState<string>("");
   const [response, setResponse] = useState<string>("");
   const [previousMessages, setPreviousMessages] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   return (
     <Dialog
@@ -144,12 +177,19 @@ export const AIChat: React.FC<AIChatProps> = ({ openChat, setOpenChat }) => {
         </Button>
         <Button
           onClick={() => {
+            setLoading(true);
             setPreviousMessages([...previousMessages, message]);
-            run(message, setResponse, previousMessages, setPreviousMessages);
+            run(
+              message,
+              setResponse,
+              previousMessages,
+              setPreviousMessages,
+              setLoading
+            );
           }}
           color="success"
         >
-          Wyślij
+          {loading ? <CircularProgress size={24} color="inherit" /> : "Wyślij"}
         </Button>
       </DialogActions>
     </Dialog>

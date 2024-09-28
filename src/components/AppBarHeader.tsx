@@ -182,7 +182,7 @@ export const AppBarHeader = () => {
                   width: 50,
                   marginRight: 1,
                 }}
-                src={config.config.logoUrl}
+                src={photoDownloadUrl + config.config.logoUrl}
               ></Box>
 
               <Typography

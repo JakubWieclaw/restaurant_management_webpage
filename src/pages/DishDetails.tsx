@@ -16,29 +16,35 @@ import Masonry from "@mui/lab/Masonry";
 import { fetchRating } from "./FoodMenu";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { toast, Slide } from "react-toastify";
 import { useState, useEffect, useRef } from "react";
 
 import { RootState } from "../store";
 import { Dish } from "../types/dish";
-import { OpinionAddCommand } from "../api";
-import { mealsApi, opinionApi } from "../utils/api";
+import { OpinionAddCommand, OpinionResponseDTO } from "../api";
+import { mealsApi, opinionApi, photoDownloadUrl } from "../utils/api";
 
 export const DishDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [dish, setDish] = useState<Dish | null>(null);
   const [rating, setRating] = useState<number>(5);
   const [opinion, setOpinion] = useState<string>("");
+  const [opinionSwitch, setOpinionSwitch] = useState<boolean>(false);
 
   const masonryRef = useRef<JSX.Element | null>(null);
 
   const user = useSelector((state: RootState) => state.user);
+  const [opinions, setOpinions] = useState<OpinionResponseDTO[]>([]);
 
   useEffect(() => {
-    console.log("DishDetails useEffect");
     if (!id || isNaN(Number(id))) {
       window.location.href = "/";
       return;
     }
+
+    opinionApi.getOpinionsForMeal(id as unknown as number).then((response) => {
+      setOpinions(response.data);
+    });
 
     mealsApi
       .getMealById(Number(id))
@@ -57,7 +63,7 @@ export const DishDetails = () => {
       .catch((error) => {
         console.error(error);
       });
-  }, [id]);
+  }, [id, opinionSwitch]);
 
   const handleSendOpinion = async () => {
     if (!dish) {
@@ -71,7 +77,75 @@ export const DishDetails = () => {
       customerId: user.loginResponse!.customerId!,
     };
 
-    opinionApi.addOpinion(addOpinionRequest);
+    opinionApi
+      .addOpinion(addOpinionRequest)
+      .then((response) => {
+        console.log(response);
+
+        if (response.status === 200) {
+          setOpinionSwitch(!opinionSwitch);
+          setRating(5);
+          setOpinion("");
+          toast.success(
+            typeof response.data === "string"
+              ? response.data
+              : "Ocena dodana pomyślnie!",
+            {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Slide,
+            }
+          );
+        }
+      })
+      .catch((_) => {
+        opinionApi
+          .updateOpinion(addOpinionRequest)
+          .then((response) => {
+            console.log(response);
+            if (response.status === 200) {
+              setOpinionSwitch(!opinionSwitch);
+              setRating(5);
+              setOpinion("");
+              toast.success(
+                typeof response.data === "string"
+                  ? response.data
+                  : "Ocena zaktualizowana pomyślnie!",
+                {
+                  position: "bottom-center",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                  transition: Slide,
+                }
+              );
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+            toast.error("Wystąpił błąd podczas dodawania oceny", {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Slide,
+            });
+          });
+      });
   };
 
   if (!dish) {
@@ -109,11 +183,15 @@ export const DishDetails = () => {
   // Store the initial render of the Masonry component
   if (!masonryRef.current) {
     masonryRef.current = (
-      <Masonry columns={3} spacing={1}>
+      <Masonry
+        // let number of columns be depend on screen size xs-1, md-2, ...
+        columns={{ xs: 1, sm: 2, md: 3 }}
+        spacing={1}
+      >
         <Item>
           <Box
             component={"img"}
-            src={dish.image}
+            src={photoDownloadUrl + dish.image}
             alt={dish.name}
             sx={{ width: "100%" }}
           />
@@ -126,7 +204,6 @@ export const DishDetails = () => {
             name="read-only"
             value={dish.rating}
             readOnly
-            precision={0.5}
             sx={{
               padding: "0.5rem",
             }}
@@ -155,7 +232,7 @@ export const DishDetails = () => {
         {masonryRef.current}
       </Box>
       <Divider />
-      <Grid container sx={{ mt: 5 }}>
+      <Grid container sx={{ my: 5 }}>
         <Grid item xs={6}>
           <Box sx={{}}>
             <TextField
@@ -198,7 +275,6 @@ export const DishDetails = () => {
             <Rating
               name="size-large"
               size="large"
-              precision={0.5}
               value={rating}
               onChange={(_, newValue) => {
                 setRating(newValue ?? 0);
@@ -222,6 +298,78 @@ export const DishDetails = () => {
               ? "Zaloguj się, aby dodać opinię"
               : "Wyślij opinię"}
           </Button>
+        </Grid>
+      </Grid>
+      <Divider />
+      <Grid container sx={{ mt: 5 }}>
+        <Grid item xs={12}>
+          <Typography variant="h5" align="center" gutterBottom>
+            Opinie o daniu
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          {/* <Masonry columns={1} spacing={1}>
+            {opinions.map((opinion) => (
+              <Item key={opinion.customerId}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Rating
+                    name="read-only"
+                    value={opinion.rating}
+                    readOnly
+                    sx={{
+                      padding: "0.5rem",
+                    }}
+                  />
+                  <Typography variant="body1" align="center">
+                    {opinion.comment}
+                  </Typography>
+                </Box>
+              </Item>
+            ))}
+          </Masonry> */}
+          {opinions.map((opinion) => (
+            <Paper
+              key={opinion.customerId}
+              sx={{
+                p: 2,
+                mt: 2,
+              }}
+              elevation={24}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Rating
+                  name="read-only"
+                  value={opinion.rating}
+                  readOnly
+                  sx={{
+                    padding: "0.5rem",
+                  }}
+                />
+                <Typography
+                  variant="body1"
+                  align="center"
+                  sx={{
+                    whiteSpace: "pre-wrap", // Ensures that whitespace is preserved and text wraps
+                    wordBreak: "break-word", // Ensures that long words break to fit within the container
+                  }}
+                >
+                  {opinion.comment}
+                </Typography>
+              </Box>
+            </Paper>
+          ))}
         </Grid>
       </Grid>
     </Container>
