@@ -6,6 +6,8 @@ import {
   TextField,
   List,
   ListItem,
+  Button,
+  Box,
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
@@ -16,6 +18,7 @@ import { Filters } from "../components/FoodMenu/Filters/Filters";
 import { DishesList } from "../components/FoodMenu/DishesList/DishesList";
 import { CategorySelector } from "../components/FoodMenu/CategorySelector/CategorySelector";
 import { Category, Meal } from "../api";
+import { AIChat } from "./AIChat";
 
 export const fetchRating = async (meal: Meal) => {
   let rating = 5; // 1 is minimum rating - bugs otherwise
@@ -35,6 +38,7 @@ export const Menu = () => {
   const [excludedIngredients, setExcludedIngredients] = useState<string[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [searchPhrase, setSearchPhrase] = useState<string>("");
+  const [chatOpen, setChatOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -154,6 +158,28 @@ export const Menu = () => {
                   borderColor: { xs: "transparent", md: "divider" },
                 }}
               >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    sx={{
+                      mb: 2,
+                      width: "50%",
+                    }}
+                    onClick={() => {
+                      setChatOpen(true);
+                    }}
+                  >
+                    Poradź się SI!
+                  </Button>
+                </Box>
+                <Divider />
                 <List>
                   <Typography
                     variant="h5"
@@ -210,6 +236,7 @@ export const Menu = () => {
           </Grid>
         </Grid>
       </Grid>
+      <AIChat openChat={chatOpen} setOpenChat={setChatOpen} />
     </Container>
   );
 };

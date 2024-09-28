@@ -20,7 +20,8 @@ import { useState, useEffect, useRef } from "react";
 
 import { RootState } from "../store";
 import { Dish } from "../types/dish";
-import { mealsApi } from "../utils/api";
+import { OpinionAddCommand } from "../api";
+import { mealsApi, opinionApi } from "../utils/api";
 
 export const DishDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -57,6 +58,21 @@ export const DishDetails = () => {
         console.error(error);
       });
   }, [id]);
+
+  const handleSendOpinion = async () => {
+    if (!dish) {
+      return;
+    }
+
+    const addOpinionRequest: OpinionAddCommand = {
+      mealId: dish.id,
+      rating: rating,
+      comment: opinion,
+      customerId: user.loginResponse!.customerId!,
+    };
+
+    opinionApi.addOpinion(addOpinionRequest);
+  };
 
   if (!dish) {
     return (
@@ -200,6 +216,7 @@ export const DishDetails = () => {
               mt: 2,
             }}
             disabled={user.loginResponse === null}
+            onClick={handleSendOpinion}
           >
             {user.loginResponse === null
               ? "Zaloguj się, aby dodać opinię"
