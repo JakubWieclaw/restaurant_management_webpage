@@ -13,9 +13,9 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
     <Card
       elevation={3}
       sx={{
-        my: 7,
-        mx: 1,
         ":hover": { transform: "scale(1.1)", cursor: "pointer" },
+        transition: "transform 0.3s",
+        borderRadius: 2,
       }}
     >
       <CardContent>

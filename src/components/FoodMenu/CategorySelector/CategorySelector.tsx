@@ -43,9 +43,6 @@ export const CategorySelector: React.FC<CategorySelectorProps> = ({
         slidesPerView={3}
         spaceBetween={20}
         loop={false}
-        pagination={{
-          clickable: true,
-        }}
         navigation={true}
         modules={[Pagination, Navigation, Autoplay, FreeMode, Mousewheel]}
         centeredSlides={true}

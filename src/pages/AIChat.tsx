@@ -42,7 +42,7 @@ async function run(
   message: string,
   setResponse: (response: string) => void,
   previousMessages: string[],
-  setPreviousMessages: (previousMessages: string[]) => void,
+  // setPreviousMessages: (previousMessages: string[]) => void,
   setLoading: (loading: boolean) => void
 ) {
   const availableMeals = await mealsApi.getAllMeals().then((response) => {
@@ -179,13 +179,7 @@ export const AIChat: React.FC<AIChatProps> = ({ openChat, setOpenChat }) => {
           onClick={() => {
             setLoading(true);
             setPreviousMessages([...previousMessages, message]);
-            run(
-              message,
-              setResponse,
-              previousMessages,
-              setPreviousMessages,
-              setLoading
-            );
+            run(message, setResponse, previousMessages, setLoading);
           }}
           color="success"
         >

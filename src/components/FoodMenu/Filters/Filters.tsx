@@ -64,7 +64,7 @@ export const Filters: React.FC<FiltersProps> = ({
 
   return (
     <List>
-      <ListSubheader>Cena</ListSubheader>
+      <ListSubheader sx={{ bgcolor: "transparent" }}>Cena</ListSubheader>
       <ListItem>
         <Slider
           value={minMaxPrice}
@@ -79,7 +79,9 @@ export const Filters: React.FC<FiltersProps> = ({
       </ListItem>
       <Divider />
 
-      <ListSubheader>Minimalna ocena</ListSubheader>
+      <ListSubheader sx={{ bgcolor: "transparent" }}>
+        Minimalna ocena
+      </ListSubheader>
       <ListItem>
         <Rating
           value={minStars}
@@ -90,7 +92,9 @@ export const Filters: React.FC<FiltersProps> = ({
       </ListItem>
       <Divider />
 
-      <ListSubheader>Składniki do wykluczenia</ListSubheader>
+      <ListSubheader sx={{ bgcolor: "transparent" }}>
+        Składniki do wykluczenia
+      </ListSubheader>
       <ListItem>
         <Autocomplete
           multiple
