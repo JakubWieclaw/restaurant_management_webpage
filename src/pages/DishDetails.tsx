@@ -203,6 +203,7 @@ export const DishDetails = () => {
           <Rating
             name="read-only"
             value={dish.rating}
+            precision={0.25}
             readOnly
             sx={{
               padding: "0.5rem",

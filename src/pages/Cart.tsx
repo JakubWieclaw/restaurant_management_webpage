@@ -126,17 +126,17 @@ export const Cart = () => {
           </Button>
         </Grid>
         <Grid item>
-          <Button
-            variant="contained"
-            onClick={handleNext}
-            disabled={
-              cart.items.length === 0 || (activeStep === 1 && address === "")
-            }
-          >
-            {activeStep === steps.length - 1
-              ? "Przejdź do płatności"
-              : "Następny"}
-          </Button>
+          {activeStep !== steps.length - 1 && (
+            <Button
+              variant="contained"
+              onClick={handleNext}
+              disabled={
+                cart.items.length === 0 || (activeStep === 1 && address === "")
+              }
+            >
+              {"Następny"}
+            </Button>
+          )}
         </Grid>
       </Grid>
     </Container>
