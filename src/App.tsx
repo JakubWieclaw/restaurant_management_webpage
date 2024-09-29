@@ -20,6 +20,7 @@ import { CategoriesManagement } from "./pages/CategoriesManagement";
 import { Contact } from "./pages/Contact";
 import { PasswordReset } from "./pages/PasswordReset";
 import { DishDetails } from "./pages/DishDetails";
+import Completion from "./components/Cart/Completion";
 
 function App() {
   const dispatch = useDispatch();
@@ -82,6 +83,7 @@ function App() {
             path="/categories-management"
             element={<CategoriesManagement />}
           />
+          <Route path="/completion" element={<Completion />} />
         </Routes>
       </Container>
       <AppFooter />
