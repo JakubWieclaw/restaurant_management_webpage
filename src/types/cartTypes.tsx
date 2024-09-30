@@ -8,4 +8,6 @@ export interface CartItem {
 
 export interface CartState {
   items: CartItem[];
+  deliveryType: string;
+  address: string;
 }

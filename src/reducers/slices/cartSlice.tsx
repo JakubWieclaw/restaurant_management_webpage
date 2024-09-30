@@ -1,8 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
 import { CartState, CartItem } from "../../types/cartTypes";
+import { DeliveryOption } from "../../components/Cart/DeliverySelection";
 
 const initialState: CartState = {
   items: [],
+  deliveryType: DeliveryOption.Personal,
+  address: "",
 };
 
 const cartSlice = createSlice({
@@ -10,6 +14,7 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart(state, action: PayloadAction<CartItem>) {
+      console.log("Adding to cart");
       const existingItem = state.items.find(
         (item) =>
           item.dish.id === action.payload.dish.id &&
@@ -46,12 +51,25 @@ const cartSlice = createSlice({
       }
     },
     clearCart(state) {
+      console.log("Clearing cart");
       state.items = [];
+    },
+    changeDeliveryType(state, action: PayloadAction<DeliveryOption>) {
+      state.deliveryType = action.payload;
+    },
+    changeAddress(state, action: PayloadAction<string>) {
+      state.address = action.payload;
     },
   },
 });
 
-export const { addToCart, removeFromCart, updateCartItem, clearCart } =
-  cartSlice.actions;
+export const {
+  addToCart,
+  removeFromCart,
+  updateCartItem,
+  clearCart,
+  changeDeliveryType,
+  changeAddress,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

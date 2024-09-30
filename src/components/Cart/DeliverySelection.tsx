@@ -22,6 +22,7 @@ import {
   AutocompleteDistanceService,
   PlaceType,
 } from "./AutocompleteDistanceService";
+import { changeDeliveryType } from "../../reducers/slices/cartSlice";
 
 interface DeliverySelectionProps {
   setAddress: (address: string) => void;
@@ -37,7 +38,7 @@ interface DeliverySelectionProps {
   setOptions: (value: readonly PlaceType[]) => void;
 }
 
-enum DeliveryOption {
+export enum DeliveryOption {
   Personal = "personal",
   Courier = "courier",
 }
@@ -63,6 +64,7 @@ export const DeliverySelection: React.FC<DeliverySelectionProps> = ({
       setAddress("");
     }
     setChecked(value);
+    changeDeliveryType(value);
   };
 
   const [distanceString, setDistanceString] = useState("");

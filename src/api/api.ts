@@ -184,7 +184,7 @@ export interface ConfigAddCommand {
     'deliveryPricings'?: Array<DeliveryPricing>;
 }
 /**
- * Delivery prices of the restaurant
+ * 
  * @export
  * @interface DeliveryPricing
  */
@@ -452,7 +452,7 @@ export const MealAddCommandUnitTypeEnum = {
 export type MealAddCommandUnitTypeEnum = typeof MealAddCommandUnitTypeEnum[keyof typeof MealAddCommandUnitTypeEnum];
 
 /**
- * Opening hours of the restaurant
+ * 
  * @export
  * @interface OpeningHour
  */
@@ -599,6 +599,18 @@ export interface Order {
      * @memberof Order
      */
     'dateTime': string;
+    /**
+     * 
+     * @type {{ [key: string]: Array<string>; }}
+     * @memberof Order
+     */
+    'unwantedIngredients'?: { [key: string]: Array<string>; };
+    /**
+     * 
+     * @type {string}
+     * @memberof Order
+     */
+    'deliveryAddress'?: string;
 }
 
 export const OrderTypeEnum = {
@@ -648,6 +660,18 @@ export interface OrderAddCommand {
      * @memberof OrderAddCommand
      */
     'status': OrderAddCommandStatusEnum;
+    /**
+     * 
+     * @type {{ [key: string]: Array<string>; }}
+     * @memberof OrderAddCommand
+     */
+    'unwantedIngredients'?: { [key: string]: Array<string>; };
+    /**
+     * 
+     * @type {string}
+     * @memberof OrderAddCommand
+     */
+    'deliveryAddress'?: string;
 }
 
 export const OrderAddCommandTypeEnum = {
@@ -756,6 +780,7 @@ export const AuthControllerApiAxiosParamCreator = function (configuration?: Conf
     return {
         /**
          * 
+         * @summary Initiate password reset process
          * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -864,6 +889,7 @@ export const AuthControllerApiAxiosParamCreator = function (configuration?: Conf
         },
         /**
          * 
+         * @summary Reset password
          * @param {string} token 
          * @param {string} newPassword 
          * @param {*} [options] Override http request option.
@@ -907,6 +933,7 @@ export const AuthControllerApiAxiosParamCreator = function (configuration?: Conf
         },
         /**
          * 
+         * @summary Validate password reset token
          * @param {string} token 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -953,11 +980,12 @@ export const AuthControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Initiate password reset process
          * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async forgotPassword(email: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+        async forgotPassword(email: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.forgotPassword(email, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthControllerApi.forgotPassword']?.[localVarOperationServerIndex]?.url;
@@ -991,12 +1019,13 @@ export const AuthControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Reset password
          * @param {string} token 
          * @param {string} newPassword 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async resetPassword(token: string, newPassword: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+        async resetPassword(token: string, newPassword: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.resetPassword(token, newPassword, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['AuthControllerApi.resetPassword']?.[localVarOperationServerIndex]?.url;
@@ -1004,6 +1033,7 @@ export const AuthControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Validate password reset token
          * @param {string} token 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1026,11 +1056,12 @@ export const AuthControllerApiFactory = function (configuration?: Configuration,
     return {
         /**
          * 
+         * @summary Initiate password reset process
          * @param {string} email 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        forgotPassword(email: string, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+        forgotPassword(email: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.forgotPassword(email, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1055,16 +1086,18 @@ export const AuthControllerApiFactory = function (configuration?: Configuration,
         },
         /**
          * 
+         * @summary Reset password
          * @param {string} token 
          * @param {string} newPassword 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        resetPassword(token: string, newPassword: string, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+        resetPassword(token: string, newPassword: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.resetPassword(token, newPassword, options).then((request) => request(axios, basePath));
         },
         /**
          * 
+         * @summary Validate password reset token
          * @param {string} token 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1084,6 +1117,7 @@ export const AuthControllerApiFactory = function (configuration?: Configuration,
 export class AuthControllerApi extends BaseAPI {
     /**
      * 
+     * @summary Initiate password reset process
      * @param {string} email 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1119,6 +1153,7 @@ export class AuthControllerApi extends BaseAPI {
 
     /**
      * 
+     * @summary Reset password
      * @param {string} token 
      * @param {string} newPassword 
      * @param {*} [options] Override http request option.
@@ -1131,6 +1166,7 @@ export class AuthControllerApi extends BaseAPI {
 
     /**
      * 
+     * @summary Validate password reset token
      * @param {string} token 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1539,7 +1575,7 @@ export const ConfigControllerApiAxiosParamCreator = function (configuration?: Co
     return {
         /**
          * 
-         * @summary Get config
+         * @summary Get system configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1569,7 +1605,7 @@ export const ConfigControllerApiAxiosParamCreator = function (configuration?: Co
         },
         /**
          * 
-         * @summary Get delivery prices
+         * @summary Get delivery prices configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1599,7 +1635,7 @@ export const ConfigControllerApiAxiosParamCreator = function (configuration?: Co
         },
         /**
          * 
-         * @summary Get opening hours
+         * @summary Get opening hours configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1629,7 +1665,7 @@ export const ConfigControllerApiAxiosParamCreator = function (configuration?: Co
         },
         /**
          * 
-         * @summary Initialize system
+         * @summary Initialize the system with configuration
          * @param {ConfigAddCommand} configAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -1665,7 +1701,7 @@ export const ConfigControllerApiAxiosParamCreator = function (configuration?: Co
         },
         /**
          * 
-         * @summary Remove config, delivery prices and opening hours, only for testing purposes
+         * @summary Remove all configurations including delivery prices and opening hours (testing purposes only)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1705,7 +1741,7 @@ export const ConfigControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Get config
+         * @summary Get system configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1717,11 +1753,11 @@ export const ConfigControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Get delivery prices
+         * @summary Get delivery prices configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getDeliveryPrices(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DeliveryPricing>>> {
+        async getDeliveryPrices(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<DeliveryPricing>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getDeliveryPrices(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ConfigControllerApi.getDeliveryPrices']?.[localVarOperationServerIndex]?.url;
@@ -1729,11 +1765,11 @@ export const ConfigControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Get opening hours
+         * @summary Get opening hours configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getOpeningHours(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<OpeningHour>>> {
+        async getOpeningHours(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<OpeningHour>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getOpeningHours(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ConfigControllerApi.getOpeningHours']?.[localVarOperationServerIndex]?.url;
@@ -1741,12 +1777,12 @@ export const ConfigControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Initialize system
+         * @summary Initialize the system with configuration
          * @param {ConfigAddCommand} configAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async initializeSystem(configAddCommand: ConfigAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+        async initializeSystem(configAddCommand: ConfigAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.initializeSystem(configAddCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ConfigControllerApi.initializeSystem']?.[localVarOperationServerIndex]?.url;
@@ -1754,11 +1790,11 @@ export const ConfigControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Remove config, delivery prices and opening hours, only for testing purposes
+         * @summary Remove all configurations including delivery prices and opening hours (testing purposes only)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async removeConfigs(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+        async removeConfigs(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.removeConfigs(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ConfigControllerApi.removeConfigs']?.[localVarOperationServerIndex]?.url;
@@ -1776,7 +1812,7 @@ export const ConfigControllerApiFactory = function (configuration?: Configuratio
     return {
         /**
          * 
-         * @summary Get config
+         * @summary Get system configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -1785,39 +1821,39 @@ export const ConfigControllerApiFactory = function (configuration?: Configuratio
         },
         /**
          * 
-         * @summary Get delivery prices
+         * @summary Get delivery prices configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getDeliveryPrices(options?: RawAxiosRequestConfig): AxiosPromise<Array<DeliveryPricing>> {
+        getDeliveryPrices(options?: RawAxiosRequestConfig): AxiosPromise<DeliveryPricing> {
             return localVarFp.getDeliveryPrices(options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @summary Get opening hours
+         * @summary Get opening hours configuration
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getOpeningHours(options?: RawAxiosRequestConfig): AxiosPromise<Array<OpeningHour>> {
+        getOpeningHours(options?: RawAxiosRequestConfig): AxiosPromise<OpeningHour> {
             return localVarFp.getOpeningHours(options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @summary Initialize system
+         * @summary Initialize the system with configuration
          * @param {ConfigAddCommand} configAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        initializeSystem(configAddCommand: ConfigAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<string> {
+        initializeSystem(configAddCommand: ConfigAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.initializeSystem(configAddCommand, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @summary Remove config, delivery prices and opening hours, only for testing purposes
+         * @summary Remove all configurations including delivery prices and opening hours (testing purposes only)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        removeConfigs(options?: RawAxiosRequestConfig): AxiosPromise<string> {
+        removeConfigs(options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.removeConfigs(options).then((request) => request(axios, basePath));
         },
     };
@@ -1832,7 +1868,7 @@ export const ConfigControllerApiFactory = function (configuration?: Configuratio
 export class ConfigControllerApi extends BaseAPI {
     /**
      * 
-     * @summary Get config
+     * @summary Get system configuration
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ConfigControllerApi
@@ -1843,7 +1879,7 @@ export class ConfigControllerApi extends BaseAPI {
 
     /**
      * 
-     * @summary Get delivery prices
+     * @summary Get delivery prices configuration
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ConfigControllerApi
@@ -1854,7 +1890,7 @@ export class ConfigControllerApi extends BaseAPI {
 
     /**
      * 
-     * @summary Get opening hours
+     * @summary Get opening hours configuration
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ConfigControllerApi
@@ -1865,7 +1901,7 @@ export class ConfigControllerApi extends BaseAPI {
 
     /**
      * 
-     * @summary Initialize system
+     * @summary Initialize the system with configuration
      * @param {ConfigAddCommand} configAddCommand 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -1877,7 +1913,7 @@ export class ConfigControllerApi extends BaseAPI {
 
     /**
      * 
-     * @summary Remove config, delivery prices and opening hours, only for testing purposes
+     * @summary Remove all configurations including delivery prices and opening hours (testing purposes only)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ConfigControllerApi
@@ -2883,7 +2919,7 @@ export const OrderControllerApiAxiosParamCreator = function (configuration?: Con
     return {
         /**
          * 
-         * @summary Add new order
+         * @summary Add new order with possibility to exclude unwanted ingredients (it is a map where key is index of mealId in mealIds list and value is list of unwanted ingredients) It allows to exclude unwanted ingredients from specific mal, not for all meals with given id
          * @param {OrderAddCommand} orderAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3067,7 +3103,7 @@ export const OrderControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Add new order
+         * @summary Add new order with possibility to exclude unwanted ingredients (it is a map where key is index of mealId in mealIds list and value is list of unwanted ingredients) It allows to exclude unwanted ingredients from specific mal, not for all meals with given id
          * @param {OrderAddCommand} orderAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3142,7 +3178,7 @@ export const OrderControllerApiFactory = function (configuration?: Configuration
     return {
         /**
          * 
-         * @summary Add new order
+         * @summary Add new order with possibility to exclude unwanted ingredients (it is a map where key is index of mealId in mealIds list and value is list of unwanted ingredients) It allows to exclude unwanted ingredients from specific mal, not for all meals with given id
          * @param {OrderAddCommand} orderAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3202,7 +3238,7 @@ export const OrderControllerApiFactory = function (configuration?: Configuration
 export class OrderControllerApi extends BaseAPI {
     /**
      * 
-     * @summary Add new order
+     * @summary Add new order with possibility to exclude unwanted ingredients (it is a map where key is index of mealId in mealIds list and value is list of unwanted ingredients) It allows to exclude unwanted ingredients from specific mal, not for all meals with given id
      * @param {OrderAddCommand} orderAddCommand 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
