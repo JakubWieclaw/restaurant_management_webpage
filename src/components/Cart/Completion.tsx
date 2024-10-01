@@ -1,8 +1,15 @@
-import { Container, Divider, Typography } from "@mui/material";
+import {
+  CircularProgress,
+  Container,
+  Divider,
+  Typography,
+} from "@mui/material";
 
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { loadStripe } from "@stripe/stripe-js";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
 import { RootState } from "../../store";
 import { orderApi } from "../../utils/api";
@@ -12,13 +19,15 @@ import {
   OrderAddCommandTypeEnum,
 } from "../../api";
 import { DeliveryOption } from "./DeliverySelection";
-import { toast } from "react-toastify";
 import { clearCart } from "../../reducers/slices/cartSlice";
+import { AxiosResponse } from "axios";
 
 function Completion() {
   const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHED_KEY);
   const cart = useSelector((state: RootState) => state.cart);
   const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     stripePromise.then(async (stripe: any) => {
@@ -30,19 +39,21 @@ function Completion() {
 
       if (error) {
         console.log(`${error.message}`);
-      } else {
+      } else if (cart.items.length > 0) {
         console.log(
           `https://dashboard.stripe.com/test/payments/${paymentIntent.id}`
         );
+        console.log(cart.deliveryType);
         let addOrderRequest: OrderAddCommand = {
           mealIds: [],
           unwantedIngredients: {},
-          customerId: user.loginResponse?.customerId,
+          customerId: user.loginResponse?.customerId ?? 0, // 0 means unregistered user
           type:
-            cart.deliveryType === DeliveryOption.Personal
+            cart.deliveryType == DeliveryOption.Personal
               ? OrderAddCommandTypeEnum.NaMiejscu
               : OrderAddCommandTypeEnum.Dostawa,
           status: OrderAddCommandStatusEnum.Oczekujce,
+          deliveryAddress: cart.address,
         };
 
         cart.items.forEach((item, idx) => {
@@ -52,7 +63,7 @@ function Completion() {
 
         orderApi
           .addOrder(addOrderRequest)
-          .then((response) => {
+          .then((response: AxiosResponse) => {
             console.log(response);
             toast.success("Zamówienie zostało złożone", {
               position: "bottom-center",
@@ -63,10 +74,8 @@ function Completion() {
               draggable: true,
               progress: undefined,
             });
-            clearCart();
-            console.log(cart.items);
-            console.log("Cart cleared");
-            console.log(cart.items);
+            dispatch(clearCart());
+            navigate("/order-details/" + response.data.id);
           })
           .catch((error) => {
             console.error(error);
@@ -90,6 +99,14 @@ function Completion() {
         Twoje zamówienie zostało złożone!
       </Typography>
       <Divider />
+      <CircularProgress
+        sx={{
+          // center
+          margin: "auto",
+          display: "block",
+          mt: 3,
+        }}
+      />
     </Container>
   );
 }

@@ -51,7 +51,6 @@ const cartSlice = createSlice({
       }
     },
     clearCart(state) {
-      console.log("Clearing cart");
       state.items = [];
     },
     changeDeliveryType(state, action: PayloadAction<DeliveryOption>) {

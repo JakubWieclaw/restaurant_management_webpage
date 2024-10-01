@@ -63,7 +63,11 @@ export default function CheckoutForm() {
         //
         // Prefill the email field like so:
         options={{
-          defaultValues: { email: user.loginResponse?.customerEmail! },
+          defaultValues: {
+            email: user.loginResponse?.customerEmail
+              ? user.loginResponse?.customerEmail
+              : "",
+          },
         }}
       />
       <PaymentElement id="payment-element" />

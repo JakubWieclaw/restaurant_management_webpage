@@ -46,8 +46,8 @@ export const ContentSummary: React.FC<ContentSummaryProps> = ({
               Authorization: "Bearer " + import.meta.env.VITE_STRIPE_SECRET_KEY,
             },
             body: new URLSearchParams({
-              amount: (total * 100).toString(), // Convert to the smallest currency unit
-              currency: "usd",
+              amount: (Number(total.toFixed(2)) * 100).toString(), // Convert to the smallest currency unit
+              currency: "pln",
               "automatic_payment_methods[enabled]": "true",
             }),
           }

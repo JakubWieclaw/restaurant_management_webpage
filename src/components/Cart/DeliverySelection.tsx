@@ -14,6 +14,7 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 
 import { AxiosResponse } from "axios";
+import { useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 
 import { configApi } from "../../utils/api";
@@ -22,7 +23,10 @@ import {
   AutocompleteDistanceService,
   PlaceType,
 } from "./AutocompleteDistanceService";
-import { changeDeliveryType } from "../../reducers/slices/cartSlice";
+import {
+  changeAddress,
+  changeDeliveryType,
+} from "../../reducers/slices/cartSlice";
 
 interface DeliverySelectionProps {
   setAddress: (address: string) => void;
@@ -56,6 +60,8 @@ export const DeliverySelection: React.FC<DeliverySelectionProps> = ({
   options,
   setOptions,
 }) => {
+  const dispatch = useDispatch();
+
   const handleToggle = (value: DeliveryOption) => () => {
     if (value === DeliveryOption.Personal) {
       setDeliveryCost(0);
@@ -64,7 +70,7 @@ export const DeliverySelection: React.FC<DeliverySelectionProps> = ({
       setAddress("");
     }
     setChecked(value);
-    changeDeliveryType(value);
+    dispatch(changeDeliveryType(value));
   };
 
   const [distanceString, setDistanceString] = useState("");
@@ -211,7 +217,10 @@ export const DeliverySelection: React.FC<DeliverySelectionProps> = ({
                     calculateDeliveryPrice(distance);
                   }
                 }}
-                setAddress={setAddress}
+                setAddress={(val: string) => {
+                  setAddress(val);
+                  dispatch(changeAddress(val));
+                }}
                 inputValue={inputValue}
                 setInputValue={setInputValue}
                 value={value}
