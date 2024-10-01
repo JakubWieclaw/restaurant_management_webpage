@@ -96,7 +96,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
             }
             categoriesApi
               .updateCategory(categoryCopy.id, categoryCopy)
-              .then((response: AxiosResponse) => {
+              .then((_: AxiosResponse) => {
                 toast.success("Kategoria zaktualizowana pomyślnie.", {
                   position: "bottom-center",
                   autoClose: 5000,
@@ -140,7 +140,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
                   newCategory.photographUrl = photoDownloadUrl + response.data;
                   categoriesApi
                     .addCategory(newCategory)
-                    .then((response: AxiosResponse) => {
+                    .then((_: AxiosResponse) => {
                       toast.success("Kategoria dodana pomyślnie.", {
                         position: "bottom-center",
                         autoClose: 5000,

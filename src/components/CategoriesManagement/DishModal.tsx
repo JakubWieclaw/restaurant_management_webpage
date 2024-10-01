@@ -117,7 +117,7 @@ export const DishModal: React.FC<DishModalProps> = ({
 
             mealsApi
               .updateMeal(dishCopy.id, dishCopy as MealAddCommand)
-              .then((response) => {
+              .then((_) => {
                 toast.success("Danie zaktualizowane pomyślnie.", {
                   position: "bottom-center",
                   autoClose: 5000,
@@ -161,7 +161,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                       ...dishCopy,
                       photographUrl: photoDownloadUrl + response.data,
                     } as MealAddCommand)
-                    .then((response) => {
+                    .then((_) => {
                       toast.success("Danie dodane pomyślnie.", {
                         position: "bottom-center",
                         autoClose: 5000,

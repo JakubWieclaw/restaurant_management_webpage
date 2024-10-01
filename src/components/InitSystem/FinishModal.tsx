@@ -58,7 +58,7 @@ const handleCloseSummary = (
 
     photoApi
       .uploadPhoto(ctx.restaurantLogo)
-      .then((response) => {
+      .then((_) => {
         const initData: ConfigAddCommand = {
           restaurantName: ctx.restaurantName,
           logoUrl: photoDownloadUrl + ctx.restaurantLogo?.name,
