@@ -46,25 +46,23 @@ export const LoginRegister = () => {
         await authApi
           .login({ email: email, password: password })
           .then((response) => {
-            if (response.status === 200) {
-              dispatch(
-                login({ response: response.data } as {
-                  response: { token: string; isAdmin: boolean };
-                })
-              );
-              toast.success("Zalogowano pomyślnie", {
-                position: "bottom-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-                transition: Slide,
-              });
-              navigate("/");
-            }
+            dispatch(
+              login({ response: response.data } as {
+                response: { token: string; isAdmin: boolean };
+              })
+            );
+            toast.success("Zalogowano pomyślnie", {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Slide,
+            });
+            navigate("/");
           })
           .catch((error: any) => {
             toast.error(
@@ -134,12 +132,28 @@ export const LoginRegister = () => {
             admin: registerAsAdmin,
           })
           .then((response) => {
-            if (response.status === 200) {
-              console.log(response);
-              toast.success(
-                typeof response.data === "string"
-                  ? response.data
-                  : "Użytkownik pomyślnie zarejestrowany.",
+            console.log(response);
+            toast.success(
+              typeof response.data === "string"
+                ? response.data
+                : "Użytkownik pomyślnie zarejestrowany.",
+              {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Slide,
+              }
+            );
+            setLoginRegisterState(LoginRegisterState.Login);
+            if (registerAsAdmin) {
+              navigate("/initialize-system");
+              toast.info(
+                "Zarejestrowano administratora. Przejdź do inicjalizacji systemu.",
                 {
                   position: "bottom-center",
                   autoClose: 5000,
@@ -152,24 +166,6 @@ export const LoginRegister = () => {
                   transition: Slide,
                 }
               );
-              setLoginRegisterState(LoginRegisterState.Login);
-              if (registerAsAdmin) {
-                navigate("/initialize-system");
-                toast.info(
-                  "Zarejestrowano administratora. Przejdź do inicjalizacji systemu.",
-                  {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Slide,
-                  }
-                );
-              }
             }
           })
           .catch((error: any) => {

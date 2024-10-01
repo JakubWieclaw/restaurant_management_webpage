@@ -30,9 +30,7 @@ function App() {
     configApi
       .getConfig()
       .then((response) => {
-        if (response.status === 200) {
-          dispatch(setConfig(response.data));
-        }
+        dispatch(setConfig(response.data));
       })
       .catch((error) => {
         if (user.loginResponse === null) {

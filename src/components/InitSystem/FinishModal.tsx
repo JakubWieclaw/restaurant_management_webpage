@@ -59,23 +59,39 @@ const handleCloseSummary = (
     photoApi
       .uploadPhoto(ctx.restaurantLogo)
       .then((response) => {
-        if (response.status === 200) {
-          const initData: ConfigAddCommand = {
-            restaurantName: ctx.restaurantName,
-            logoUrl: photoDownloadUrl + ctx.restaurantLogo?.name,
-            postalCode: ctx.postalCode,
-            city: ctx.city,
-            street: ctx.street,
-            phoneNumber: ctx.phoneNumber,
-            email: ctx.email,
-            deliveryPricings: deliveryPricings,
-            openingHours: openingHours,
-          };
+        const initData: ConfigAddCommand = {
+          restaurantName: ctx.restaurantName,
+          logoUrl: photoDownloadUrl + ctx.restaurantLogo?.name,
+          postalCode: ctx.postalCode,
+          city: ctx.city,
+          street: ctx.street,
+          phoneNumber: ctx.phoneNumber,
+          email: ctx.email,
+          deliveryPricings: deliveryPricings,
+          openingHours: openingHours,
+        };
 
-          configApi
-            .initializeSystem(initData)
-            .then((response: AxiosResponse) => {
-              toast.success(response.data, {
+        configApi
+          .initializeSystem(initData)
+          .then((response: AxiosResponse) => {
+            toast.success(response.data, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Slide,
+            });
+            navigate("/");
+          })
+          .catch((error) => {
+            // if type of error is string then just show it
+            // if type of error is object then iterate over it and show each error
+            if (typeof error.response.data === "string") {
+              toast.error(error.response.data, {
                 position: "bottom-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -86,13 +102,9 @@ const handleCloseSummary = (
                 theme: "light",
                 transition: Slide,
               });
-              navigate("/");
-            })
-            .catch((error) => {
-              // if type of error is string then just show it
-              // if type of error is object then iterate over it and show each error
-              if (typeof error.response.data === "string") {
-                toast.error(error.response.data, {
+            } else {
+              Object.entries(error.response.data).forEach(([key, value]) => {
+                toast.error(key + " - " + value, {
                   position: "bottom-center",
                   autoClose: 5000,
                   hideProgressBar: false,
@@ -103,23 +115,9 @@ const handleCloseSummary = (
                   theme: "light",
                   transition: Slide,
                 });
-              } else {
-                Object.entries(error.response.data).forEach(([key, value]) => {
-                  toast.error(key + " - " + value, {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Slide,
-                  });
-                });
-              }
-            });
-        }
+              });
+            }
+          });
       })
       .catch((_) => {
         toast.error("Nie udało się przesłać zdjęcia", {

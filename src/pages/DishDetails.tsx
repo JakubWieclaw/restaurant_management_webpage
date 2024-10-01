@@ -80,56 +80,50 @@ export const DishDetails = () => {
     opinionApi
       .addOpinion(addOpinionRequest)
       .then((response) => {
-        console.log(response);
-
-        if (response.status === 200) {
-          setOpinionSwitch(!opinionSwitch);
-          setRating(5);
-          setOpinion("");
-          toast.success(
-            typeof response.data === "string"
-              ? response.data
-              : "Ocena dodana pomyślnie!",
-            {
-              position: "bottom-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-              transition: Slide,
-            }
-          );
-        }
+        setOpinionSwitch(!opinionSwitch);
+        setRating(5);
+        setOpinion("");
+        toast.success(
+          typeof response.data === "string"
+            ? response.data
+            : "Ocena dodana pomyślnie!",
+          {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Slide,
+          }
+        );
       })
       .catch((_) => {
         opinionApi
           .updateOpinion(addOpinionRequest)
           .then((response) => {
             console.log(response);
-            if (response.status === 200) {
-              setOpinionSwitch(!opinionSwitch);
-              setRating(5);
-              setOpinion("");
-              toast.success(
-                typeof response.data === "string"
-                  ? response.data
-                  : "Ocena zaktualizowana pomyślnie!",
-                {
-                  position: "bottom-center",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                  transition: Slide,
-                }
-              );
-            }
+            setOpinionSwitch(!opinionSwitch);
+            setRating(5);
+            setOpinion("");
+            toast.success(
+              typeof response.data === "string"
+                ? response.data
+                : "Ocena zaktualizowana pomyślnie!",
+              {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Slide,
+              }
+            );
           })
           .catch((error) => {
             console.error(error);

@@ -13,7 +13,7 @@ import { toast, Slide } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 import { RootState } from "../store";
-import { authApi } from "../utils/api";
+import { authApi, photoDownloadUrl } from "../utils/api";
 
 export const PasswordReset = () => {
   const minPasswordLength = 3;
@@ -36,20 +36,19 @@ export const PasswordReset = () => {
       authApi
         .resetPassword(token, password)
         .then((response) => {
-          if (response.status === 200) {
-            navigate("/auth");
-            toast.success(response.data, {
-              position: "bottom-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-              transition: Slide,
-            });
-          }
+          console.log(response);
+          navigate("/auth");
+          toast.success("Zmiana hasła przebiegła pomyślnie.", {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Slide,
+          });
         })
         .catch((error) => {
           toast.error(
@@ -84,7 +83,7 @@ export const PasswordReset = () => {
           <Grid item xs={12}>
             <Box
               component={"img"}
-              src={config.config.logoUrl}
+              src={photoDownloadUrl + config.config.logoUrl}
               sx={{
                 width: "20%",
               }}

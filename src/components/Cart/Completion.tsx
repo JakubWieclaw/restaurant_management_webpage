@@ -54,21 +54,19 @@ function Completion() {
           .addOrder(addOrderRequest)
           .then((response) => {
             console.log(response);
-            if (response.status === 200) {
-              toast.success("Zamówienie zostało złożone", {
-                position: "bottom-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-              });
-              clearCart();
-              console.log(cart.items);
-              console.log("Cart cleared");
-              console.log(cart.items);
-            }
+            toast.success("Zamówienie zostało złożone", {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+            clearCart();
+            console.log(cart.items);
+            console.log("Cart cleared");
+            console.log(cart.items);
           })
           .catch((error) => {
             console.error(error);

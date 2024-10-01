@@ -94,9 +94,7 @@ export const DishModal: React.FC<DishModalProps> = ({
               photoApi
                 .uploadPhoto(photo)
                 .then((response) => {
-                  if (response.status === 200) {
-                    dishCopy.photographUrl = photoDownloadUrl + response.data;
-                  }
+                  dishCopy.photographUrl = photoDownloadUrl + response.data;
                 })
                 .catch((error) => {
                   toast.error(
@@ -120,26 +118,24 @@ export const DishModal: React.FC<DishModalProps> = ({
             mealsApi
               .updateMeal(dishCopy.id, dishCopy as MealAddCommand)
               .then((response) => {
-                if (response.status === 200) {
-                  toast.success("Danie zaktualizowane pomyślnie.", {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Slide,
-                  });
-                  setOpen(false);
-                  setDish({
-                    ...dishCopy,
-                    name: dishCopy.name ?? "",
-                    categoryId: dishCopy.categoryId ?? -1,
-                  });
-                  setRerenderOnChange((prev: boolean) => !prev);
-                }
+                toast.success("Danie zaktualizowane pomyślnie.", {
+                  position: "bottom-center",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "light",
+                  transition: Slide,
+                });
+                setOpen(false);
+                setDish({
+                  ...dishCopy,
+                  name: dishCopy.name ?? "",
+                  categoryId: dishCopy.categoryId ?? -1,
+                });
+                setRerenderOnChange((prev: boolean) => !prev);
               })
               .catch((_) => {
                 toast.info("Błąd podczas aktualizacji dania.", {
@@ -160,52 +156,48 @@ export const DishModal: React.FC<DishModalProps> = ({
               photoApi
                 .uploadPhoto(photo)
                 .then((response) => {
-                  if (response.status === 200) {
-                    mealsApi
-                      .addMeal({
-                        ...dishCopy,
-                        photographUrl: photoDownloadUrl + response.data,
-                      } as MealAddCommand)
-                      .then((response) => {
-                        if (response.status === 200) {
-                          toast.success("Danie dodane pomyślnie.", {
-                            position: "bottom-center",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                            transition: Slide,
-                          });
-                          setOpen(false);
-                          setDish({
-                            ...dishCopy,
-                            name: dishCopy?.name ?? "",
-                            categoryId: dishCopy?.categoryId ?? -1,
-                          });
-                          setRerenderOnChange((prev: boolean) => !prev);
-                        }
-                      })
-                      .catch((error) => {
-                        toast.error(
-                          error.response.data?.name ??
-                            JSON.stringify(error.response.data),
-                          {
-                            position: "bottom-center",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-                            theme: "light",
-                            transition: Slide,
-                          }
-                        );
+                  mealsApi
+                    .addMeal({
+                      ...dishCopy,
+                      photographUrl: photoDownloadUrl + response.data,
+                    } as MealAddCommand)
+                    .then((response) => {
+                      toast.success("Danie dodane pomyślnie.", {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Slide,
                       });
-                  }
+                      setOpen(false);
+                      setDish({
+                        ...dishCopy,
+                        name: dishCopy?.name ?? "",
+                        categoryId: dishCopy?.categoryId ?? -1,
+                      });
+                      setRerenderOnChange((prev: boolean) => !prev);
+                    })
+                    .catch((error) => {
+                      toast.error(
+                        error.response.data?.name ??
+                          JSON.stringify(error.response.data),
+                        {
+                          position: "bottom-center",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                          transition: Slide,
+                        }
+                      );
+                    });
                 })
                 .catch((error) => {
                   toast.error(
@@ -558,22 +550,20 @@ export const DishModal: React.FC<DishModalProps> = ({
                   mealsApi
                     .deleteMealById(dishCopy.id)
                     .then((response: AxiosResponse) => {
-                      if (response.status === 200) {
-                        toast.success(response.data, {
-                          position: "bottom-center",
-                          autoClose: 5000,
-                          hideProgressBar: false,
-                          closeOnClick: true,
-                          pauseOnHover: true,
-                          draggable: true,
-                          progress: undefined,
-                          theme: "light",
-                          transition: Slide,
-                        });
-                        setOpen(false);
-                        setDish(null);
-                        setRerenderOnChange((prev: boolean) => !prev);
-                      }
+                      toast.success(response.data, {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Slide,
+                      });
+                      setOpen(false);
+                      setDish(null);
+                      setRerenderOnChange((prev: boolean) => !prev);
                     })
                     .catch((_) => {
                       toast.error("Błąd podczas usuwania dania.", {
