@@ -20,6 +20,7 @@
     "@mui/system": "^6.1.1",
     "@mui/x-data-grid": "^7.12.1",
     "@mui/x-date-pickers": "^7.8.0",
+    "@openapitools/openapi-generator-cli": "2.13.12",
     "@reduxjs/toolkit": "^2.2.6",
     "@stripe/react-stripe-js": "^2.8.0",
     "@stripe/stripe-js": "^4.5.0",

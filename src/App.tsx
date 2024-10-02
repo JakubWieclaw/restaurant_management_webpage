@@ -21,6 +21,7 @@ import { Contact } from "./pages/Contact";
 import { PasswordReset } from "./pages/PasswordReset";
 import { DishDetails } from "./pages/DishDetails";
 import Completion from "./components/Cart/Completion";
+import { OrderDetails } from "./pages/OrderDetails";
 
 function App() {
   const dispatch = useDispatch();
@@ -82,6 +83,7 @@ function App() {
             element={<CategoriesManagement />}
           />
           <Route path="/completion" element={<Completion />} />
+          <Route path="order-details/:orderId" element={<OrderDetails />} />
         </Routes>
       </Container>
       <AppFooter />

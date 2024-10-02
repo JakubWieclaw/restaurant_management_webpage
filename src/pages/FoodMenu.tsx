@@ -25,7 +25,8 @@ export const fetchRating = async (meal: Meal) => {
   await opinionApi
     .getAverageRating(meal.id!)
     .then((response) => {
-      rating = response.data;
+      console.log(response);
+      rating = response.data.averageRating ?? 5;
     })
     .catch((_) => {});
   return rating;

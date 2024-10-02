@@ -24,6 +24,25 @@ import type { RequestArgs } from './base';
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base';
 
 /**
+ * 
+ * @export
+ * @interface AverageRatingResponseDTO
+ */
+export interface AverageRatingResponseDTO {
+    /**
+     * 
+     * @type {number}
+     * @memberof AverageRatingResponseDTO
+     */
+    'averageRating'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof AverageRatingResponseDTO
+     */
+    'numberOfOpinions'?: number;
+}
+/**
  * Model of a category
  * @export
  * @interface Category
@@ -2733,7 +2752,7 @@ export const OpinionControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAverageRating(mealId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
+        async getAverageRating(mealId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AverageRatingResponseDTO>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAverageRating(mealId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['OpinionControllerApi.getAverageRating']?.[localVarOperationServerIndex]?.url;
@@ -2805,7 +2824,7 @@ export const OpinionControllerApiFactory = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAverageRating(mealId: number, options?: RawAxiosRequestConfig): AxiosPromise<number> {
+        getAverageRating(mealId: number, options?: RawAxiosRequestConfig): AxiosPromise<AverageRatingResponseDTO> {
             return localVarFp.getAverageRating(mealId, options).then((request) => request(axios, basePath));
         },
         /**
