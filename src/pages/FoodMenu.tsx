@@ -21,15 +21,17 @@ import { Category, Meal } from "../api";
 import { AIChat } from "./AIChat";
 
 export const fetchRating = async (meal: Meal) => {
-  let rating = 5; // 1 is minimum rating - bugs otherwise
+  let rating = 0; // 1 is minimum rating - bugs otherwise
+  let ratingNumber = 0;
   await opinionApi
     .getAverageRating(meal.id!)
     .then((response) => {
       console.log(response);
-      rating = response.data.averageRating ?? 5;
+      rating = response.data.averageRating ?? 0;
+      ratingNumber = response.data.numberOfOpinions ?? 0;
     })
     .catch((_) => {});
-  return rating;
+  return [rating, ratingNumber];
 };
 
 export const Menu = () => {
@@ -61,16 +63,20 @@ export const Menu = () => {
           const meals: Meal[] = mealsResponse.data;
 
           const dishes = await Promise.all(
-            meals.map(async (meal: Meal) => ({
-              id: meal.id ?? 0,
-              name: meal.name,
-              price: meal.price ?? 0,
-              ingredients: meal.ingredients ?? [],
-              category: categoriesMap[meal.categoryId] ?? "",
-              image: meal.photographUrl ?? "",
-              rating: await fetchRating(meal),
-              allergens: meal.allergens ?? [],
-            }))
+            meals.map(async (meal: Meal) => {
+              const [rating, ratingNumber] = await fetchRating(meal);
+              return {
+                id: meal.id ?? 0,
+                name: meal.name,
+                price: meal.price ?? 0,
+                ingredients: meal.ingredients ?? [],
+                category: categoriesMap[meal.categoryId] ?? "",
+                image: meal.photographUrl ?? "",
+                rating: rating,
+                ratingNumber: ratingNumber,
+                allergens: meal.allergens ?? [],
+              };
+            })
           );
           setDishes(dishes);
         } else {
@@ -80,16 +86,20 @@ export const Menu = () => {
           console.log(meals);
 
           const dishes = await Promise.all(
-            meals.map(async (meal: Meal) => ({
-              id: meal.id ?? 0,
-              name: meal.name,
-              price: meal.price ?? 0,
-              ingredients: meal.ingredients ?? [],
-              category: category,
-              image: meal.photographUrl ?? "",
-              rating: await fetchRating(meal),
-              allergens: meal.allergens ?? [],
-            }))
+            meals.map(async (meal: Meal) => {
+              const [rating, ratingNumber] = await fetchRating(meal);
+              return {
+                id: meal.id ?? 0,
+                name: meal.name,
+                price: meal.price ?? 0,
+                ingredients: meal.ingredients ?? [],
+                category: category,
+                image: meal.photographUrl ?? "",
+                rating: rating,
+                ratingNumber: ratingNumber,
+                allergens: meal.allergens ?? [],
+              };
+            })
           );
           setDishes(dishes);
         }
@@ -114,7 +124,7 @@ export const Menu = () => {
       dish.ingredients?.every(
         (ingredient) => !excludedIngredients.includes(ingredient)
       ) &&
-      dish.rating >= minStars
+      (dish.rating >= minStars || dish.rating === 0)
   );
 
   // Ingredients as a set to avoid duplicates from multiple dishes and sort them alphabetically

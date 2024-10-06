@@ -76,7 +76,7 @@ export const AppBarHeader = () => {
         <Toolbar disableGutters>
           <Box
             sx={{
-              display: { xs: "none", sm: "block" },
+              display: { xs: "none", md: "block" },
             }}
           >
             <Link
@@ -118,7 +118,7 @@ export const AppBarHeader = () => {
             onClick={(e: any) => setAnchorElMenu(e.currentTarget)}
             color="inherit"
             sx={{
-              display: { xs: "block", sm: "none" },
+              display: { xs: "block", md: "none" },
             }}
           >
             <MenuIcon />
@@ -138,7 +138,7 @@ export const AppBarHeader = () => {
               horizontal: "left",
             }}
             sx={{
-              display: { xs: "block", sm: "none" },
+              display: { xs: "block", md: "none" },
             }}
           >
             {appBarMenuItems.map((item, index) => (
@@ -161,7 +161,7 @@ export const AppBarHeader = () => {
 
           <Box
             sx={{
-              display: { xs: "flex", sm: "none" },
+              display: { xs: "flex", md: "none" },
               flexGrow: 1,
               justifyContent: "center",
             }}
@@ -199,7 +199,7 @@ export const AppBarHeader = () => {
 
           <Box
             sx={{
-              display: { xs: "none", sm: "flex" },
+              display: { xs: "none", md: "flex" },
               flexGrow: 1,
             }}
           >

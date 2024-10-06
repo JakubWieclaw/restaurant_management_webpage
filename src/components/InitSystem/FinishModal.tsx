@@ -103,18 +103,29 @@ const handleCloseSummary = (
                 transition: Slide,
               });
             } else {
-              Object.entries(error.response.data).forEach(([key, value]) => {
-                toast.error(key + " - " + value, {
-                  position: "bottom-center",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                  transition: Slide,
-                });
+              // Object.entries(error.response.data).forEach(([key, value]) => {
+              //   toast.error(key + " - " + value, {
+              //     position: "bottom-center",
+              //     autoClose: 5000,
+              //     hideProgressBar: false,
+              //     closeOnClick: true,
+              //     pauseOnHover: true,
+              //     draggable: true,
+              //     progress: undefined,
+              //     theme: "light",
+              //     transition: Slide,
+              //   });
+              // });
+              toast.error(error.response.data.message, {
+                position: "bottom-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Slide,
               });
             }
           });

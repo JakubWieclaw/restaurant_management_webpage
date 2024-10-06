@@ -104,8 +104,7 @@ export const OrderDetails = () => {
                 <>
                   {orderedMeals[idx].name}{" "}
                   {order.unwantedIngredients![idx].length !== 0 &&
-                    `(Bez: 
-                  ${order.unwantedIngredients![idx].join(", ")})`}{" "}
+                    `(Bez: ${order.unwantedIngredients![idx].join(", ")})`}{" "}
                   {orderedMeals[idx].price} PLN
                   <br />
                 </>

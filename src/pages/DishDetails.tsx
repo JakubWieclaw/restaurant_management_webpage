@@ -49,6 +49,7 @@ export const DishDetails = () => {
     mealsApi
       .getMealById(Number(id))
       .then(async (response) => {
+        const [rating, ratingNumber] = await fetchRating(response.data);
         setDish({
           id: response.data.id!,
           name: response.data.name,
@@ -56,7 +57,8 @@ export const DishDetails = () => {
           ingredients: response.data.ingredients ?? [],
           category: "", // TODO: fetch category
           image: response.data.photographUrl ?? "",
-          rating: await fetchRating(response.data),
+          rating: rating,
+          ratingNumber: ratingNumber,
           allergens: response.data.allergens ?? [],
         });
       })
@@ -303,31 +305,6 @@ export const DishDetails = () => {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          {/* <Masonry columns={1} spacing={1}>
-            {opinions.map((opinion) => (
-              <Item key={opinion.customerId}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <Rating
-                    name="read-only"
-                    value={opinion.rating}
-                    readOnly
-                    sx={{
-                      padding: "0.5rem",
-                    }}
-                  />
-                  <Typography variant="body1" align="center">
-                    {opinion.comment}
-                  </Typography>
-                </Box>
-              </Item>
-            ))}
-          </Masonry> */}
           {opinions.map((opinion) => (
             <Paper
               key={opinion.customerId}

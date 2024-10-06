@@ -117,10 +117,9 @@ export const DishCard: React.FC<DishCardProps> = ({ dish }) => {
                     fontSize: "1.2rem",
                     fontWeight: "bold",
                     color: "text.secondary",
-                    mt: 0.5,
                   }}
                 >
-                  ({dish.rating.toFixed(2)})
+                  ({dish.ratingNumber})
                 </Box>
               </Box>
             </Grid>

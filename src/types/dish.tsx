@@ -6,6 +6,7 @@ export interface Dish {
   category: string;
   image: string;
   rating: number;
+  ratingNumber: number;
   allergens: string[];
   //   description: string;
   //   countInStock: number;
