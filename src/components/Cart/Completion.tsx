@@ -66,7 +66,7 @@ function Completion() {
           if (new Set(item.removedIngredients).size !== 0) {
             addOrderRequest.unwantedIngredients!.push({
               mealIndex: idx,
-              ingredients: item.removedIngredients,
+              ingredients: new Set(item.removedIngredients),
             });
           }
 
