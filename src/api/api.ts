@@ -205,6 +205,147 @@ export interface ConfigAddCommand {
 /**
  * 
  * @export
+ * @interface Coupon
+ */
+export interface Coupon {
+    /**
+     * 
+     * @type {number}
+     * @memberof Coupon
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Coupon
+     */
+    'code': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Coupon
+     */
+    'discountPercentage': number;
+    /**
+     * 
+     * @type {Customer}
+     * @memberof Coupon
+     */
+    'customer'?: Customer;
+    /**
+     * 
+     * @type {Meal}
+     * @memberof Coupon
+     */
+    'meal'?: Meal;
+    /**
+     * 
+     * @type {string}
+     * @memberof Coupon
+     */
+    'expiryDate'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Coupon
+     */
+    'active': boolean;
+}
+/**
+ * 
+ * @export
+ * @interface CouponAddCommand
+ */
+export interface CouponAddCommand {
+    /**
+     * 
+     * @type {string}
+     * @memberof CouponAddCommand
+     */
+    'code': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CouponAddCommand
+     */
+    'discountPercentage': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CouponAddCommand
+     */
+    'customerId': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CouponAddCommand
+     */
+    'mealId': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CouponAddCommand
+     */
+    'expiryDate'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface Customer
+ */
+export interface Customer {
+    /**
+     * 
+     * @type {number}
+     * @memberof Customer
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
+    'surname': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
+    'phone': string;
+    /**
+     * 
+     * @type {Privilege}
+     * @memberof Customer
+     */
+    'privilege'?: Privilege;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
+    'resetToken'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Customer
+     */
+    'resetTokenExpiry'?: string;
+}
+/**
+ * 
+ * @export
  * @interface DeliveryPricing
  */
 export interface DeliveryPricing {
@@ -473,6 +614,25 @@ export type MealAddCommandUnitTypeEnum = typeof MealAddCommandUnitTypeEnum[keyof
 /**
  * 
  * @export
+ * @interface MealQuantity
+ */
+export interface MealQuantity {
+    /**
+     * 
+     * @type {number}
+     * @memberof MealQuantity
+     */
+    'mealId': number;
+    /**
+     * 
+     * @type {number}
+     * @memberof MealQuantity
+     */
+    'quantity': number;
+}
+/**
+ * 
+ * @export
  * @interface OpeningHour
  */
 export interface OpeningHour {
@@ -584,10 +744,10 @@ export interface Order {
     'id'?: number;
     /**
      * 
-     * @type {Array<number>}
+     * @type {Array<MealQuantity>}
      * @memberof Order
      */
-    'mealIds': Array<number>;
+    'mealIds': Array<MealQuantity>;
     /**
      * 
      * @type {number}
@@ -620,16 +780,22 @@ export interface Order {
     'dateTime': string;
     /**
      * 
-     * @type {{ [key: string]: Array<string>; }}
+     * @type {Array<UnwantedIngredient>}
      * @memberof Order
      */
-    'unwantedIngredients'?: { [key: string]: Array<string>; };
+    'unwantedIngredients'?: Array<UnwantedIngredient>;
     /**
      * 
      * @type {string}
      * @memberof Order
      */
     'deliveryAddress'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Order
+     */
+    'deliveryDistance'?: number;
 }
 
 export const OrderTypeEnum = {
@@ -657,10 +823,10 @@ export type OrderStatusEnum = typeof OrderStatusEnum[keyof typeof OrderStatusEnu
 export interface OrderAddCommand {
     /**
      * 
-     * @type {Array<number>}
+     * @type {Array<MealQuantity>}
      * @memberof OrderAddCommand
      */
-    'mealIds': Array<number>;
+    'mealIds': Array<MealQuantity>;
     /**
      * 
      * @type {number}
@@ -681,16 +847,22 @@ export interface OrderAddCommand {
     'status': OrderAddCommandStatusEnum;
     /**
      * 
-     * @type {{ [key: string]: Array<string>; }}
+     * @type {Array<UnwantedIngredient>}
      * @memberof OrderAddCommand
      */
-    'unwantedIngredients'?: { [key: string]: Array<string>; };
+    'unwantedIngredients'?: Array<UnwantedIngredient>;
     /**
      * 
      * @type {string}
      * @memberof OrderAddCommand
      */
     'deliveryAddress'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof OrderAddCommand
+     */
+    'deliveryDistance'?: number;
 }
 
 export const OrderAddCommandTypeEnum = {
@@ -710,6 +882,25 @@ export const OrderAddCommandStatusEnum = {
 
 export type OrderAddCommandStatusEnum = typeof OrderAddCommandStatusEnum[keyof typeof OrderAddCommandStatusEnum];
 
+/**
+ * 
+ * @export
+ * @interface Privilege
+ */
+export interface Privilege {
+    /**
+     * 
+     * @type {number}
+     * @memberof Privilege
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Privilege
+     */
+    'privilegeName'?: string;
+}
 /**
  * 
  * @export
@@ -789,6 +980,25 @@ export interface RegisterUserCommand {
      * @memberof RegisterUserCommand
      */
     'admin'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface UnwantedIngredient
+ */
+export interface UnwantedIngredient {
+    /**
+     * 
+     * @type {number}
+     * @memberof UnwantedIngredient
+     */
+    'mealIndex'?: number;
+    /**
+     * 
+     * @type {Set<string>}
+     * @memberof UnwantedIngredient
+     */
+    'ingredients'?: Set<string>;
 }
 
 /**
@@ -1945,6 +2155,493 @@ export class ConfigControllerApi extends BaseAPI {
 
 
 /**
+ * CouponControllerApi - axios parameter creator
+ * @export
+ */
+export const CouponControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} code 
+         * @param {number} customerId 
+         * @param {number} mealId 
+         * @param {number} originalPrice 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        applyCoupon: async (code: string, customerId: number, mealId: number, originalPrice: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'code' is not null or undefined
+            assertParamExists('applyCoupon', 'code', code)
+            // verify required parameter 'customerId' is not null or undefined
+            assertParamExists('applyCoupon', 'customerId', customerId)
+            // verify required parameter 'mealId' is not null or undefined
+            assertParamExists('applyCoupon', 'mealId', mealId)
+            // verify required parameter 'originalPrice' is not null or undefined
+            assertParamExists('applyCoupon', 'originalPrice', originalPrice)
+            const localVarPath = `/api/coupons/apply`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (code !== undefined) {
+                localVarQueryParameter['code'] = code;
+            }
+
+            if (customerId !== undefined) {
+                localVarQueryParameter['customerId'] = customerId;
+            }
+
+            if (mealId !== undefined) {
+                localVarQueryParameter['mealId'] = mealId;
+            }
+
+            if (originalPrice !== undefined) {
+                localVarQueryParameter['originalPrice'] = originalPrice;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {CouponAddCommand} couponAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createCoupon: async (couponAddCommand: CouponAddCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'couponAddCommand' is not null or undefined
+            assertParamExists('createCoupon', 'couponAddCommand', couponAddCommand)
+            const localVarPath = `/api/coupons/create`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(couponAddCommand, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} couponId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deactivateCoupon: async (couponId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'couponId' is not null or undefined
+            assertParamExists('deactivateCoupon', 'couponId', couponId)
+            const localVarPath = `/api/coupons/deactivate/{couponId}`
+                .replace(`{${"couponId"}}`, encodeURIComponent(String(couponId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} customerId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCouponsForCustomer: async (customerId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'customerId' is not null or undefined
+            assertParamExists('getCouponsForCustomer', 'customerId', customerId)
+            const localVarPath = `/api/coupons/customer/{customerId}`
+                .replace(`{${"customerId"}}`, encodeURIComponent(String(customerId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} mealId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCouponsForMeal: async (mealId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'mealId' is not null or undefined
+            assertParamExists('getCouponsForMeal', 'mealId', mealId)
+            const localVarPath = `/api/coupons/meal/{mealId}`
+                .replace(`{${"mealId"}}`, encodeURIComponent(String(mealId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} code 
+         * @param {number} customerId 
+         * @param {number} mealId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        validateCoupon: async (code: string, customerId: number, mealId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'code' is not null or undefined
+            assertParamExists('validateCoupon', 'code', code)
+            // verify required parameter 'customerId' is not null or undefined
+            assertParamExists('validateCoupon', 'customerId', customerId)
+            // verify required parameter 'mealId' is not null or undefined
+            assertParamExists('validateCoupon', 'mealId', mealId)
+            const localVarPath = `/api/coupons/validate`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (code !== undefined) {
+                localVarQueryParameter['code'] = code;
+            }
+
+            if (customerId !== undefined) {
+                localVarQueryParameter['customerId'] = customerId;
+            }
+
+            if (mealId !== undefined) {
+                localVarQueryParameter['mealId'] = mealId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * CouponControllerApi - functional programming interface
+ * @export
+ */
+export const CouponControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = CouponControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} code 
+         * @param {number} customerId 
+         * @param {number} mealId 
+         * @param {number} originalPrice 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async applyCoupon(code: string, customerId: number, mealId: number, originalPrice: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.applyCoupon(code, customerId, mealId, originalPrice, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CouponControllerApi.applyCoupon']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {CouponAddCommand} couponAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createCoupon(couponAddCommand: CouponAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Coupon>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createCoupon(couponAddCommand, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CouponControllerApi.createCoupon']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} couponId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deactivateCoupon(couponId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deactivateCoupon(couponId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CouponControllerApi.deactivateCoupon']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} customerId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getCouponsForCustomer(customerId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Coupon>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCouponsForCustomer(customerId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CouponControllerApi.getCouponsForCustomer']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} mealId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getCouponsForMeal(mealId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Coupon>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCouponsForMeal(mealId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CouponControllerApi.getCouponsForMeal']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} code 
+         * @param {number} customerId 
+         * @param {number} mealId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async validateCoupon(code: string, customerId: number, mealId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<boolean>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.validateCoupon(code, customerId, mealId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CouponControllerApi.validateCoupon']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * CouponControllerApi - factory interface
+ * @export
+ */
+export const CouponControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = CouponControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {string} code 
+         * @param {number} customerId 
+         * @param {number} mealId 
+         * @param {number} originalPrice 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        applyCoupon(code: string, customerId: number, mealId: number, originalPrice: number, options?: RawAxiosRequestConfig): AxiosPromise<number> {
+            return localVarFp.applyCoupon(code, customerId, mealId, originalPrice, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {CouponAddCommand} couponAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createCoupon(couponAddCommand: CouponAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<Coupon> {
+            return localVarFp.createCoupon(couponAddCommand, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} couponId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deactivateCoupon(couponId: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deactivateCoupon(couponId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} customerId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCouponsForCustomer(customerId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<Coupon>> {
+            return localVarFp.getCouponsForCustomer(customerId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} mealId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCouponsForMeal(mealId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<Coupon>> {
+            return localVarFp.getCouponsForMeal(mealId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} code 
+         * @param {number} customerId 
+         * @param {number} mealId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        validateCoupon(code: string, customerId: number, mealId: number, options?: RawAxiosRequestConfig): AxiosPromise<boolean> {
+            return localVarFp.validateCoupon(code, customerId, mealId, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * CouponControllerApi - object-oriented interface
+ * @export
+ * @class CouponControllerApi
+ * @extends {BaseAPI}
+ */
+export class CouponControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {string} code 
+     * @param {number} customerId 
+     * @param {number} mealId 
+     * @param {number} originalPrice 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CouponControllerApi
+     */
+    public applyCoupon(code: string, customerId: number, mealId: number, originalPrice: number, options?: RawAxiosRequestConfig) {
+        return CouponControllerApiFp(this.configuration).applyCoupon(code, customerId, mealId, originalPrice, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {CouponAddCommand} couponAddCommand 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CouponControllerApi
+     */
+    public createCoupon(couponAddCommand: CouponAddCommand, options?: RawAxiosRequestConfig) {
+        return CouponControllerApiFp(this.configuration).createCoupon(couponAddCommand, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} couponId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CouponControllerApi
+     */
+    public deactivateCoupon(couponId: number, options?: RawAxiosRequestConfig) {
+        return CouponControllerApiFp(this.configuration).deactivateCoupon(couponId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} customerId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CouponControllerApi
+     */
+    public getCouponsForCustomer(customerId: number, options?: RawAxiosRequestConfig) {
+        return CouponControllerApiFp(this.configuration).getCouponsForCustomer(customerId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} mealId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CouponControllerApi
+     */
+    public getCouponsForMeal(mealId: number, options?: RawAxiosRequestConfig) {
+        return CouponControllerApiFp(this.configuration).getCouponsForMeal(mealId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} code 
+     * @param {number} customerId 
+     * @param {number} mealId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CouponControllerApi
+     */
+    public validateCoupon(code: string, customerId: number, mealId: number, options?: RawAxiosRequestConfig) {
+        return CouponControllerApiFp(this.configuration).validateCoupon(code, customerId, mealId, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * MealControllerApi - axios parameter creator
  * @export
  */
@@ -2938,7 +3635,7 @@ export const OrderControllerApiAxiosParamCreator = function (configuration?: Con
     return {
         /**
          * 
-         * @summary Add new order with possibility to exclude unwanted ingredients (it is a map where key is index of mealId in mealIds list and value is list of unwanted ingredients) It allows to exclude unwanted ingredients from specific mal, not for all meals with given id
+         * @summary Add new order
          * @param {OrderAddCommand} orderAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2991,7 +3688,7 @@ export const OrderControllerApiAxiosParamCreator = function (configuration?: Con
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -3014,6 +3711,40 @@ export const OrderControllerApiAxiosParamCreator = function (configuration?: Con
          */
         getAllOrders: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/orders/all`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get all orders of a customer
+         * @param {number} customerId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllOrdersOfCustomer: async (customerId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'customerId' is not null or undefined
+            assertParamExists('getAllOrdersOfCustomer', 'customerId', customerId)
+            const localVarPath = `/api/orders/get/customer/{customerId}`
+                .replace(`{${"customerId"}}`, encodeURIComponent(String(customerId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -3074,15 +3805,15 @@ export const OrderControllerApiAxiosParamCreator = function (configuration?: Con
          * 
          * @summary Update order
          * @param {number} id 
-         * @param {Order} order 
+         * @param {OrderAddCommand} orderAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateOrder: async (id: number, order: Order, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        updateOrder: async (id: number, orderAddCommand: OrderAddCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('updateOrder', 'id', id)
-            // verify required parameter 'order' is not null or undefined
-            assertParamExists('updateOrder', 'order', order)
+            // verify required parameter 'orderAddCommand' is not null or undefined
+            assertParamExists('updateOrder', 'orderAddCommand', orderAddCommand)
             const localVarPath = `/api/orders/update/{id}`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3092,7 +3823,7 @@ export const OrderControllerApiAxiosParamCreator = function (configuration?: Con
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -3103,7 +3834,7 @@ export const OrderControllerApiAxiosParamCreator = function (configuration?: Con
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(order, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(orderAddCommand, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -3122,7 +3853,7 @@ export const OrderControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Add new order with possibility to exclude unwanted ingredients (it is a map where key is index of mealId in mealIds list and value is list of unwanted ingredients) It allows to exclude unwanted ingredients from specific mal, not for all meals with given id
+         * @summary Add new order
          * @param {OrderAddCommand} orderAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3160,6 +3891,19 @@ export const OrderControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Get all orders of a customer
+         * @param {number} customerId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllOrdersOfCustomer(customerId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllOrdersOfCustomer(customerId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['OrderControllerApi.getAllOrdersOfCustomer']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Get order by id
          * @param {number} id 
          * @param {*} [options] Override http request option.
@@ -3175,12 +3919,12 @@ export const OrderControllerApiFp = function(configuration?: Configuration) {
          * 
          * @summary Update order
          * @param {number} id 
-         * @param {Order} order 
+         * @param {OrderAddCommand} orderAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async updateOrder(id: number, order: Order, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.updateOrder(id, order, options);
+        async updateOrder(id: number, orderAddCommand: OrderAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateOrder(id, orderAddCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['OrderControllerApi.updateOrder']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -3197,7 +3941,7 @@ export const OrderControllerApiFactory = function (configuration?: Configuration
     return {
         /**
          * 
-         * @summary Add new order with possibility to exclude unwanted ingredients (it is a map where key is index of mealId in mealIds list and value is list of unwanted ingredients) It allows to exclude unwanted ingredients from specific mal, not for all meals with given id
+         * @summary Add new order
          * @param {OrderAddCommand} orderAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3226,6 +3970,16 @@ export const OrderControllerApiFactory = function (configuration?: Configuration
         },
         /**
          * 
+         * @summary Get all orders of a customer
+         * @param {number} customerId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllOrdersOfCustomer(customerId: number, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.getAllOrdersOfCustomer(customerId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Get order by id
          * @param {number} id 
          * @param {*} [options] Override http request option.
@@ -3238,12 +3992,12 @@ export const OrderControllerApiFactory = function (configuration?: Configuration
          * 
          * @summary Update order
          * @param {number} id 
-         * @param {Order} order 
+         * @param {OrderAddCommand} orderAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        updateOrder(id: number, order: Order, options?: RawAxiosRequestConfig): AxiosPromise<object> {
-            return localVarFp.updateOrder(id, order, options).then((request) => request(axios, basePath));
+        updateOrder(id: number, orderAddCommand: OrderAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.updateOrder(id, orderAddCommand, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -3257,7 +4011,7 @@ export const OrderControllerApiFactory = function (configuration?: Configuration
 export class OrderControllerApi extends BaseAPI {
     /**
      * 
-     * @summary Add new order with possibility to exclude unwanted ingredients (it is a map where key is index of mealId in mealIds list and value is list of unwanted ingredients) It allows to exclude unwanted ingredients from specific mal, not for all meals with given id
+     * @summary Add new order
      * @param {OrderAddCommand} orderAddCommand 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3292,6 +4046,18 @@ export class OrderControllerApi extends BaseAPI {
 
     /**
      * 
+     * @summary Get all orders of a customer
+     * @param {number} customerId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OrderControllerApi
+     */
+    public getAllOrdersOfCustomer(customerId: number, options?: RawAxiosRequestConfig) {
+        return OrderControllerApiFp(this.configuration).getAllOrdersOfCustomer(customerId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary Get order by id
      * @param {number} id 
      * @param {*} [options] Override http request option.
@@ -3306,13 +4072,13 @@ export class OrderControllerApi extends BaseAPI {
      * 
      * @summary Update order
      * @param {number} id 
-     * @param {Order} order 
+     * @param {OrderAddCommand} orderAddCommand 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof OrderControllerApi
      */
-    public updateOrder(id: number, order: Order, options?: RawAxiosRequestConfig) {
-        return OrderControllerApiFp(this.configuration).updateOrder(id, order, options).then((request) => request(this.axios, this.basePath));
+    public updateOrder(id: number, orderAddCommand: OrderAddCommand, options?: RawAxiosRequestConfig) {
+        return OrderControllerApiFp(this.configuration).updateOrder(id, orderAddCommand, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

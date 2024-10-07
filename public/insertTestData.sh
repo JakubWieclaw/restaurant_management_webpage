@@ -131,6 +131,8 @@ curl -X 'POST' \
   "password": "asd"
 }'
 
+echo
+
 # INSERT CATEGORIES
 categories=(
   '["Pizza", "icons8-pizza.png"]'

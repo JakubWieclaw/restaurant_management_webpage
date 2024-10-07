@@ -3,7 +3,7 @@ import { Dish } from "../types/dish";
 export interface CartItem {
   dish: Dish;
   quantity: number;
-  removedIngredients: string[];
+  removedIngredients: Set<string>;
 }
 
 export interface CartState {

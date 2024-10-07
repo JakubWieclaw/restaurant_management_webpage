@@ -1,5 +1,3 @@
-// TODO: Accordion/Card for orders of specific user
-
 import {
   Container,
   Divider,
@@ -32,9 +30,9 @@ export const OrderDetails = () => {
         .getOrderById(orderId as unknown as number)
         .then((response) => {
           setOrder(response.data);
-          response.data.mealIds.forEach(async (mealId) => {
-            await mealsApi.getMealById(mealId).then((response) => {
-              console.log(response.data);
+
+          response.data.mealIds.forEach(async (mealQuantity) => {
+            await mealsApi.getMealById(mealQuantity.mealId).then((response) => {
               setOrderedMeals((prev) => [...prev, response.data]);
             });
           });
@@ -99,12 +97,17 @@ export const OrderDetails = () => {
               <br />
               {order.type === OrderTypeEnum.Dostawa &&
                 `Adres: ${order.deliveryAddress}`}
-              <br />
-              {order.mealIds.map((_, idx) => (
+              <br /> <br />
+              {order.mealIds.map((meal, idx) => (
                 <>
+                  {meal.quantity}
+                  {" x "}
                   {orderedMeals[idx].name}{" "}
-                  {order.unwantedIngredients![idx].length !== 0 &&
-                    `(Bez: ${order.unwantedIngredients![idx].join(", ")})`}{" "}
+                  {order.unwantedIngredients![idx]?.ingredients !== undefined &&
+                    order.unwantedIngredients![idx].ingredients.size !== 0 &&
+                    `(Bez: ${Array.from(
+                      order.unwantedIngredients![idx].ingredients
+                    ).join(", ")})`}{" "}
                   {orderedMeals[idx].price} PLN
                   <br />
                 </>

@@ -102,4 +102,3 @@ export const ContentSummary: React.FC<ContentSummaryProps> = ({
     </List>
   );
 };
-// https://api.stripe.com/v1/elements/sessions?client_secret=pi_3Q4SBG6w25Oikflf1nQJYwh1_secret_pi_3Q4SBG6w25Oikflf1nQJYwh1_secret_G30yFfYN4Hov3fEInKtXmbQcV&key=pk_test_51Q4Qqx6w25OikflfELAfyRffrHpVJKl52TXAThc0QPyBccecIMGSZWK6No7HI0bZEkN8rHGgmkYFrSXbAiHL6AZ000pFpLF7Rz&type=payment_intent&locale=en-US&referrer_host=localhost%3A5173&expand[0]=payment_method_preference.payment_intent.payment_method&stripe_js_id=306e0445-ee14-48e8-a34e-57bf4b8e48c1

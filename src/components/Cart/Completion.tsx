@@ -14,6 +14,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store";
 import { orderApi } from "../../utils/api";
 import {
+  MealQuantity,
   OrderAddCommand,
   OrderAddCommandStatusEnum,
   OrderAddCommandTypeEnum,
@@ -46,7 +47,7 @@ function Completion() {
         console.log(cart.deliveryType);
         let addOrderRequest: OrderAddCommand = {
           mealIds: [],
-          unwantedIngredients: {},
+          unwantedIngredients: [],
           customerId: user.loginResponse?.customerId ?? 0, // 0 means unregistered user
           type:
             cart.deliveryType == DeliveryOption.Personal
@@ -57,8 +58,20 @@ function Completion() {
         };
 
         cart.items.forEach((item, idx) => {
-          addOrderRequest.mealIds.push(item.dish.id);
-          addOrderRequest.unwantedIngredients![idx] = item.removedIngredients;
+          const mealQuantity: MealQuantity = {
+            mealId: item.dish.id,
+            quantity: item.quantity,
+          };
+          addOrderRequest.mealIds.push(mealQuantity);
+          if (new Set(item.removedIngredients).size !== 0) {
+            addOrderRequest.unwantedIngredients!.push({
+              mealIndex: idx,
+              ingredients: item.removedIngredients,
+            });
+          }
+
+          // addOrderRequest.unwantedIngredients![idx].ingredients =
+          //   item.removedIngredients;
         });
 
         orderApi
