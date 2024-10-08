@@ -41,6 +41,10 @@ export const AppBarHeader = () => {
       link: "/categories-management",
     },
     {
+      label: "Moje zamówienia",
+      link: "/customer-orders",
+    },
+    {
       label: "Kontakt",
       link: "/contact",
     },

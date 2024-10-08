@@ -23,6 +23,7 @@ import { DishDetails } from "./pages/DishDetails";
 import Completion from "./components/Cart/Completion";
 import { OrderDetails } from "./pages/OrderDetails";
 import { CustomerOrders } from "./pages/CustomerOrders";
+import { Orders } from "./pages/ Orders";
 
 function App() {
   const dispatch = useDispatch();
@@ -86,6 +87,7 @@ function App() {
           <Route path="/completion" element={<Completion />} />
           <Route path="order-details/:orderId" element={<OrderDetails />} />
           <Route path="/customer-orders" element={<CustomerOrders />} />
+          <Route path="/orders" element={<Orders />} />
           <Route path="*" element={<h1>404 - Not Found</h1>} />
         </Routes>
       </Container>
