@@ -7,6 +7,7 @@ const initialState: CartState = {
   items: [],
   deliveryType: DeliveryOption.Personal,
   address: "",
+  distance: 0,
 };
 
 const cartSlice = createSlice({
@@ -59,6 +60,9 @@ const cartSlice = createSlice({
     changeAddress(state, action: PayloadAction<string>) {
       state.address = action.payload;
     },
+    updateDistance(state, action: PayloadAction<number>) {
+      state.distance = action.payload;
+    },
   },
 });
 
@@ -69,6 +73,7 @@ export const {
   clearCart,
   changeDeliveryType,
   changeAddress,
+  updateDistance,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

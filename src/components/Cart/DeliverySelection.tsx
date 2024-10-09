@@ -26,6 +26,7 @@ import {
 import {
   changeAddress,
   changeDeliveryType,
+  updateDistance,
 } from "../../reducers/slices/cartSlice";
 
 interface DeliverySelectionProps {
@@ -214,6 +215,7 @@ export const DeliverySelection: React.FC<DeliverySelectionProps> = ({
                   setDistanceString(distanceStr);
                   if (distanceStr && distanceStr !== "") {
                     const distance = parseFloat(distanceStr.split(" ")[0]);
+                    dispatch(updateDistance(distance));
                     calculateDeliveryPrice(distance);
                   }
                 }}

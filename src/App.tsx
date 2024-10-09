@@ -23,7 +23,7 @@ import { DishDetails } from "./pages/DishDetails";
 import Completion from "./components/Cart/Completion";
 import { OrderDetails } from "./pages/OrderDetails";
 import { CustomerOrders } from "./pages/CustomerOrders";
-import { Orders } from "./pages/ Orders";
+import { Orders } from "./pages/Orders";
 
 function App() {
   const dispatch = useDispatch();

@@ -39,7 +39,7 @@ function Completion() {
       );
 
       if (error) {
-        console.log(`${error.message}`);
+        console.log(error.message);
       } else if (cart.items.length > 0) {
         console.log(
           `https://dashboard.stripe.com/test/payments/${paymentIntent.id}`
@@ -55,6 +55,7 @@ function Completion() {
               : OrderAddCommandTypeEnum.Dostawa,
           status: OrderAddCommandStatusEnum.Oczekujce,
           deliveryAddress: cart.address,
+          deliveryDistance: cart.distance,
         };
 
         cart.items.forEach((item, idx) => {
@@ -66,7 +67,7 @@ function Completion() {
           if (new Set(item.removedIngredients).size !== 0) {
             addOrderRequest.unwantedIngredients!.push({
               mealIndex: idx,
-              ingredients: new Set(item.removedIngredients),
+              ingredients: item.removedIngredients,
             });
           }
 

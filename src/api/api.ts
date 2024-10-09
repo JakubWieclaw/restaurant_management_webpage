@@ -995,10 +995,10 @@ export interface UnwantedIngredient {
     'mealIndex'?: number;
     /**
      * 
-     * @type {Set<string>}
+     * @type {Array<string>}
      * @memberof UnwantedIngredient
      */
-    'ingredients'?: Set<string>;
+    'ingredients'?: Array<string>;
 }
 
 /**

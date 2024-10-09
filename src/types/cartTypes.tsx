@@ -10,4 +10,5 @@ export interface CartState {
   items: CartItem[];
   deliveryType: string;
   address: string;
+  distance: number;
 }
