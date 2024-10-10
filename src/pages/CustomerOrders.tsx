@@ -101,7 +101,11 @@ export const CustomerOrders = () => {
                       fontWeight: "bold",
                     }}
                   >
-                    Cena: {order.totalPrice} zł
+                    Cena: {order?.orderPrice} zł{" "}
+                    {order.deliveryPrice && order.deliveryPrice > 0
+                      ? `+ koszt dostawy:
+                    ${order?.deliveryPrice} zł`
+                      : ""}
                   </Typography>
                 </ListItem>
                 <ListItem>

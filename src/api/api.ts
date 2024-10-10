@@ -753,7 +753,7 @@ export interface Order {
      * @type {number}
      * @memberof Order
      */
-    'totalPrice'?: number;
+    'orderPrice'?: number;
     /**
      * 
      * @type {number}
@@ -796,6 +796,12 @@ export interface Order {
      * @memberof Order
      */
     'deliveryDistance'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof Order
+     */
+    'deliveryPrice'?: number;
 }
 
 export const OrderTypeEnum = {

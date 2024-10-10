@@ -87,9 +87,10 @@ export const OrderDetails = () => {
                 fontSize: "1rem",
               }}
             >
-              Status: {order?.status}{" "}
+              Status: {order?.status?.replaceAll("_", " ")}{" "}
               {order.status !== OrderStatusEnum.Gotowe &&
-                order.status !== OrderStatusEnum.Dostarczone && (
+                order.status !== OrderStatusEnum.Dostarczone &&
+                order.status !== OrderStatusEnum.Odrzucone && (
                   <CircularProgress size={"1rem"} />
                 )}
               <br />
@@ -112,8 +113,40 @@ export const OrderDetails = () => {
                   <br />
                 </>
               ))}
+              {order.type === OrderTypeEnum.Dostawa &&
+                `Dostawa: ${order.deliveryPrice} PLN`}
               <br />
-              Suma: {order?.totalPrice?.toFixed(2)} PLN
+              <br />
+              {order.type === OrderTypeEnum.Dostawa ? (
+                <>
+                  <Divider />
+                  <br />
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: "bold",
+                      fontFamily: "Teko",
+                    }}
+                  >
+                    Suma:{" "}
+                    {(order.orderPrice! + order.deliveryPrice!).toFixed(2)} PLN
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <Divider />
+                  <br />
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: "bold",
+                      fontFamily: "Teko",
+                    }}
+                  >
+                    Suma: {order.orderPrice} PLN
+                  </Typography>
+                </>
+              )}
             </Paper>
           </>
         )}
