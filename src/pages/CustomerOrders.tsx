@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 
-import { Order } from "../api";
+import { Order, OrderTypeEnum } from "../api";
 import { RootState } from "../store";
 import { AxiosResponse } from "axios";
 import { orderApi } from "../utils/api";
@@ -102,9 +102,8 @@ export const CustomerOrders = () => {
                     }}
                   >
                     Cena: {order?.orderPrice} zł{" "}
-                    {order.deliveryPrice && order.deliveryPrice > 0
-                      ? `+ koszt dostawy:
-                    ${order?.deliveryPrice} zł`
+                    {order?.type === OrderTypeEnum.Dostawa
+                      ? `+ dostawa ${order?.deliveryPrice} zł`
                       : ""}
                   </Typography>
                 </ListItem>

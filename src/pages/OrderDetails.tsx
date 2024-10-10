@@ -143,7 +143,7 @@ export const OrderDetails = () => {
                       fontFamily: "Teko",
                     }}
                   >
-                    Suma: {order.orderPrice} PLN
+                    Suma: {order.orderPrice?.toFixed(2)} PLN
                   </Typography>
                 </>
               )}
