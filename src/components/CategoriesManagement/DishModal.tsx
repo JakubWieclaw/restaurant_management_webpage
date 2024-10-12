@@ -27,6 +27,7 @@ import { Meal, Category, MealUnitTypeEnum, MealAddCommand } from "../../api";
 import { Transition } from "../../utils/Transision";
 import { mealsApi, photoApi, photoDownloadUrl } from "../../utils/api";
 import { AxiosResponse } from "axios";
+import { Link } from "react-router-dom";
 
 interface DishModalProps {
   open: boolean;
@@ -70,6 +71,15 @@ export const DishModal: React.FC<DishModalProps> = ({
       <DialogTitle id="alert-dialog-title">
         {dish ? "Danie: " + dish.name : "Nowe danie"}
       </DialogTitle>
+      <Typography
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          mb: 1,
+        }}
+      >
+        <Link to={`/coupons/add/${dish?.id}`}>Dodaj kupon do tego dania</Link>
+      </Typography>
       <Box
         component={"form"}
         onSubmit={(e) => {

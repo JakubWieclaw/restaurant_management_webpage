@@ -527,12 +527,6 @@ export interface Meal {
      * @memberof Meal
      */
     'calories'?: number;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Meal
-     */
-    'unitTypeMandatory'?: boolean;
 }
 
 export const MealUnitTypeEnum = {
