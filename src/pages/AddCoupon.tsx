@@ -6,30 +6,56 @@ import {
   Grid,
   TextField,
   Typography,
+  Autocomplete,
+  Chip,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { ConfigAddCommand } from "../api";
+import { CouponAddCommand, Customer } from "../api";
 import { Dayjs } from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { couponsApi } from "../utils/api";
 
 export const AddCoupon = () => {
   // get mealid from url
   const mealId = useParams<{ mealId: string }>().mealId;
 
   const [couponCode, setCouponCode] = useState("");
-  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponDiscount, setCouponDiscount] = useState(1);
   const [couponExpiry, setCouponExpiry] = useState<Dayjs | null>();
-  const [couponError, setCouponError] = useState("");
-  const [couponSuccess, setCouponSuccess] = useState("");
+  const [clients, setClients] = useState<Customer[]>([
+    {
+      id: 1,
+      name: "John",
+      surname: "Doe",
+      email: "a@a",
+      phone: "123123123",
+    },
+  ]);
+  const [chosenClients, setChosenClients] = useState<Customer[]>([]);
+  const [selectAllClients, setSelectAllClients] = useState(false);
 
   const handleCouponSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    let addCouponRequest: ConfigAddCommand;
-    //   couponsApi.createCoupon({ code: couponCode, discount: couponDiscount, expiry: couponExpiry });
+    let addCouponRequest: CouponAddCommand;
+    console.log(couponCode, couponDiscount, couponExpiry, chosenClients);
+    for (const client of chosenClients) {
+      addCouponRequest = {
+        code: couponCode,
+        discountPercentage: couponDiscount,
+        expiryDate: couponExpiry?.toISOString(),
+        customerId: client.id!,
+        mealId: Number(mealId),
+      };
+      await couponsApi.createCoupon(addCouponRequest);
+    }
+    setClients([]);
   };
 
   return (
@@ -78,7 +104,7 @@ export const AddCoupon = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="de">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 value={couponExpiry}
                 onChange={(newValue) => setCouponExpiry(newValue)}
@@ -87,10 +113,62 @@ export const AddCoupon = () => {
             </LocalizationProvider>
           </Grid>
           <Grid item xs={12}>
+            <Autocomplete
+              disabled={selectAllClients}
+              multiple
+              value={chosenClients.map(
+                (client) => `(${client.id}) ${client.name} ${client.surname}`
+              )}
+              onChange={(_, newValue) => {
+                setChosenClients([
+                  ...newValue.map(
+                    (client) =>
+                      clients.filter(
+                        (c) =>
+                          c.id === Number(client.split(" ")[0].slice(1, -1))
+                      )[0]
+                  ),
+                ]);
+              }}
+              options={clients.map(
+                (client) => `(${client.id}) ${client.name} ${client.surname}`
+              )}
+              renderTags={(tagValue, getTagProps) =>
+                tagValue.map((option, index) => {
+                  const { key, ...tagProps } = getTagProps({ index });
+                  return <Chip key={key} label={option} {...tagProps} />;
+                })
+              }
+              fullWidth
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormGroup
+              sx={{
+                display: "flex",
+                alignItems: "flex-end",
+              }}
+            >
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={selectAllClients}
+                    onChange={(e) => setSelectAllClients(e.target.checked)}
+                  />
+                }
+                label="Wybierz wszystkich klientów"
+              />
+            </FormGroup>
+          </Grid>
+          <Grid item xs={12}>
             <Button
               variant="contained"
               color="primary"
               onClick={handleCouponSubmit}
+              sx={{
+                width: "100%",
+              }}
             >
               Dodaj kupon
             </Button>
