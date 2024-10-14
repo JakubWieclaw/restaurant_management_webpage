@@ -37,7 +37,6 @@ export const CustomerOrders = () => {
       .then((response: AxiosResponse) => {
         setCustomerOrders(response.data);
         setLoading(false);
-        console.log(response.data);
       });
   }, []);
 

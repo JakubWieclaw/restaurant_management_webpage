@@ -34,17 +34,11 @@ function Completion() {
     stripePromise.then(async (stripe: any) => {
       const url = new URL(window.location.href);
       const clientSecret = url.searchParams.get("payment_intent_client_secret");
-      const { error, paymentIntent } = await stripe.retrievePaymentIntent(
-        clientSecret
-      );
+      const { error } = await stripe.retrievePaymentIntent(clientSecret);
 
       if (error) {
-        console.log(error.message);
+        console.error(error.message);
       } else if (cart.items.length > 0) {
-        console.log(
-          `https://dashboard.stripe.com/test/payments/${paymentIntent.id}`
-        );
-        console.log(cart.deliveryType);
         let addOrderRequest: OrderAddCommand = {
           mealIds: [],
           unwantedIngredients: [],
@@ -55,7 +49,8 @@ function Completion() {
               : OrderAddCommandTypeEnum.Dostawa,
           status: OrderAddCommandStatusEnum.Oczekujce,
           deliveryAddress: cart.address,
-          deliveryDistance: cart.distance,
+          deliveryDistance:
+            cart.deliveryType == DeliveryOption.Personal ? 0 : cart.distance,
         };
 
         cart.items.forEach((item, idx) => {
@@ -78,7 +73,6 @@ function Completion() {
         orderApi
           .addOrder(addOrderRequest)
           .then((response: AxiosResponse) => {
-            console.log(response);
             toast.success("Zamówienie zostało złożone", {
               position: "bottom-center",
               autoClose: 5000,
@@ -92,7 +86,6 @@ function Completion() {
             navigate("/order-details/" + response.data.id);
           })
           .catch((error) => {
-            console.error(error);
             toast.error(error.response.data, {
               position: "bottom-center",
               autoClose: 5000,
@@ -115,7 +108,6 @@ function Completion() {
       <Divider />
       <CircularProgress
         sx={{
-          // center
           margin: "auto",
           display: "block",
           mt: 3,

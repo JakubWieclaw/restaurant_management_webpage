@@ -139,7 +139,6 @@ export const AutocompleteDistanceService: React.FC<
           distanceRequest,
           (response: any) => {
             if (response.rows[0].elements[0].status === "OK") {
-              console.log(response);
               setAddress(value?.description ?? "");
               setDistanceString(
                 response.rows[0].elements[0].distance.text.replace(",", "")
@@ -187,7 +186,6 @@ export const AutocompleteDistanceService: React.FC<
         setValue(newValue);
       }}
       onInputChange={(_, newInputValue) => {
-        console.log(newInputValue);
         setInputValue(newInputValue);
       }}
       renderInput={(params) => (

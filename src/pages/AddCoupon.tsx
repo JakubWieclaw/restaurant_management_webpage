@@ -12,39 +12,45 @@ import {
   FormGroup,
   FormControlLabel,
 } from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 
-import { useState } from "react";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { CouponAddCommand, Customer } from "../api";
 import { Dayjs } from "dayjs";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { couponsApi } from "../utils/api";
+import { AxiosResponse } from "axios";
+import { CouponAddCommand, Customer } from "../api";
+import { couponsApi, customersApi } from "../utils/api";
 
 export const AddCoupon = () => {
-  // get mealid from url
   const mealId = useParams<{ mealId: string }>().mealId;
 
   const [couponCode, setCouponCode] = useState("");
   const [couponDiscount, setCouponDiscount] = useState(1);
   const [couponExpiry, setCouponExpiry] = useState<Dayjs | null>();
-  const [clients, setClients] = useState<Customer[]>([
-    {
-      id: 1,
-      name: "John",
-      surname: "Doe",
-      email: "a@a",
-      phone: "123123123",
-    },
-  ]);
+  const [clients, setClients] = useState<Customer[]>([]);
   const [chosenClients, setChosenClients] = useState<Customer[]>([]);
   const [selectAllClients, setSelectAllClients] = useState(false);
+
+  useEffect(() => {
+    const fetchClients = async () => {
+      await customersApi
+        .getAllCustomers()
+        .then((r: AxiosResponse) => setClients(r.data));
+    };
+    fetchClients();
+  }, []);
 
   const handleCouponSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     let addCouponRequest: CouponAddCommand;
-    console.log(couponCode, couponDiscount, couponExpiry, chosenClients);
+    let success = true;
+    let error: any = null;
+    if (selectAllClients) {
+      setChosenClients([...clients]);
+    }
     for (const client of chosenClients) {
       addCouponRequest = {
         code: couponCode,
@@ -53,7 +59,43 @@ export const AddCoupon = () => {
         customerId: client.id!,
         mealId: Number(mealId),
       };
-      await couponsApi.createCoupon(addCouponRequest);
+      await couponsApi.createCoupon(addCouponRequest).catch((e) => {
+        error = e.response.data;
+        success = false;
+      });
+    }
+    if (success) {
+      toast.success("Kupon dodany pomyślnie", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    } else if (typeof error === "object") {
+      for (const [_, err] of Object.entries(error)) {
+        toast.error(`${err}`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    } else {
+      toast.error(error, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
     }
     setClients([]);
   };
@@ -61,7 +103,7 @@ export const AddCoupon = () => {
   return (
     <Container sx={{ mt: 15 }} maxWidth="md">
       <Typography component="h1" variant="h4" align="center" gutterBottom>
-        Kontakt
+        Dodaj kupon
       </Typography>
       <Divider />
       <Box
@@ -76,7 +118,7 @@ export const AddCoupon = () => {
         <Grid container spacing={3} justifyContent="center" alignItems="center">
           <Grid item xs={12}>
             <Typography variant="h6" gutterBottom>
-              Dodaj kupon
+              Wprowadź dane kuponu
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -140,7 +182,9 @@ export const AddCoupon = () => {
                 })
               }
               fullWidth
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => (
+                <TextField {...params} label="Wybierz użytkowników" />
+              )}
             />
           </Grid>
           <Grid item xs={12}>

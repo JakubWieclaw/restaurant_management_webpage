@@ -8,6 +8,7 @@ import {
   OpinionControllerApi,
   OrderControllerApi,
   CouponControllerApi,
+  CustomerControllerApi,
 } from "../api";
 
 export const apiUrl = import.meta.env.VITE_API_URL;
@@ -22,5 +23,6 @@ export const photoApi = new PhotoControllerApi(config);
 export const opinionApi = new OpinionControllerApi(config);
 export const orderApi = new OrderControllerApi(config);
 export const couponsApi = new CouponControllerApi(config);
+export const customersApi = new CustomerControllerApi(config);
 
 export const photoDownloadUrl = `${apiUrl}/api/photos/download?filename=`;

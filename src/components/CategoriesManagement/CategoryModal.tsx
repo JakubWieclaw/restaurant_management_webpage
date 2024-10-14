@@ -80,7 +80,6 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
                   categoryCopy.photographUrl = photoDownloadUrl + response.data;
                 })
                 .catch((error) => {
-                  console.log(error);
                   toast.error(error.response.data, {
                     position: "bottom-center",
                     autoClose: 5000,

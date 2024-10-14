@@ -124,8 +124,8 @@ curl -X 'POST' \
   -H 'Content-Type: application/json' \
   -d '{
   "id": 0,
-  "name": "Jan",
-  "surname": "Kowalski",
+  "name": "Piotr",
+  "surname": "Nowak",
   "email": "b@b",
   "phone": "123123123",
   "password": "asd"

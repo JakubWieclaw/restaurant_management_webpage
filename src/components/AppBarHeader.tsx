@@ -16,20 +16,37 @@ import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast, Slide } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import { RootState, AppDispatch } from "../store";
 import { logout } from "../reducers/slices/userSlice";
-import { photoDownloadUrl } from "../utils/api";
+import { couponsApi, photoDownloadUrl } from "../utils/api";
+import { Coupon } from "../api";
 
 export const AppBarHeader = () => {
   const [anchorElMenu, setAnchorElMenu] = useState(null);
   const [anchorElProfile, setAnchorElProfile] = useState(null);
+  const [anchorElNotifications, setAnchorElNotifications] = useState(null);
+  const [newCoupons, setNewCoupons] = useState<Coupon[]>([]);
 
   const config = useSelector((state: RootState) => state.config);
+
+  useEffect(() => {
+    const fetchCoupons = async () => {
+      if (!user.loginResponse) return;
+      couponsApi
+        .getCouponsForCustomer(user.loginResponse.customerId!)
+        .then((response) => {
+          setNewCoupons(
+            response.data.filter((coupon) => coupon.active === true)
+          );
+        });
+    };
+    fetchCoupons();
+  }, []);
 
   const appBarMenuItems = [
     {
@@ -230,16 +247,50 @@ export const AppBarHeader = () => {
                 <ShoppingBasketIcon />
               </Badge>
             </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-              sx={{ marginRight: 1 }}
-            >
-              <Badge badgeContent={7} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+            {user.loginResponse && (
+              <>
+                <IconButton
+                  size="large"
+                  aria-label={`${newCoupons.length} notifications`}
+                  color="inherit"
+                  sx={{ marginRight: 1 }}
+                  onClick={(e: any) =>
+                    setAnchorElNotifications(e.currentTarget)
+                  }
+                >
+                  <Badge badgeContent={newCoupons.length} color="error">
+                    <NotificationsIcon />
+                  </Badge>
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorElNotifications}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  sx={{
+                    mt: "45px",
+                    display: newCoupons.length === 0 ? "none" : "block",
+                  }}
+                  open={Boolean(anchorElNotifications)}
+                  onClose={() => setAnchorElNotifications(null)}
+                >
+                  {newCoupons.map((coupon) => (
+                    <MenuItem key={coupon.id} disabled={true}>
+                      Otrzymałeś kupon na 1x{coupon.meal?.name} obniżający cenę
+                      o {coupon.discountPercentage}% - kod: {coupon.code}
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </>
+            )}
+
             <Tooltip title="Open settings">
               <IconButton
                 onClick={(e: any) => setAnchorElProfile(e.currentTarget)}

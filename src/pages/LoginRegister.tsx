@@ -132,7 +132,6 @@ export const LoginRegister = () => {
             admin: registerAsAdmin,
           })
           .then((response) => {
-            console.log(response);
             toast.success(
               typeof response.data === "string"
                 ? response.data

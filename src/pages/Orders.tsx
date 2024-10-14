@@ -171,11 +171,19 @@ export const Orders = () => {
                                   return newOpenState;
                                 });
                               })
-                              .catch((error) => {
+                              .catch((_) => {
                                 toast.error(
-                                  "Nie udało się zaktualizować statusu zamówienia"
+                                  "Nie udało się zaktualizować statusu zamówienia",
+                                  {
+                                    position: "bottom-center",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                  }
                                 );
-                                console.error(error);
                               });
                           }}
                         >

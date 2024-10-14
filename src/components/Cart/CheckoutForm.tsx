@@ -9,9 +9,15 @@ import {
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
+import { Coupon } from "../../api";
 import { RootState } from "../../store";
+import { couponsApi } from "../../utils/api";
 
-export default function CheckoutForm() {
+interface CheckoutFormProps {
+  coupon: Coupon | null;
+}
+
+const CheckoutForm: React.FC<CheckoutFormProps> = ({ coupon }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [message, setMessage] = useState<string | null>(null);
@@ -29,6 +35,10 @@ export default function CheckoutForm() {
     }
 
     setIsLoading(true);
+
+    if (coupon) {
+      couponsApi.deactivateCoupon(coupon.id!);
+    }
 
     const { error } = await stripe.confirmPayment({
       elements,
@@ -74,7 +84,6 @@ export default function CheckoutForm() {
       <Button
         variant="contained"
         sx={{
-          // center
           margin: "auto",
           display: "block",
           mt: 3,
@@ -91,4 +100,5 @@ export default function CheckoutForm() {
       {message && <div id="payment-message">{message}</div>}
     </form>
   );
-}
+};
+export default CheckoutForm;

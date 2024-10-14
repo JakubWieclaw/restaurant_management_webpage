@@ -133,7 +133,6 @@ export const Contact = () => {
               component={"form"}
               onSubmit={(event) => {
                 event.preventDefault();
-                console.log("Formularz kontaktowy wysłany");
                 toast.success(
                   "Wiadomość wysłana pomyślnie. Odpowiemy tak szybko jak to możliwe.",
                   {

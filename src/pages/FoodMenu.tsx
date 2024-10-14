@@ -26,7 +26,6 @@ export const fetchRating = async (meal: Meal) => {
   await opinionApi
     .getAverageRating(meal.id!)
     .then((response) => {
-      console.log(response);
       rating = response.data.averageRating ?? 0;
       ratingNumber = response.data.numberOfOpinions ?? 0;
     })
@@ -82,8 +81,6 @@ export const Menu = () => {
         } else {
           const mealsResponse = await mealsApi.searchMealsByName(searchPhrase);
           const meals: Meal[] = mealsResponse.data as Meal[];
-
-          console.log(meals);
 
           const dishes = await Promise.all(
             meals.map(async (meal: Meal) => {

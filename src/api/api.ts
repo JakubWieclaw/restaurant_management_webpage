@@ -2642,6 +2642,176 @@ export class CouponControllerApi extends BaseAPI {
 
 
 /**
+ * CustomerControllerApi - axios parameter creator
+ * @export
+ */
+export const CustomerControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get all customers
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllCustomers: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/customer/all`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get customer by id
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCustomerById: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getCustomerById', 'id', id)
+            const localVarPath = `/api/customer/get/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * CustomerControllerApi - functional programming interface
+ * @export
+ */
+export const CustomerControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = CustomerControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get all customers
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllCustomers(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllCustomers(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CustomerControllerApi.getAllCustomers']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get customer by id
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getCustomerById(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Customer>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCustomerById(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CustomerControllerApi.getCustomerById']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * CustomerControllerApi - factory interface
+ * @export
+ */
+export const CustomerControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = CustomerControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get all customers
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllCustomers(options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.getAllCustomers(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get customer by id
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCustomerById(id: number, options?: RawAxiosRequestConfig): AxiosPromise<Customer> {
+            return localVarFp.getCustomerById(id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * CustomerControllerApi - object-oriented interface
+ * @export
+ * @class CustomerControllerApi
+ * @extends {BaseAPI}
+ */
+export class CustomerControllerApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get all customers
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CustomerControllerApi
+     */
+    public getAllCustomers(options?: RawAxiosRequestConfig) {
+        return CustomerControllerApiFp(this.configuration).getAllCustomers(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get customer by id
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CustomerControllerApi
+     */
+    public getCustomerById(id: number, options?: RawAxiosRequestConfig) {
+        return CustomerControllerApiFp(this.configuration).getCustomerById(id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * MealControllerApi - axios parameter creator
  * @export
  */

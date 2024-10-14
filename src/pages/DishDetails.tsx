@@ -106,7 +106,6 @@ export const DishDetails = () => {
         opinionApi
           .updateOpinion(addOpinionRequest)
           .then((response) => {
-            console.log(response);
             setOpinionSwitch(!opinionSwitch);
             setRating(5);
             setOpinion("");
@@ -127,8 +126,7 @@ export const DishDetails = () => {
               }
             );
           })
-          .catch((error) => {
-            console.error(error);
+          .catch((_) => {
             toast.error("Wystąpił błąd podczas dodawania oceny", {
               position: "bottom-center",
               autoClose: 5000,

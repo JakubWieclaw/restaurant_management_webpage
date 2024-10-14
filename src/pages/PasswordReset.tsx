@@ -35,8 +35,7 @@ export const PasswordReset = () => {
       // reset password
       authApi
         .resetPassword(token, password)
-        .then((response) => {
-          console.log(response);
+        .then((_) => {
           navigate("/auth");
           toast.success("Zmiana hasła przebiegła pomyślnie.", {
             position: "bottom-center",
