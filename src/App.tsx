@@ -25,6 +25,7 @@ import { OrderDetails } from "./pages/OrderDetails";
 import { CustomerOrders } from "./pages/CustomerOrders";
 import { Orders } from "./pages/Orders";
 import { AddCoupon } from "./pages/AddCoupon";
+import { TablesManagement } from "./pages/TablesManagement";
 
 function App() {
   const dispatch = useDispatch();
@@ -90,6 +91,7 @@ function App() {
           <Route path="/customer-orders" element={<CustomerOrders />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/coupons/add/:mealId" element={<AddCoupon />} />
+          <Route path="/tables-management" element={<TablesManagement />} />
           <Route path="*" element={<h1>404 - Not Found</h1>} />
         </Routes>
       </Container>

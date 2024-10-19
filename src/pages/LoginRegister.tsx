@@ -46,11 +46,8 @@ export const LoginRegister = () => {
         await authApi
           .login({ email: email, password: password })
           .then((response) => {
-            dispatch(
-              login({ response: response.data } as {
-                response: { token: string; isAdmin: boolean };
-              })
-            );
+            console.log(response.data);
+            dispatch(login({ response: response.data }));
             toast.success("Zalogowano pomyślnie", {
               position: "bottom-center",
               autoClose: 5000,

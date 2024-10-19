@@ -110,6 +110,7 @@ curl -X 'POST' \
   "id": 0,
   "name": "Jan",
   "surname": "Kowalski",
+  "admin": "true",
   "email": "a@a",
   "phone": "123123123",
   "password": "asd"

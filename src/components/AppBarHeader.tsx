@@ -50,14 +50,6 @@ export const AppBarHeader = () => {
 
   const appBarMenuItems = [
     {
-      label: "Inicjalizuj system",
-      link: "/initialize-system",
-    },
-    {
-      label: "Zarządzaj kategoriami",
-      link: "/categories-management",
-    },
-    {
       label: "Moje zamówienia",
       link: "/customer-orders",
     },
@@ -315,6 +307,40 @@ export const AppBarHeader = () => {
               open={Boolean(anchorElProfile)}
               onClose={() => setAnchorElProfile(null)}
             >
+              {user.loginResponse?.isAdmin && [
+                <MenuItem
+                  key="categories-management"
+                  onClick={() => {
+                    navigate("/categories-management");
+                  }}
+                >
+                  Zarządzaj kategoriami
+                </MenuItem>,
+                <MenuItem
+                  key="tables"
+                  onClick={() => {
+                    navigate("/tables-management");
+                  }}
+                >
+                  Stoliki i rezerwacje
+                </MenuItem>,
+                <MenuItem
+                  key="orders"
+                  onClick={() => {
+                    navigate("/orders");
+                  }}
+                >
+                  Zamówienia klientów
+                </MenuItem>,
+                <MenuItem
+                  key="initialize-system"
+                  onClick={() => {
+                    navigate("/initialize-system");
+                  }}
+                >
+                  Inicjalizuj system
+                </MenuItem>,
+              ]}
               {user.loginResponse !== null ? (
                 <MenuItem onClick={handleLogout}>Wyloguj się</MenuItem>
               ) : (

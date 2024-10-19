@@ -172,9 +172,9 @@ export const AddCoupon = () => {
                   ),
                 ]);
               }}
-              options={clients.map(
-                (client) => `(${client.id}) ${client.name} ${client.surname}`
-              )}
+              options={clients.map((client) => {
+                return `(${client.id}) ${client.name} ${client.surname}`;
+              })}
               renderTags={(tagValue, getTagProps) =>
                 tagValue.map((option, index) => {
                   const { key, ...tagProps } = getTagProps({ index });
