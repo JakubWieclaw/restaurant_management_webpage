@@ -923,6 +923,43 @@ export interface Privilege {
 /**
  * 
  * @export
+ * @interface RegisterCustomerCommand
+ */
+export interface RegisterCustomerCommand {
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterCustomerCommand
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterCustomerCommand
+     */
+    'surname': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterCustomerCommand
+     */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterCustomerCommand
+     */
+    'phone': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RegisterCustomerCommand
+     */
+    'password': string;
+}
+/**
+ * 
+ * @export
  * @interface RegisterResponseDTO
  */
 export interface RegisterResponseDTO {
@@ -2755,6 +2792,40 @@ export const CustomerControllerApiAxiosParamCreator = function (configuration?: 
     return {
         /**
          * 
+         * @summary Delete customer by id
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteCustomerById: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteCustomerById', 'id', id)
+            const localVarPath = `/api/customer/delete/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Get all customers
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2817,6 +2888,82 @@ export const CustomerControllerApiAxiosParamCreator = function (configuration?: 
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Register new customer (non admin)
+         * @param {RegisterCustomerCommand} registerCustomerCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        registerCustomer: async (registerCustomerCommand: RegisterCustomerCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'registerCustomerCommand' is not null or undefined
+            assertParamExists('registerCustomer', 'registerCustomerCommand', registerCustomerCommand)
+            const localVarPath = `/api/customer/add`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(registerCustomerCommand, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Update customer (non admin)
+         * @param {number} id 
+         * @param {RegisterCustomerCommand} registerCustomerCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateCustomer: async (id: number, registerCustomerCommand: RegisterCustomerCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('updateCustomer', 'id', id)
+            // verify required parameter 'registerCustomerCommand' is not null or undefined
+            assertParamExists('updateCustomer', 'registerCustomerCommand', registerCustomerCommand)
+            const localVarPath = `/api/customer/update/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(registerCustomerCommand, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -2827,6 +2974,19 @@ export const CustomerControllerApiAxiosParamCreator = function (configuration?: 
 export const CustomerControllerApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = CustomerControllerApiAxiosParamCreator(configuration)
     return {
+        /**
+         * 
+         * @summary Delete customer by id
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteCustomerById(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteCustomerById(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CustomerControllerApi.deleteCustomerById']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
         /**
          * 
          * @summary Get all customers
@@ -2852,6 +3012,33 @@ export const CustomerControllerApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['CustomerControllerApi.getCustomerById']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @summary Register new customer (non admin)
+         * @param {RegisterCustomerCommand} registerCustomerCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async registerCustomer(registerCustomerCommand: RegisterCustomerCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.registerCustomer(registerCustomerCommand, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CustomerControllerApi.registerCustomer']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Update customer (non admin)
+         * @param {number} id 
+         * @param {RegisterCustomerCommand} registerCustomerCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateCustomer(id: number, registerCustomerCommand: RegisterCustomerCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateCustomer(id, registerCustomerCommand, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CustomerControllerApi.updateCustomer']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -2862,6 +3049,16 @@ export const CustomerControllerApiFp = function(configuration?: Configuration) {
 export const CustomerControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = CustomerControllerApiFp(configuration)
     return {
+        /**
+         * 
+         * @summary Delete customer by id
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteCustomerById(id: number, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.deleteCustomerById(id, options).then((request) => request(axios, basePath));
+        },
         /**
          * 
          * @summary Get all customers
@@ -2881,6 +3078,27 @@ export const CustomerControllerApiFactory = function (configuration?: Configurat
         getCustomerById(id: number, options?: RawAxiosRequestConfig): AxiosPromise<Customer> {
             return localVarFp.getCustomerById(id, options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @summary Register new customer (non admin)
+         * @param {RegisterCustomerCommand} registerCustomerCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        registerCustomer(registerCustomerCommand: RegisterCustomerCommand, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.registerCustomer(registerCustomerCommand, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Update customer (non admin)
+         * @param {number} id 
+         * @param {RegisterCustomerCommand} registerCustomerCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateCustomer(id: number, registerCustomerCommand: RegisterCustomerCommand, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.updateCustomer(id, registerCustomerCommand, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -2891,6 +3109,18 @@ export const CustomerControllerApiFactory = function (configuration?: Configurat
  * @extends {BaseAPI}
  */
 export class CustomerControllerApi extends BaseAPI {
+    /**
+     * 
+     * @summary Delete customer by id
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CustomerControllerApi
+     */
+    public deleteCustomerById(id: number, options?: RawAxiosRequestConfig) {
+        return CustomerControllerApiFp(this.configuration).deleteCustomerById(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary Get all customers
@@ -2912,6 +3142,31 @@ export class CustomerControllerApi extends BaseAPI {
      */
     public getCustomerById(id: number, options?: RawAxiosRequestConfig) {
         return CustomerControllerApiFp(this.configuration).getCustomerById(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Register new customer (non admin)
+     * @param {RegisterCustomerCommand} registerCustomerCommand 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CustomerControllerApi
+     */
+    public registerCustomer(registerCustomerCommand: RegisterCustomerCommand, options?: RawAxiosRequestConfig) {
+        return CustomerControllerApiFp(this.configuration).registerCustomer(registerCustomerCommand, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Update customer (non admin)
+     * @param {number} id 
+     * @param {RegisterCustomerCommand} registerCustomerCommand 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CustomerControllerApi
+     */
+    public updateCustomer(id: number, registerCustomerCommand: RegisterCustomerCommand, options?: RawAxiosRequestConfig) {
+        return CustomerControllerApiFp(this.configuration).updateCustomer(id, registerCustomerCommand, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
