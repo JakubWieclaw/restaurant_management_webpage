@@ -19,12 +19,14 @@ import { Transition } from "../utils/Transision";
 import { tableApi } from "../utils/api";
 import { Test } from "../api";
 import { toast } from "react-toastify";
+import { TableReservationModal } from "../components/Reservation/TablereservationModal";
 
 export const TablesManagement = () => {
-  const [openNewTableModal, setOpenNewTableModal] = useState(false);
-  const [tableAddingLoading, setTableAddingLoading] = useState(false);
   const [tableID, setTableID] = useState("");
   const [tableSeats, setTableSeats] = useState(1);
+  const [openNewTableModal, setOpenNewTableModal] = useState(false);
+  const [tableAddingLoading, setTableAddingLoading] = useState(false);
+  const [openNewReservationModal, setOpenNewReservationModal] = useState(false);
 
   return (
     <Container sx={{ mt: 15 }} maxWidth="lg">
@@ -56,7 +58,6 @@ export const TablesManagement = () => {
               justifyContent: "flex-end",
             }}
           >
-            {" "}
             <Button
               variant="contained"
               color="primary"
@@ -80,6 +81,23 @@ export const TablesManagement = () => {
           >
             Rezerwacje
           </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setOpenNewReservationModal(true)}
+              sx={{
+                fontSize: "0.65rem",
+              }}
+            >
+              Dodaj rezerwację
+            </Button>
+          </Box>
         </Grid>
       </Grid>
       <Dialog
@@ -157,6 +175,10 @@ export const TablesManagement = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <TableReservationModal
+        open={openNewReservationModal}
+        setOpen={setOpenNewReservationModal}
+      />
     </Container>
   );
 };
