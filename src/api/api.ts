@@ -205,6 +205,31 @@ export interface ConfigAddCommand {
 /**
  * 
  * @export
+ * @interface ContactFormCommand
+ */
+export interface ContactFormCommand {
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactFormCommand
+     */
+    'name': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactFormCommand
+     */
+    'email': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ContactFormCommand
+     */
+    'message': string;
+}
+/**
+ * 
+ * @export
  * @interface Coupon
  */
 export interface Coupon {
@@ -2292,6 +2317,116 @@ export class ConfigControllerApi extends BaseAPI {
      */
     public removeConfigs(options?: RawAxiosRequestConfig) {
         return ConfigControllerApiFp(this.configuration).removeConfigs(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * ContactFormControllerApi - axios parameter creator
+ * @export
+ */
+export const ContactFormControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Send contact email
+         * @param {ContactFormCommand} contactFormCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        sendContactForm: async (contactFormCommand: ContactFormCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'contactFormCommand' is not null or undefined
+            assertParamExists('sendContactForm', 'contactFormCommand', contactFormCommand)
+            const localVarPath = `/api/contact-form/send`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(contactFormCommand, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ContactFormControllerApi - functional programming interface
+ * @export
+ */
+export const ContactFormControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ContactFormControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Send contact email
+         * @param {ContactFormCommand} contactFormCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async sendContactForm(contactFormCommand: ContactFormCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.sendContactForm(contactFormCommand, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ContactFormControllerApi.sendContactForm']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ContactFormControllerApi - factory interface
+ * @export
+ */
+export const ContactFormControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ContactFormControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Send contact email
+         * @param {ContactFormCommand} contactFormCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        sendContactForm(contactFormCommand: ContactFormCommand, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.sendContactForm(contactFormCommand, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ContactFormControllerApi - object-oriented interface
+ * @export
+ * @class ContactFormControllerApi
+ * @extends {BaseAPI}
+ */
+export class ContactFormControllerApi extends BaseAPI {
+    /**
+     * 
+     * @summary Send contact email
+     * @param {ContactFormCommand} contactFormCommand 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ContactFormControllerApi
+     */
+    public sendContactForm(contactFormCommand: ContactFormCommand, options?: RawAxiosRequestConfig) {
+        return ContactFormControllerApiFp(this.configuration).sendContactForm(contactFormCommand, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -4795,6 +4930,114 @@ export class PhotoControllerApi extends BaseAPI {
      */
     public uploadPhoto(file?: File, options?: RawAxiosRequestConfig) {
         return PhotoControllerApiFp(this.configuration).uploadPhoto(file, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * QrCodeControllerApi - axios parameter creator
+ * @export
+ */
+export const QrCodeControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Generates a QR code for a table
+         * @summary Get QR code for table
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getQRCodeForOrder: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getQRCodeForOrder', 'id', id)
+            const localVarPath = `/api/qr/table/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * QrCodeControllerApi - functional programming interface
+ * @export
+ */
+export const QrCodeControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = QrCodeControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Generates a QR code for a table
+         * @summary Get QR code for table
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getQRCodeForOrder(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<string>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getQRCodeForOrder(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['QrCodeControllerApi.getQRCodeForOrder']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * QrCodeControllerApi - factory interface
+ * @export
+ */
+export const QrCodeControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = QrCodeControllerApiFp(configuration)
+    return {
+        /**
+         * Generates a QR code for a table
+         * @summary Get QR code for table
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getQRCodeForOrder(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<string>> {
+            return localVarFp.getQRCodeForOrder(id, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * QrCodeControllerApi - object-oriented interface
+ * @export
+ * @class QrCodeControllerApi
+ * @extends {BaseAPI}
+ */
+export class QrCodeControllerApi extends BaseAPI {
+    /**
+     * Generates a QR code for a table
+     * @summary Get QR code for table
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof QrCodeControllerApi
+     */
+    public getQRCodeForOrder(id: string, options?: RawAxiosRequestConfig) {
+        return QrCodeControllerApiFp(this.configuration).getQRCodeForOrder(id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

@@ -6,6 +6,7 @@ import {
   Grid,
   TextField,
   Button,
+  CircularProgress,
 } from "@mui/material";
 
 import { AxiosResponse } from "axios";
@@ -13,8 +14,8 @@ import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
 import { RootState } from "../store";
-import { configApi } from "../utils/api";
-import { DeliveryPricing, OpeningHour } from "../api";
+import { configApi, contactFormApi } from "../utils/api";
+import { ContactFormCommand, DeliveryPricing, OpeningHour } from "../api";
 import { enumToDay } from "../utils/dayEnumTranslate";
 import { toast, Slide } from "react-toastify";
 
@@ -22,6 +23,10 @@ export const Contact = () => {
   const config = useSelector((state: RootState) => state.config);
   const [openingHours, setOpeningHours] = useState<OpeningHour[]>([]);
   const [deliveryPrices, setDeliveryPrices] = useState<DeliveryPricing[]>([]);
+  const [contactFormName, setContactFormName] = useState("");
+  const [contactFormEmail, setContactFormEmail] = useState("");
+  const [contactFormMessage, setContactFormMessage] = useState("");
+  const [loadingSendContactForm, setLoadingSendContactForm] = useState(false);
 
   useEffect(() => {
     configApi
@@ -132,21 +137,68 @@ export const Contact = () => {
               bgcolor="background.paper"
               component={"form"}
               onSubmit={(event) => {
+                setLoadingSendContactForm(true);
                 event.preventDefault();
-                toast.success(
-                  "Wiadomość wysłana pomyślnie. Odpowiemy tak szybko jak to możliwe.",
-                  {
-                    position: "bottom-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Slide,
-                  }
-                );
+                const contactFromContent: ContactFormCommand = {
+                  name: contactFormName,
+                  email: contactFormEmail,
+                  message: contactFormMessage,
+                };
+                contactFormApi
+                  .sendContactForm(contactFromContent)
+                  .then(() => {
+                    setContactFormName("");
+                    setContactFormEmail("");
+                    setContactFormMessage("");
+                    toast.success(
+                      "Wiadomość wysłana pomyślnie. Odpowiemy tak szybko jak to możliwe.",
+                      {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Slide,
+                      }
+                    );
+                  })
+                  .catch((error) => {
+                    if (typeof error.response.data === "string") {
+                      toast.error(`${error.response.data}`, {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Slide,
+                      });
+                    } else {
+                      for (const [_, value] of Object.entries(
+                        error.response.data
+                      )) {
+                        toast.error(`${value}`, {
+                          position: "bottom-center",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "light",
+                          transition: Slide,
+                        });
+                      }
+                    }
+                  })
+                  .finally(() => {
+                    setLoadingSendContactForm(false);
+                  });
               }}
             >
               <TextField
@@ -158,6 +210,8 @@ export const Contact = () => {
                 placeholder="Imię"
                 type="text"
                 required
+                value={contactFormName}
+                onChange={(event) => setContactFormName(event.target.value)}
               />
               <TextField
                 fullWidth
@@ -168,6 +222,8 @@ export const Contact = () => {
                 placeholder="Email"
                 type="email"
                 required
+                value={contactFormEmail}
+                onChange={(event) => setContactFormEmail(event.target.value)}
               />
               <TextField
                 fullWidth
@@ -180,6 +236,8 @@ export const Contact = () => {
                 multiline
                 rows={4}
                 required
+                value={contactFormMessage}
+                onChange={(event) => setContactFormMessage(event.target.value)}
               />
               <Button
                 variant="contained"
@@ -189,8 +247,15 @@ export const Contact = () => {
                 color="primary"
                 type="submit"
               >
-                {" "}
-                Wyślij
+                {loadingSendContactForm ? (
+                  <CircularProgress
+                    sx={{
+                      color: "white",
+                    }}
+                  />
+                ) : (
+                  "Wyślij"
+                )}
               </Button>
             </Box>
           </Grid>

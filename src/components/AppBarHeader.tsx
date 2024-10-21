@@ -333,6 +333,14 @@ export const AppBarHeader = () => {
                   Zamówienia klientów
                 </MenuItem>,
                 <MenuItem
+                  key="admin-panel"
+                  onClick={() => {
+                    navigate("/admin-panel");
+                  }}
+                >
+                  Panel administracyjny
+                </MenuItem>,
+                <MenuItem
                   key="initialize-system"
                   onClick={() => {
                     navigate("/initialize-system");

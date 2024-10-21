@@ -25,9 +25,28 @@ import {
 import { AxiosResponse } from "axios";
 import { useState, useEffect, Fragment } from "react";
 
-import { mealsApi, orderApi } from "../utils/api";
+import { customersApi, mealsApi, orderApi } from "../utils/api";
+
 import { Order, OrderStatusEnum, OrderTypeEnum } from "../api";
 import { toast } from "react-toastify";
+
+// Define the CustomerName component
+const CustomerName = ({ customerId }: { customerId: number }) => {
+  const [customerName, setCustomerName] = useState<string>("Ładowanie...");
+
+  useEffect(() => {
+    if (customerId === 0) {
+      setCustomerName("Niezarejestrowany");
+      return;
+    }
+    customersApi.getCustomerById(customerId).then((response: AxiosResponse) => {
+      const customer = response.data;
+      setCustomerName(`${customer.name} ${customer.surname}`);
+    });
+  }, [customerId]);
+
+  return <>{customerName}</>;
+};
 
 export const Orders = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -42,7 +61,6 @@ export const Orders = () => {
     orderApi.getAllOrders().then((response: AxiosResponse) => {
       setOrders(response.data);
       setOpen((prev) => {
-        // as previous and add order with false value
         return {
           ...prev,
           ...response.data.reduce(
@@ -102,7 +120,7 @@ export const Orders = () => {
             <TableRow>
               <TableCell />
               <TableCell>ID zamówienia</TableCell>
-              <TableCell align="right">ID klienta</TableCell>
+              <TableCell align="right">Klient</TableCell>
               <TableCell align="right">Data i godzina</TableCell>
               <TableCell align="right">Status</TableCell>
             </TableRow>
@@ -135,7 +153,12 @@ export const Orders = () => {
                       <TableCell component="th" scope="row">
                         {order.id}
                       </TableCell>
-                      <TableCell align="right">{order.customerId}</TableCell>
+                      <TableCell align="right">
+                        {/* fetch user's name and surname */}
+                        {order.customerId !== undefined && (
+                          <CustomerName customerId={order.customerId} />
+                        )}
+                      </TableCell>
                       <TableCell align="right">
                         {order.dateTime.substring(0, 19).replace("T", " ")}
                       </TableCell>
