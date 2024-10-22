@@ -63,8 +63,7 @@ export const CustomerDetails = () => {
               setLoadingDataForm(true);
               customersApi
                 .updateCustomer(customerId!, customer)
-                .then((response) => {
-                  console.log(response.data);
+                .then(() => {
                   toast.success("Dane klienta zostały zapisane", {
                     position: "bottom-center",
                     autoClose: 5000,
@@ -79,9 +78,8 @@ export const CustomerDetails = () => {
                 })
                 .catch((error) => {
                   console.error(error);
-                  toast.error(
-                    "Wystąpił problem z modyfikacją danych klienta.",
-                    {
+                  if (typeof error.response.data === "string") {
+                    toast.error(error.response.data, {
                       position: "bottom-center",
                       autoClose: 5000,
                       hideProgressBar: false,
@@ -91,8 +89,37 @@ export const CustomerDetails = () => {
                       progress: undefined,
                       theme: "light",
                       transition: Slide,
+                    });
+                  } else if (typeof error.response.data === "object") {
+                    for (const key in error.response.data) {
+                      toast.error(error.response.data[key], {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Slide,
+                      });
                     }
-                  );
+                  } else {
+                    toast.error(
+                      "Wystąpił problem z modyfikacją danych klienta.",
+                      {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                        transition: Slide,
+                      }
+                    );
+                  }
                 })
                 .finally(() => {
                   setLoadingDataForm(false);

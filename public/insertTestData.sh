@@ -111,9 +111,9 @@ curl -X 'POST' \
   "name": "Jan",
   "surname": "Kowalski",
   "admin": "true",
-  "email": "a@a",
+  "email": "example@example.com",
   "phone": "123123123",
-  "password": "asd"
+  "password": "example1"
 }'
 
 echo
@@ -127,9 +127,9 @@ curl -X 'POST' \
   "id": 0,
   "name": "Piotr",
   "surname": "Nowak",
-  "email": "b@b",
+  "email": "example1@example.com",
   "phone": "123123123",
-  "password": "asd"
+  "password": "example1"
 }'
 
 echo

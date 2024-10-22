@@ -15,7 +15,7 @@ import { PhoneNumber } from "../inputs/PhoneNumber";
 export const Register = () => {
   const ctx = useContext(authContext);
   const [phoneNumberError, setPhoneNumberError] = useState<string>("");
-  const minPasswordLength = 3;
+  const minPasswordLength = 8;
 
   return (
     <>
