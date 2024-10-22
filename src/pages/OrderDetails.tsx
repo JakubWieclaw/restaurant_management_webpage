@@ -32,9 +32,11 @@ export const OrderDetails = () => {
           setOrder(response.data);
 
           response.data.mealIds.forEach(async (mealQuantity) => {
-            await mealsApi.getMealById(mealQuantity.mealId).then((response) => {
-              setOrderedMeals((prev) => [...prev, response.data]);
-            });
+            await mealsApi
+              .getMealById(mealQuantity.mealId!)
+              .then((response) => {
+                setOrderedMeals((prev) => [...prev, response.data]);
+              });
           });
         })
         .catch((error) => {

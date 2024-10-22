@@ -24,52 +24,12 @@ import { RootState } from "../store";
 import { AxiosResponse } from "axios";
 import { orderApi } from "../utils/api";
 
-export const CustomerOrders = () => {
-  const [loading, setLoading] = useState(true);
-  const [customerOrders, setCustomerOrders] = useState([]);
+export const CustomerOrdersList = ({ orders }: { orders: Order[] }) => {
   const navigate = useNavigate();
 
-  const user = useSelector((state: RootState) => state.user);
-
-  useEffect(() => {
-    orderApi
-      .getAllOrdersOfCustomer(user.loginResponse?.customerId!)
-      .then((response: AxiosResponse) => {
-        setCustomerOrders(response.data);
-        setLoading(false);
-      });
-  }, []);
-
-  if (loading) {
-    return (
-      <Container sx={{ mt: 15 }} maxWidth="md">
-        <Typography component="h1" variant="h4" align="center" gutterBottom>
-          Historia twoich zamówień
-        </Typography>
-        <Divider />
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            mt: 5,
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      </Container>
-    );
-  }
   return (
-    <Container sx={{ mt: 15 }} maxWidth="md">
-      <Typography component="h1" variant="h4" align="center" gutterBottom>
-        Historia twoich zamówień
-      </Typography>
-      <Divider
-        sx={{
-          mb: 2,
-        }}
-      />
-      {customerOrders.map((order: Order) => (
+    <>
+      {orders.map((order: Order) => (
         <Accordion key={order.id}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -130,6 +90,55 @@ export const CustomerOrders = () => {
           </AccordionActions>
         </Accordion>
       ))}
+    </>
+  );
+};
+
+export const CustomerOrders = () => {
+  const [loading, setLoading] = useState(true);
+  const [customerOrders, setCustomerOrders] = useState([]);
+
+  const user = useSelector((state: RootState) => state.user);
+
+  useEffect(() => {
+    orderApi
+      .getAllOrdersOfCustomer(user.loginResponse?.customerId!)
+      .then((response: AxiosResponse) => {
+        setCustomerOrders(response.data);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <Container sx={{ mt: 15 }} maxWidth="md">
+        <Typography component="h1" variant="h4" align="center" gutterBottom>
+          Historia twoich zamówień
+        </Typography>
+        <Divider />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            mt: 5,
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
+  return (
+    <Container sx={{ mt: 15 }} maxWidth="md">
+      <Typography component="h1" variant="h4" align="center" gutterBottom>
+        Historia twoich zamówień
+      </Typography>
+      <Divider
+        sx={{
+          mb: 2,
+        }}
+      />
+      <CustomerOrdersList orders={customerOrders} />
     </Container>
   );
 };

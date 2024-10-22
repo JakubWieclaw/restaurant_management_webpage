@@ -3,26 +3,32 @@ import {
   CircularProgress,
   Container,
   Divider,
+  FormGroup,
   Grid,
   Typography,
+  TextField,
+  Button,
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { toast, Slide } from "react-toastify";
 
-import { Customer } from "../api";
+import { Customer, Order } from "../api";
 import { AxiosResponse } from "axios";
-import { customersApi } from "../utils/api";
+import { customersApi, orderApi } from "../utils/api";
+import { CustomerOrdersList } from "./CustomerOrders";
 
 export const CustomerDetails = () => {
   const [customer, setCustomer] = useState<Customer | null>(null);
-  const [customerId, setcustomerId] = useState<number | null>(null);
+  const [customerId, setCustomerId] = useState<number | null>(null);
+  const [loadingDataForm, setLoadingDataForm] = useState<boolean>(false);
+  const [customerOrders, setCustomerOrders] = useState<Order[] | null>(null);
 
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
-    setcustomerId(id ? parseInt(id, 10) : null);
-    console.log(id);
+    setCustomerId(id ? parseInt(id, 10) : null);
   }, [id]);
 
   useEffect(() => {
@@ -32,12 +38,15 @@ export const CustomerDetails = () => {
     customersApi.getCustomerById(customerId).then((res: AxiosResponse) => {
       setCustomer(res.data);
     });
+    orderApi.getAllOrdersOfCustomer(customerId).then((res: AxiosResponse) => {
+      setCustomerOrders(res.data);
+    });
   }, [customerId]);
 
   return (
     <Container sx={{ mt: 15 }} maxWidth="md">
       <Typography component="h1" variant="h4" align="center" gutterBottom>
-        Dane klienta
+        Szczegóły klienta
       </Typography>
       <Divider />
       <Box
@@ -47,28 +56,165 @@ export const CustomerDetails = () => {
         }}
       >
         {customer ? (
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom>
-                Imię: {customer.name}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom>
-                Nazwisko: {customer.surname}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom>
-                Email: {customer.email}
-              </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom>
-                Telefon: {customer.phone}
-              </Typography>
-            </Grid>
-          </Grid>
+          <Box
+            component="form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              setLoadingDataForm(true);
+              customersApi
+                .updateCustomer(customerId!, customer)
+                .then((response) => {
+                  console.log(response.data);
+                  toast.success("Dane klienta zostały zapisane", {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                    transition: Slide,
+                  });
+                })
+                .catch((error) => {
+                  console.error(error);
+                  toast.error(
+                    "Wystąpił problem z modyfikacją danych klienta.",
+                    {
+                      position: "bottom-center",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "light",
+                      transition: Slide,
+                    }
+                  );
+                })
+                .finally(() => {
+                  setLoadingDataForm(false);
+                });
+            }}
+          >
+            <FormGroup>
+              <Grid
+                container
+                sx={{
+                  display: "flex",
+                }}
+                spacing={2}
+              >
+                <Grid
+                  item
+                  xs={6}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <TextField
+                    id="name"
+                    label="Imię"
+                    value={customer.name}
+                    onChange={(event) =>
+                      setCustomer({ ...customer, name: event.target.value })
+                    }
+                    required
+                  />
+                </Grid>
+
+                <Grid
+                  item
+                  xs={6}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-begin",
+                  }}
+                >
+                  <TextField
+                    id="surname"
+                    label="Nazwisko"
+                    value={customer.surname}
+                    onChange={(event) =>
+                      setCustomer({
+                        ...customer,
+                        surname: event.target.value,
+                      })
+                    }
+                    required
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={6}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <TextField
+                    id="email"
+                    label="Email"
+                    value={customer.email}
+                    onChange={(event) =>
+                      setCustomer({ ...customer, email: event.target.value })
+                    }
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-begin",
+                    }}
+                    required
+                    inputMode="email"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    id="phone"
+                    label="Telefon"
+                    value={customer.phone}
+                    onChange={(event) =>
+                      setCustomer({ ...customer, phone: event.target.value })
+                    }
+                    required
+                    inputMode="tel"
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      width: "20%",
+                    }}
+                    type="submit"
+                  >
+                    {loadingDataForm ? <CircularProgress /> : "Zapisz"}
+                  </Button>
+                </Grid>
+              </Grid>
+            </FormGroup>
+          </Box>
+        ) : (
+          <CircularProgress />
+        )}
+        <Divider sx={{ my: 4 }} />
+        {customerOrders ? (
+          <>
+            <Typography variant="h5" align="center" gutterBottom>
+              Historia zamówień klienta
+            </Typography>
+            <CustomerOrdersList orders={customerOrders} />
+          </>
         ) : (
           <CircularProgress />
         )}

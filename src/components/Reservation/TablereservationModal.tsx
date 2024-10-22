@@ -24,7 +24,7 @@ import { useEffect, useState } from "react";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
 import { tableReservationApi } from "../../utils/api";
-import { LocalTime, ReservationQueryRequest } from "../../api";
+import { CheckReservationTimesCommand, LocalTime } from "../../api";
 
 interface TableReservationModalProps {
   open: boolean;
@@ -46,7 +46,7 @@ export const TableReservationModal = ({
 
   useEffect(() => {
     if (!chosenDate) return;
-    const reservationRequest: ReservationQueryRequest = {
+    const reservationRequest: CheckReservationTimesCommand = {
       days: [chosenDate.format("YYYY-MM-DD")],
       duration: duration * 60,
       people: peopleCount,

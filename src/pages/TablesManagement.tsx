@@ -17,7 +17,7 @@ import { useState } from "react";
 
 import { Transition } from "../utils/Transision";
 import { tableApi } from "../utils/api";
-import { Test } from "../api";
+import { TableAddCommand } from "../api";
 import { toast } from "react-toastify";
 import { TableReservationModal } from "../components/Reservation/TablereservationModal";
 
@@ -150,7 +150,7 @@ export const TablesManagement = () => {
           <Button
             onClick={() => {
               setTableAddingLoading(true);
-              const requestData: Test = {
+              const requestData: TableAddCommand = {
                 id: tableID,
                 capacity: tableSeats,
               };

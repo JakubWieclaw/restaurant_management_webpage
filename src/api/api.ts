@@ -74,17 +74,48 @@ export interface Category {
  */
 export interface CategoryAddCommand {
     /**
-     * 
+     * Name of the category
      * @type {string}
      * @memberof CategoryAddCommand
      */
     'name': string;
     /**
-     * 
+     * URL to photo of the category
      * @type {string}
      * @memberof CategoryAddCommand
      */
     'photographUrl'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface CheckReservationTimesCommand
+ */
+export interface CheckReservationTimesCommand {
+    /**
+     * Dates to search for possible reservation
+     * @type {Array<string>}
+     * @memberof CheckReservationTimesCommand
+     */
+    'days': Array<string>;
+    /**
+     * Duration of the reservation in minutes
+     * @type {number}
+     * @memberof CheckReservationTimesCommand
+     */
+    'duration': number;
+    /**
+     * Minutes between each timestamp  15 -> 10:00, 10:15..;  10 -> 10:00, 10:10..
+     * @type {number}
+     * @memberof CheckReservationTimesCommand
+     */
+    'minutesToAdd'?: number;
+    /**
+     * How many people will be on the reservation
+     * @type {number}
+     * @memberof CheckReservationTimesCommand
+     */
+    'people'?: number;
 }
 /**
  * 
@@ -209,23 +240,23 @@ export interface ConfigAddCommand {
  */
 export interface ContactFormCommand {
     /**
-     * 
+     * Sender\'s name
      * @type {string}
      * @memberof ContactFormCommand
      */
-    'name': string;
+    'name'?: string;
     /**
-     * 
+     * E-mail of the sender
      * @type {string}
      * @memberof ContactFormCommand
      */
-    'email': string;
+    'email'?: string;
     /**
-     * 
+     * Body of the e-mail message
      * @type {string}
      * @memberof ContactFormCommand
      */
-    'message': string;
+    'message'?: string;
 }
 /**
  * 
@@ -283,31 +314,31 @@ export interface Coupon {
  */
 export interface CouponAddCommand {
     /**
-     * 
+     * Kod kuponu
      * @type {string}
      * @memberof CouponAddCommand
      */
     'code': string;
     /**
-     * 
+     * Percentage discount for meal
      * @type {number}
      * @memberof CouponAddCommand
      */
     'discountPercentage': number;
     /**
-     * 
+     * Client id
      * @type {number}
      * @memberof CouponAddCommand
      */
     'customerId': number;
     /**
-     * 
+     * Id of the discounted meal
      * @type {number}
      * @memberof CouponAddCommand
      */
     'mealId': number;
     /**
-     * 
+     * Expiry date of the coupon
      * @type {string}
      * @memberof CouponAddCommand
      */
@@ -431,13 +462,13 @@ export interface LocalTime {
  */
 export interface LoginCommand {
     /**
-     * 
+     * Email
      * @type {string}
      * @memberof LoginCommand
      */
-    'email': string;
+    'email'?: string;
     /**
-     * 
+     * Password
      * @type {string}
      * @memberof LoginCommand
      */
@@ -485,6 +516,43 @@ export interface LoginResponseDTO {
      * @memberof LoginResponseDTO
      */
     'isAdmin'?: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface MakeReservationCommand
+ */
+export interface MakeReservationCommand {
+    /**
+     * Reservation day
+     * @type {string}
+     * @memberof MakeReservationCommand
+     */
+    'day'?: string;
+    /**
+     * 
+     * @type {LocalTime}
+     * @memberof MakeReservationCommand
+     */
+    'startTime': LocalTime;
+    /**
+     * 
+     * @type {LocalTime}
+     * @memberof MakeReservationCommand
+     */
+    'endTime': LocalTime;
+    /**
+     * Amount of people on the reservation
+     * @type {number}
+     * @memberof MakeReservationCommand
+     */
+    'numberOfPeople': number;
+    /**
+     * Client id responsible for reservation
+     * @type {number}
+     * @memberof MakeReservationCommand
+     */
+    'customerId'?: number;
 }
 /**
  * Model of a meal
@@ -568,55 +636,55 @@ export type MealUnitTypeEnum = typeof MealUnitTypeEnum[keyof typeof MealUnitType
  */
 export interface MealAddCommand {
     /**
-     * 
+     * Name of the meal
      * @type {string}
      * @memberof MealAddCommand
      */
     'name': string;
     /**
-     * 
+     * Price of the meal
      * @type {number}
      * @memberof MealAddCommand
      */
-    'price': number;
+    'price'?: number;
     /**
-     * 
+     * URL to the photo of the meal
      * @type {string}
      * @memberof MealAddCommand
      */
     'photographUrl'?: string;
     /**
-     * 
+     * Ingredients used for the meal
      * @type {Array<string>}
      * @memberof MealAddCommand
      */
     'ingredients'?: Array<string>;
     /**
-     * 
+     * Weight or volume of the meal
      * @type {number}
      * @memberof MealAddCommand
      */
     'weightOrVolume'?: number;
     /**
-     * 
+     * Weight or volume
      * @type {string}
      * @memberof MealAddCommand
      */
     'unitType'?: MealAddCommandUnitTypeEnum;
     /**
-     * 
+     * Category of the meal
      * @type {number}
      * @memberof MealAddCommand
      */
     'categoryId': number;
     /**
-     * 
+     * Possible allergens for the meal
      * @type {Array<string>}
      * @memberof MealAddCommand
      */
     'allergens'?: Array<string>;
     /**
-     * 
+     * Calories for the meal in kcal
      * @type {number}
      * @memberof MealAddCommand
      */
@@ -641,13 +709,13 @@ export interface MealQuantity {
      * @type {number}
      * @memberof MealQuantity
      */
-    'mealId': number;
+    'mealId'?: number;
     /**
      * 
      * @type {number}
      * @memberof MealQuantity
      */
-    'quantity': number;
+    'quantity'?: number;
 }
 /**
  * 
@@ -700,25 +768,25 @@ export type OpeningHourDayEnum = typeof OpeningHourDayEnum[keyof typeof OpeningH
  */
 export interface OpinionAddCommand {
     /**
-     * 
+     * Id of the meal
      * @type {number}
      * @memberof OpinionAddCommand
      */
     'mealId': number;
     /**
-     * 
+     * Client id
      * @type {number}
      * @memberof OpinionAddCommand
      */
     'customerId': number;
     /**
-     * 
+     * Rating for the meal
      * @type {number}
      * @memberof OpinionAddCommand
      */
     'rating'?: number;
     /**
-     * 
+     * Comment for the opinion
      * @type {string}
      * @memberof OpinionAddCommand
      */
@@ -825,7 +893,8 @@ export interface Order {
 
 export const OrderTypeEnum = {
     Dostawa: 'DOSTAWA',
-    NaMiejscu: 'NA_MIEJSCU'
+    NaMiejscu: 'NA_MIEJSCU',
+    DoStolika: 'DO_STOLIKA'
 } as const;
 
 export type OrderTypeEnum = typeof OrderTypeEnum[keyof typeof OrderTypeEnum];
@@ -847,52 +916,59 @@ export type OrderStatusEnum = typeof OrderStatusEnum[keyof typeof OrderStatusEnu
  */
 export interface OrderAddCommand {
     /**
-     * 
+     * Quantities and ids of the meal
      * @type {Array<MealQuantity>}
      * @memberof OrderAddCommand
      */
     'mealIds': Array<MealQuantity>;
     /**
-     * 
+     * Client id for the order
      * @type {number}
      * @memberof OrderAddCommand
      */
     'customerId'?: number;
     /**
-     * 
+     * Type of the order
      * @type {string}
      * @memberof OrderAddCommand
      */
     'type': OrderAddCommandTypeEnum;
     /**
-     * 
+     * Status of the order
      * @type {string}
      * @memberof OrderAddCommand
      */
     'status': OrderAddCommandStatusEnum;
     /**
-     * 
+     * Unwanted ingredients in the order
      * @type {Array<UnwantedIngredient>}
      * @memberof OrderAddCommand
      */
     'unwantedIngredients'?: Array<UnwantedIngredient>;
     /**
-     * 
+     * Delivery address, empty if order is in restarurant
      * @type {string}
      * @memberof OrderAddCommand
      */
     'deliveryAddress'?: string;
     /**
-     * 
+     * Delivery distance, zero if it is not related
      * @type {number}
      * @memberof OrderAddCommand
      */
     'deliveryDistance'?: number;
+    /**
+     * If type DO_STOLIKA then add table id
+     * @type {string}
+     * @memberof OrderAddCommand
+     */
+    'tableId'?: string;
 }
 
 export const OrderAddCommandTypeEnum = {
     Dostawa: 'DOSTAWA',
-    NaMiejscu: 'NA_MIEJSCU'
+    NaMiejscu: 'NA_MIEJSCU',
+    DoStolika: 'DO_STOLIKA'
 } as const;
 
 export type OrderAddCommandTypeEnum = typeof OrderAddCommandTypeEnum[keyof typeof OrderAddCommandTypeEnum];
@@ -910,19 +986,19 @@ export type OrderAddCommandStatusEnum = typeof OrderAddCommandStatusEnum[keyof t
 /**
  * 
  * @export
- * @interface PossibleReservationHoursForDay
+ * @interface PossibleReservationHoursForDayDTO
  */
-export interface PossibleReservationHoursForDay {
+export interface PossibleReservationHoursForDayDTO {
     /**
      * 
      * @type {string}
-     * @memberof PossibleReservationHoursForDay
+     * @memberof PossibleReservationHoursForDayDTO
      */
     'date'?: string;
     /**
      * 
      * @type {Array<LocalTime>}
-     * @memberof PossibleReservationHoursForDay
+     * @memberof PossibleReservationHoursForDayDTO
      */
     'possibleStartTimes'?: Array<LocalTime>;
 }
@@ -956,31 +1032,31 @@ export interface RegisterCustomerCommand {
      * @type {string}
      * @memberof RegisterCustomerCommand
      */
-    'name': string;
+    'name'?: string;
     /**
      * 
      * @type {string}
      * @memberof RegisterCustomerCommand
      */
-    'surname': string;
+    'surname'?: string;
     /**
      * 
      * @type {string}
      * @memberof RegisterCustomerCommand
      */
-    'email': string;
+    'email'?: string;
     /**
      * 
      * @type {string}
      * @memberof RegisterCustomerCommand
      */
-    'phone': string;
+    'phone'?: string;
     /**
      * 
      * @type {string}
      * @memberof RegisterCustomerCommand
      */
-    'password': string;
+    'password'?: string;
 }
 /**
  * 
@@ -1065,87 +1141,38 @@ export interface RegisterUserCommand {
 /**
  * 
  * @export
- * @interface ReservationQueryRequest
+ * @interface Table
  */
-export interface ReservationQueryRequest {
-    /**
-     * 
-     * @type {Array<string>}
-     * @memberof ReservationQueryRequest
-     */
-    'days'?: Array<string>;
-    /**
-     * 
-     * @type {number}
-     * @memberof ReservationQueryRequest
-     */
-    'duration'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ReservationQueryRequest
-     */
-    'minutesToAdd'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ReservationQueryRequest
-     */
-    'people'?: number;
-}
-/**
- * 
- * @export
- * @interface ReservationRequest
- */
-export interface ReservationRequest {
+export interface Table {
     /**
      * 
      * @type {string}
-     * @memberof ReservationRequest
-     */
-    'day'?: string;
-    /**
-     * 
-     * @type {LocalTime}
-     * @memberof ReservationRequest
-     */
-    'startTime'?: LocalTime;
-    /**
-     * 
-     * @type {LocalTime}
-     * @memberof ReservationRequest
-     */
-    'endTime'?: LocalTime;
-    /**
-     * 
-     * @type {number}
-     * @memberof ReservationRequest
-     */
-    'numberOfPeople'?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof ReservationRequest
-     */
-    'customerId'?: number;
-}
-/**
- * 
- * @export
- * @interface Test
- */
-export interface Test {
-    /**
-     * 
-     * @type {string}
-     * @memberof Test
+     * @memberof Table
      */
     'id'?: string;
     /**
      * 
      * @type {number}
-     * @memberof Test
+     * @memberof Table
+     */
+    'capacity'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TableAddCommand
+ */
+export interface TableAddCommand {
+    /**
+     * 
+     * @type {string}
+     * @memberof TableAddCommand
+     */
+    'id': string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TableAddCommand
      */
     'capacity'?: number;
 }
@@ -2440,6 +2467,7 @@ export const CouponControllerApiAxiosParamCreator = function (configuration?: Co
     return {
         /**
          * 
+         * @summary Apply coupon
          * @param {string} code 
          * @param {number} customerId 
          * @param {number} mealId 
@@ -2497,6 +2525,7 @@ export const CouponControllerApiAxiosParamCreator = function (configuration?: Co
         },
         /**
          * 
+         * @summary Create coupon
          * @param {CouponAddCommand} couponAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2532,6 +2561,7 @@ export const CouponControllerApiAxiosParamCreator = function (configuration?: Co
         },
         /**
          * 
+         * @summary Deactivate coupon
          * @param {number} couponId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2565,6 +2595,7 @@ export const CouponControllerApiAxiosParamCreator = function (configuration?: Co
         },
         /**
          * 
+         * @summary Get all coupons for a customer
          * @param {number} customerId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2598,6 +2629,7 @@ export const CouponControllerApiAxiosParamCreator = function (configuration?: Co
         },
         /**
          * 
+         * @summary Get all coupons for a meal
          * @param {number} mealId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2631,6 +2663,7 @@ export const CouponControllerApiAxiosParamCreator = function (configuration?: Co
         },
         /**
          * 
+         * @summary Validate coupon
          * @param {string} code 
          * @param {number} customerId 
          * @param {number} mealId 
@@ -2691,6 +2724,7 @@ export const CouponControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Apply coupon
          * @param {string} code 
          * @param {number} customerId 
          * @param {number} mealId 
@@ -2706,6 +2740,7 @@ export const CouponControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Create coupon
          * @param {CouponAddCommand} couponAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2718,6 +2753,7 @@ export const CouponControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Deactivate coupon
          * @param {number} couponId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2730,6 +2766,7 @@ export const CouponControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Get all coupons for a customer
          * @param {number} customerId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2742,6 +2779,7 @@ export const CouponControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Get all coupons for a meal
          * @param {number} mealId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2754,6 +2792,7 @@ export const CouponControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Validate coupon
          * @param {string} code 
          * @param {number} customerId 
          * @param {number} mealId 
@@ -2778,6 +2817,7 @@ export const CouponControllerApiFactory = function (configuration?: Configuratio
     return {
         /**
          * 
+         * @summary Apply coupon
          * @param {string} code 
          * @param {number} customerId 
          * @param {number} mealId 
@@ -2790,6 +2830,7 @@ export const CouponControllerApiFactory = function (configuration?: Configuratio
         },
         /**
          * 
+         * @summary Create coupon
          * @param {CouponAddCommand} couponAddCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2799,6 +2840,7 @@ export const CouponControllerApiFactory = function (configuration?: Configuratio
         },
         /**
          * 
+         * @summary Deactivate coupon
          * @param {number} couponId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2808,6 +2850,7 @@ export const CouponControllerApiFactory = function (configuration?: Configuratio
         },
         /**
          * 
+         * @summary Get all coupons for a customer
          * @param {number} customerId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2817,6 +2860,7 @@ export const CouponControllerApiFactory = function (configuration?: Configuratio
         },
         /**
          * 
+         * @summary Get all coupons for a meal
          * @param {number} mealId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2826,6 +2870,7 @@ export const CouponControllerApiFactory = function (configuration?: Configuratio
         },
         /**
          * 
+         * @summary Validate coupon
          * @param {string} code 
          * @param {number} customerId 
          * @param {number} mealId 
@@ -2847,6 +2892,7 @@ export const CouponControllerApiFactory = function (configuration?: Configuratio
 export class CouponControllerApi extends BaseAPI {
     /**
      * 
+     * @summary Apply coupon
      * @param {string} code 
      * @param {number} customerId 
      * @param {number} mealId 
@@ -2861,6 +2907,7 @@ export class CouponControllerApi extends BaseAPI {
 
     /**
      * 
+     * @summary Create coupon
      * @param {CouponAddCommand} couponAddCommand 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2872,6 +2919,7 @@ export class CouponControllerApi extends BaseAPI {
 
     /**
      * 
+     * @summary Deactivate coupon
      * @param {number} couponId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2883,6 +2931,7 @@ export class CouponControllerApi extends BaseAPI {
 
     /**
      * 
+     * @summary Get all coupons for a customer
      * @param {number} customerId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2894,6 +2943,7 @@ export class CouponControllerApi extends BaseAPI {
 
     /**
      * 
+     * @summary Get all coupons for a meal
      * @param {number} mealId 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2905,6 +2955,7 @@ export class CouponControllerApi extends BaseAPI {
 
     /**
      * 
+     * @summary Validate coupon
      * @param {string} code 
      * @param {number} customerId 
      * @param {number} mealId 
@@ -5044,6 +5095,245 @@ export class QrCodeControllerApi extends BaseAPI {
 
 
 /**
+ * StatsControllerApi - axios parameter creator
+ * @export
+ */
+export const StatsControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Get earnings by year-month
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEarningsByYearMonth: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/stats/earnings-by-year-month`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get n most or less popular meals
+         * @param {string} mostLeast 
+         * @param {number} n 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMostPopularMeals: async (mostLeast: string, n: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'mostLeast' is not null or undefined
+            assertParamExists('getMostPopularMeals', 'mostLeast', mostLeast)
+            // verify required parameter 'n' is not null or undefined
+            assertParamExists('getMostPopularMeals', 'n', n)
+            const localVarPath = `/api/stats/popular/{mostLeast}/{n}`
+                .replace(`{${"mostLeast"}}`, encodeURIComponent(String(mostLeast)))
+                .replace(`{${"n"}}`, encodeURIComponent(String(n)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get amout of orders by day and hour
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOrdersByDayAndHour: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/stats/orders-by-day-hour`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * StatsControllerApi - functional programming interface
+ * @export
+ */
+export const StatsControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = StatsControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Get earnings by year-month
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getEarningsByYearMonth(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getEarningsByYearMonth(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StatsControllerApi.getEarningsByYearMonth']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get n most or less popular meals
+         * @param {string} mostLeast 
+         * @param {number} n 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMostPopularMeals(mostLeast: string, n: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMostPopularMeals(mostLeast, n, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StatsControllerApi.getMostPopularMeals']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get amout of orders by day and hour
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getOrdersByDayAndHour(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getOrdersByDayAndHour(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StatsControllerApi.getOrdersByDayAndHour']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * StatsControllerApi - factory interface
+ * @export
+ */
+export const StatsControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = StatsControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Get earnings by year-month
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getEarningsByYearMonth(options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.getEarningsByYearMonth(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get n most or less popular meals
+         * @param {string} mostLeast 
+         * @param {number} n 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMostPopularMeals(mostLeast: string, n: number, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.getMostPopularMeals(mostLeast, n, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get amout of orders by day and hour
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getOrdersByDayAndHour(options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.getOrdersByDayAndHour(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * StatsControllerApi - object-oriented interface
+ * @export
+ * @class StatsControllerApi
+ * @extends {BaseAPI}
+ */
+export class StatsControllerApi extends BaseAPI {
+    /**
+     * 
+     * @summary Get earnings by year-month
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StatsControllerApi
+     */
+    public getEarningsByYearMonth(options?: RawAxiosRequestConfig) {
+        return StatsControllerApiFp(this.configuration).getEarningsByYearMonth(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get n most or less popular meals
+     * @param {string} mostLeast 
+     * @param {number} n 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StatsControllerApi
+     */
+    public getMostPopularMeals(mostLeast: string, n: number, options?: RawAxiosRequestConfig) {
+        return StatsControllerApiFp(this.configuration).getMostPopularMeals(mostLeast, n, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get amout of orders by day and hour
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StatsControllerApi
+     */
+    public getOrdersByDayAndHour(options?: RawAxiosRequestConfig) {
+        return StatsControllerApiFp(this.configuration).getOrdersByDayAndHour(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * TableControllerApi - axios parameter creator
  * @export
  */
@@ -5051,14 +5341,112 @@ export const TableControllerApiAxiosParamCreator = function (configuration?: Con
     return {
         /**
          * 
-         * @summary Save table
-         * @param {Test} test 
+         * @summary Delete table
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        save: async (test: Test, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'test' is not null or undefined
-            assertParamExists('save', 'test', test)
+        deleteTable: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteTable', 'id', id)
+            const localVarPath = `/api/tables/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get all tables
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllTables: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/tables/all`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get table by ID
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTableById: async (id: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getTableById', 'id', id)
+            const localVarPath = `/api/tables/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Save table
+         * @param {TableAddCommand} tableAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        save: async (tableAddCommand: TableAddCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'tableAddCommand' is not null or undefined
+            assertParamExists('save', 'tableAddCommand', tableAddCommand)
             const localVarPath = `/api/tables/save`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5078,7 +5466,43 @@ export const TableControllerApiAxiosParamCreator = function (configuration?: Con
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(test, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(tableAddCommand, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Update table
+         * @param {TableAddCommand} tableAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateTable: async (tableAddCommand: TableAddCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'tableAddCommand' is not null or undefined
+            assertParamExists('updateTable', 'tableAddCommand', tableAddCommand)
+            const localVarPath = `/api/tables`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(tableAddCommand, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -5097,15 +5521,66 @@ export const TableControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @summary Save table
-         * @param {Test} test 
+         * @summary Delete table
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async save(test: Test, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.save(test, options);
+        async deleteTable(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteTable(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TableControllerApi.deleteTable']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get all tables
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllTables(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Table>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllTables(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TableControllerApi.getAllTables']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get table by ID
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTableById(id: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Table>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTableById(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TableControllerApi.getTableById']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Save table
+         * @param {TableAddCommand} tableAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async save(tableAddCommand: TableAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Table>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.save(tableAddCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['TableControllerApi.save']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Update table
+         * @param {TableAddCommand} tableAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateTable(tableAddCommand: TableAddCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Table>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateTable(tableAddCommand, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TableControllerApi.updateTable']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -5120,13 +5595,52 @@ export const TableControllerApiFactory = function (configuration?: Configuration
     return {
         /**
          * 
-         * @summary Save table
-         * @param {Test} test 
+         * @summary Delete table
+         * @param {string} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        save(test: Test, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.save(test, options).then((request) => request(axios, basePath));
+        deleteTable(id: string, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteTable(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all tables
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllTables(options?: RawAxiosRequestConfig): AxiosPromise<Array<Table>> {
+            return localVarFp.getAllTables(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get table by ID
+         * @param {string} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTableById(id: string, options?: RawAxiosRequestConfig): AxiosPromise<Table> {
+            return localVarFp.getTableById(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Save table
+         * @param {TableAddCommand} tableAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        save(tableAddCommand: TableAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<Table> {
+            return localVarFp.save(tableAddCommand, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Update table
+         * @param {TableAddCommand} tableAddCommand 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateTable(tableAddCommand: TableAddCommand, options?: RawAxiosRequestConfig): AxiosPromise<Table> {
+            return localVarFp.updateTable(tableAddCommand, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -5140,14 +5654,61 @@ export const TableControllerApiFactory = function (configuration?: Configuration
 export class TableControllerApi extends BaseAPI {
     /**
      * 
-     * @summary Save table
-     * @param {Test} test 
+     * @summary Delete table
+     * @param {string} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TableControllerApi
      */
-    public save(test: Test, options?: RawAxiosRequestConfig) {
-        return TableControllerApiFp(this.configuration).save(test, options).then((request) => request(this.axios, this.basePath));
+    public deleteTable(id: string, options?: RawAxiosRequestConfig) {
+        return TableControllerApiFp(this.configuration).deleteTable(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all tables
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TableControllerApi
+     */
+    public getAllTables(options?: RawAxiosRequestConfig) {
+        return TableControllerApiFp(this.configuration).getAllTables(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get table by ID
+     * @param {string} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TableControllerApi
+     */
+    public getTableById(id: string, options?: RawAxiosRequestConfig) {
+        return TableControllerApiFp(this.configuration).getTableById(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Save table
+     * @param {TableAddCommand} tableAddCommand 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TableControllerApi
+     */
+    public save(tableAddCommand: TableAddCommand, options?: RawAxiosRequestConfig) {
+        return TableControllerApiFp(this.configuration).save(tableAddCommand, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Update table
+     * @param {TableAddCommand} tableAddCommand 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TableControllerApi
+     */
+    public updateTable(tableAddCommand: TableAddCommand, options?: RawAxiosRequestConfig) {
+        return TableControllerApiFp(this.configuration).updateTable(tableAddCommand, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -5162,13 +5723,13 @@ export const TableReservationControllerApiAxiosParamCreator = function (configur
         /**
          * 
          * @summary Get available hours for a single day
-         * @param {ReservationQueryRequest} reservationQueryRequest 
+         * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAvailableHoursForDay: async (reservationQueryRequest: ReservationQueryRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'reservationQueryRequest' is not null or undefined
-            assertParamExists('getAvailableHoursForDay', 'reservationQueryRequest', reservationQueryRequest)
+        getAvailableHoursForDay: async (checkReservationTimesCommand: CheckReservationTimesCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'checkReservationTimesCommand' is not null or undefined
+            assertParamExists('getAvailableHoursForDay', 'checkReservationTimesCommand', checkReservationTimesCommand)
             const localVarPath = `/api/table-reservation/available-hours/day`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5188,7 +5749,7 @@ export const TableReservationControllerApiAxiosParamCreator = function (configur
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(reservationQueryRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(checkReservationTimesCommand, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -5198,13 +5759,13 @@ export const TableReservationControllerApiAxiosParamCreator = function (configur
         /**
          * 
          * @summary Get available hours for multiple days
-         * @param {ReservationQueryRequest} reservationQueryRequest 
+         * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAvailableHoursForDays: async (reservationQueryRequest: ReservationQueryRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'reservationQueryRequest' is not null or undefined
-            assertParamExists('getAvailableHoursForDays', 'reservationQueryRequest', reservationQueryRequest)
+        getAvailableHoursForDays: async (checkReservationTimesCommand: CheckReservationTimesCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'checkReservationTimesCommand' is not null or undefined
+            assertParamExists('getAvailableHoursForDays', 'checkReservationTimesCommand', checkReservationTimesCommand)
             const localVarPath = `/api/table-reservation/available-hours/days`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5224,7 +5785,7 @@ export const TableReservationControllerApiAxiosParamCreator = function (configur
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(reservationQueryRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(checkReservationTimesCommand, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -5234,13 +5795,13 @@ export const TableReservationControllerApiAxiosParamCreator = function (configur
         /**
          * 
          * @summary Make reservation
-         * @param {ReservationRequest} reservationRequest 
+         * @param {MakeReservationCommand} makeReservationCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        makeReservation: async (reservationRequest: ReservationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'reservationRequest' is not null or undefined
-            assertParamExists('makeReservation', 'reservationRequest', reservationRequest)
+        makeReservation: async (makeReservationCommand: MakeReservationCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'makeReservationCommand' is not null or undefined
+            assertParamExists('makeReservation', 'makeReservationCommand', makeReservationCommand)
             const localVarPath = `/api/table-reservation/make`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5260,7 +5821,7 @@ export const TableReservationControllerApiAxiosParamCreator = function (configur
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(reservationRequest, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(makeReservationCommand, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -5280,12 +5841,12 @@ export const TableReservationControllerApiFp = function(configuration?: Configur
         /**
          * 
          * @summary Get available hours for a single day
-         * @param {ReservationQueryRequest} reservationQueryRequest 
+         * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAvailableHoursForDay(reservationQueryRequest: ReservationQueryRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<LocalTime>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAvailableHoursForDay(reservationQueryRequest, options);
+        async getAvailableHoursForDay(checkReservationTimesCommand: CheckReservationTimesCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<LocalTime>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAvailableHoursForDay(checkReservationTimesCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.getAvailableHoursForDay']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -5293,12 +5854,12 @@ export const TableReservationControllerApiFp = function(configuration?: Configur
         /**
          * 
          * @summary Get available hours for multiple days
-         * @param {ReservationQueryRequest} reservationQueryRequest 
+         * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAvailableHoursForDays(reservationQueryRequest: ReservationQueryRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PossibleReservationHoursForDay>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAvailableHoursForDays(reservationQueryRequest, options);
+        async getAvailableHoursForDays(checkReservationTimesCommand: CheckReservationTimesCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PossibleReservationHoursForDayDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAvailableHoursForDays(checkReservationTimesCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.getAvailableHoursForDays']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -5306,12 +5867,12 @@ export const TableReservationControllerApiFp = function(configuration?: Configur
         /**
          * 
          * @summary Make reservation
-         * @param {ReservationRequest} reservationRequest 
+         * @param {MakeReservationCommand} makeReservationCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async makeReservation(reservationRequest: ReservationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.makeReservation(reservationRequest, options);
+        async makeReservation(makeReservationCommand: MakeReservationCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.makeReservation(makeReservationCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.makeReservation']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -5329,32 +5890,32 @@ export const TableReservationControllerApiFactory = function (configuration?: Co
         /**
          * 
          * @summary Get available hours for a single day
-         * @param {ReservationQueryRequest} reservationQueryRequest 
+         * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAvailableHoursForDay(reservationQueryRequest: ReservationQueryRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<LocalTime>> {
-            return localVarFp.getAvailableHoursForDay(reservationQueryRequest, options).then((request) => request(axios, basePath));
+        getAvailableHoursForDay(checkReservationTimesCommand: CheckReservationTimesCommand, options?: RawAxiosRequestConfig): AxiosPromise<Array<LocalTime>> {
+            return localVarFp.getAvailableHoursForDay(checkReservationTimesCommand, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Get available hours for multiple days
-         * @param {ReservationQueryRequest} reservationQueryRequest 
+         * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAvailableHoursForDays(reservationQueryRequest: ReservationQueryRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<PossibleReservationHoursForDay>> {
-            return localVarFp.getAvailableHoursForDays(reservationQueryRequest, options).then((request) => request(axios, basePath));
+        getAvailableHoursForDays(checkReservationTimesCommand: CheckReservationTimesCommand, options?: RawAxiosRequestConfig): AxiosPromise<Array<PossibleReservationHoursForDayDTO>> {
+            return localVarFp.getAvailableHoursForDays(checkReservationTimesCommand, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Make reservation
-         * @param {ReservationRequest} reservationRequest 
+         * @param {MakeReservationCommand} makeReservationCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        makeReservation(reservationRequest: ReservationRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.makeReservation(reservationRequest, options).then((request) => request(axios, basePath));
+        makeReservation(makeReservationCommand: MakeReservationCommand, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.makeReservation(makeReservationCommand, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -5369,37 +5930,37 @@ export class TableReservationControllerApi extends BaseAPI {
     /**
      * 
      * @summary Get available hours for a single day
-     * @param {ReservationQueryRequest} reservationQueryRequest 
+     * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TableReservationControllerApi
      */
-    public getAvailableHoursForDay(reservationQueryRequest: ReservationQueryRequest, options?: RawAxiosRequestConfig) {
-        return TableReservationControllerApiFp(this.configuration).getAvailableHoursForDay(reservationQueryRequest, options).then((request) => request(this.axios, this.basePath));
+    public getAvailableHoursForDay(checkReservationTimesCommand: CheckReservationTimesCommand, options?: RawAxiosRequestConfig) {
+        return TableReservationControllerApiFp(this.configuration).getAvailableHoursForDay(checkReservationTimesCommand, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary Get available hours for multiple days
-     * @param {ReservationQueryRequest} reservationQueryRequest 
+     * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TableReservationControllerApi
      */
-    public getAvailableHoursForDays(reservationQueryRequest: ReservationQueryRequest, options?: RawAxiosRequestConfig) {
-        return TableReservationControllerApiFp(this.configuration).getAvailableHoursForDays(reservationQueryRequest, options).then((request) => request(this.axios, this.basePath));
+    public getAvailableHoursForDays(checkReservationTimesCommand: CheckReservationTimesCommand, options?: RawAxiosRequestConfig) {
+        return TableReservationControllerApiFp(this.configuration).getAvailableHoursForDays(checkReservationTimesCommand, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
      * @summary Make reservation
-     * @param {ReservationRequest} reservationRequest 
+     * @param {MakeReservationCommand} makeReservationCommand 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TableReservationControllerApi
      */
-    public makeReservation(reservationRequest: ReservationRequest, options?: RawAxiosRequestConfig) {
-        return TableReservationControllerApiFp(this.configuration).makeReservation(reservationRequest, options).then((request) => request(this.axios, this.basePath));
+    public makeReservation(makeReservationCommand: MakeReservationCommand, options?: RawAxiosRequestConfig) {
+        return TableReservationControllerApiFp(this.configuration).makeReservation(makeReservationCommand, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
