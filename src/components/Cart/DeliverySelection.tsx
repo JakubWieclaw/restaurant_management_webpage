@@ -9,7 +9,9 @@ import {
   Radio,
   Collapse,
   Typography,
+  TextField,
 } from "@mui/material";
+import TableBarIcon from "@mui/icons-material/TableBar";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
 
@@ -46,6 +48,7 @@ interface DeliverySelectionProps {
 export enum DeliveryOption {
   Personal = "personal",
   Courier = "courier",
+  Table = "table",
 }
 
 export const DeliverySelection: React.FC<DeliverySelectionProps> = ({
@@ -67,6 +70,8 @@ export const DeliverySelection: React.FC<DeliverySelectionProps> = ({
     if (value === DeliveryOption.Personal) {
       setDeliveryCost(0);
       setAddress(DeliveryOption.Personal);
+    } else if (value === DeliveryOption.Table) {
+      setDeliveryCost(0);
     } else {
       setAddress("");
     }
@@ -150,6 +155,70 @@ export const DeliverySelection: React.FC<DeliverySelectionProps> = ({
     );
   };
 
+  const toTable = () => {
+    return (
+      <>
+        <ListItem
+          key={DeliveryOption.Table}
+          secondaryAction={
+            <Radio
+              edge="end"
+              onChange={handleToggle(DeliveryOption.Table)}
+              checked={checked === DeliveryOption.Table}
+              inputProps={{ "aria-labelledby": DeliveryOption.Table }}
+              name="radio-button"
+            />
+          }
+          sx={{
+            "&:hover": {
+              bgcolor: "background.default",
+            },
+          }}
+        >
+          <ListItemButton onClick={handleToggle(DeliveryOption.Table)}>
+            <ListItemAvatar>
+              <Avatar>
+                <TableBarIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              id={DeliveryOption.Table}
+              primary={"Do stolika"}
+              secondary="Cena: 0 zł"
+            />
+          </ListItemButton>
+        </ListItem>
+        <Collapse
+          in={checked === DeliveryOption.Table}
+          timeout="auto"
+          unmountOnExit
+        >
+          <List component="div" disablePadding>
+            <ListItem
+              key="autocomplete"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                bgcolor: "background.default",
+              }}
+            >
+              <TextField
+                id="table-number"
+                label="Numer stolika"
+                variant="outlined"
+                type="number"
+                inputProps={{ min: 1 }}
+                onChange={(e) => {
+                  setAddress(e.target.value);
+                }}
+              />
+            </ListItem>
+          </List>
+        </Collapse>
+      </>
+    );
+  };
+
   const courierDelivery = () => {
     return (
       <>
@@ -180,7 +249,7 @@ export const DeliverySelection: React.FC<DeliverySelectionProps> = ({
               id={DeliveryOption.Courier}
               primary={"Dostawa kurierem"}
               secondary={
-                deliveryCost === null ? (
+                deliveryCost === null || checked !== DeliveryOption.Courier ? (
                   "Wybierz miejsce dostawy"
                 ) : deliveryCost < 0 ? (
                   <Typography color="error">
@@ -237,7 +306,7 @@ export const DeliverySelection: React.FC<DeliverySelectionProps> = ({
     );
   };
 
-  const listItems = [personalCollection(), courierDelivery()];
+  const listItems = [personalCollection(), toTable(), courierDelivery()];
 
   return (
     <List sx={{ width: "100%", bgcolor: "background.paper" }}>

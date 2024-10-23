@@ -39,18 +39,32 @@ function Completion() {
       if (error) {
         console.error(error.message);
       } else if (cart.items.length > 0) {
+        let deliveryType: OrderAddCommandTypeEnum =
+          OrderAddCommandTypeEnum.NaMiejscu; // default value
+        switch (cart.deliveryType) {
+          case DeliveryOption.Personal:
+            deliveryType = OrderAddCommandTypeEnum.NaMiejscu;
+            break;
+          case DeliveryOption.Courier:
+            deliveryType = OrderAddCommandTypeEnum.Dostawa;
+            break;
+          case DeliveryOption.Table:
+            deliveryType = OrderAddCommandTypeEnum.DoStolika;
+            break;
+        }
         let addOrderRequest: OrderAddCommand = {
           mealIds: [],
           unwantedIngredients: [],
           customerId: user.loginResponse?.customerId ?? 0, // 0 means unregistered user
-          type:
-            cart.deliveryType == DeliveryOption.Personal
-              ? OrderAddCommandTypeEnum.NaMiejscu
-              : OrderAddCommandTypeEnum.Dostawa,
+          type: deliveryType,
           status: OrderAddCommandStatusEnum.Oczekujce,
           deliveryAddress: cart.address,
           deliveryDistance:
             cart.deliveryType == DeliveryOption.Personal ? 0 : cart.distance,
+          tableId:
+            deliveryType == OrderAddCommandTypeEnum.DoStolika
+              ? cart.address
+              : undefined,
         };
 
         cart.items.forEach((item, idx) => {

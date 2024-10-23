@@ -245,6 +245,11 @@ export const Orders = () => {
                             <Typography variant="body1" gutterBottom>
                               Typ: {order.type.replaceAll("_", " ")}
                             </Typography>
+                            {order.type === OrderTypeEnum.DoStolika && (
+                              <Typography variant="body1" gutterBottom>
+                                {/* ID stolika: {order.} */}
+                              </Typography>
+                            )}
                             {order.type === OrderTypeEnum.Dostawa && (
                               <Typography variant="body1" gutterBottom>
                                 Adres dostawy: {order.deliveryAddress}
