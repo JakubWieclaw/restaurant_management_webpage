@@ -1032,25 +1032,25 @@ export interface RegisterCustomerCommand {
      * @type {string}
      * @memberof RegisterCustomerCommand
      */
-    'name'?: string;
+    'name': string;
     /**
      * 
      * @type {string}
      * @memberof RegisterCustomerCommand
      */
-    'surname'?: string;
+    'surname': string;
     /**
      * 
      * @type {string}
      * @memberof RegisterCustomerCommand
      */
-    'email'?: string;
+    'email': string;
     /**
      * 
      * @type {string}
      * @memberof RegisterCustomerCommand
      */
-    'phone'?: string;
+    'phone': string;
     /**
      * 
      * @type {string}
@@ -1130,7 +1130,7 @@ export interface RegisterUserCommand {
      * @type {string}
      * @memberof RegisterUserCommand
      */
-    'password': string;
+    'password'?: string;
     /**
      * 
      * @type {boolean}
