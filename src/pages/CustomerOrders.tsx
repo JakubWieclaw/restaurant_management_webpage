@@ -41,10 +41,12 @@ export const CustomerOrdersList = ({ orders }: { orders: Order[] }) => {
                 <Typography>Zamówienie #{order.id}</Typography>
               </Grid>
 
-              <Grid item xs={1}>
-                <Typography align="right">{order.status}</Typography>
+              <Grid item xs={3}>
+                <Typography align="left">
+                  {order.status.replaceAll("_", " ")}
+                </Typography>
               </Grid>
-              <Grid item xs={7}>
+              <Grid item xs={5}>
                 <Typography align="right">
                   {order.dateTime.slice(0, 10)}
                 </Typography>
