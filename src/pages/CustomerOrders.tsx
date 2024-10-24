@@ -74,7 +74,7 @@ export const CustomerOrdersList = ({ orders }: { orders: Order[] }) => {
                       fontWeight: "bold",
                     }}
                   >
-                    Status: {order.status}
+                    Status: {order.status.replaceAll("_", " ")}
                   </Typography>
                 </ListItem>
               </List>

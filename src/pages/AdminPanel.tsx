@@ -24,6 +24,10 @@ export const AdminPanel = () => {
       setAllCustomers(res.data);
     });
     statsApi.getEarningsByYearMonth().then((res: AxiosResponse) => {
+      if (typeof res.data === "string") {
+        setItemNbEarnings(0);
+        return;
+      }
       let series: { month: string; data: number[] }[] = [];
       Object.keys(res.data)
         .reverse()
@@ -39,6 +43,10 @@ export const AdminPanel = () => {
       setEarningsByYearMonth(series);
     });
     statsApi.getOrdersByDayAndHour().then((res: AxiosResponse) => {
+      if (typeof res.data === "string") {
+        setItemNbOrders(0);
+        return;
+      }
       let series: { dayHour: string; data: number[] }[] = [];
       Object.keys(res.data).forEach((key) => {
         series.push({

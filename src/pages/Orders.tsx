@@ -32,7 +32,7 @@ import { toast } from "react-toastify";
 
 // Define the CustomerName component
 const CustomerName = ({ customerId }: { customerId: number }) => {
-  const [customerName, setCustomerName] = useState<string>("Ładowanie...");
+  const [customerName, setCustomerName] = useState<string>("Niezarejestrowany");
 
   useEffect(() => {
     if (customerId === 0) {
