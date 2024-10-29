@@ -316,14 +316,7 @@ export const AppBarHeader = () => {
                 >
                   Zarządzaj kategoriami
                 </MenuItem>,
-                <MenuItem
-                  key="tables"
-                  onClick={() => {
-                    navigate("/tables-management");
-                  }}
-                >
-                  Stoliki i rezerwacje
-                </MenuItem>,
+
                 <MenuItem
                   key="orders"
                   onClick={() => {
@@ -349,8 +342,19 @@ export const AppBarHeader = () => {
                   Inicjalizuj system
                 </MenuItem>,
               ]}
+
               {user.loginResponse !== null ? (
-                <MenuItem onClick={handleLogout}>Wyloguj się</MenuItem>
+                <>
+                  <MenuItem
+                    key="tables"
+                    onClick={() => {
+                      navigate("/tables-management");
+                    }}
+                  >
+                    Stoliki i rezerwacje
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}>Wyloguj się</MenuItem>
+                </>
               ) : (
                 <MenuItem onClick={handleLogin}>Zaloguj się</MenuItem>
               )}

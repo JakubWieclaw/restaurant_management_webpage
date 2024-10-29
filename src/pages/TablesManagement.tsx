@@ -24,8 +24,10 @@ import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 
 import { AxiosResponse } from "axios";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
+import { RootState } from "../store";
 import { Transition } from "../utils/Transision";
 import { tableApi, tableReservationApi } from "../utils/api";
 import { Table, TableAddCommand, TableReservation } from "../api";
@@ -42,19 +44,29 @@ export const TablesManagement = () => {
   const [onlyTodayReservations, setOnlyTodayReservations] = useState(false);
   const [openNewReservationModal, setOpenNewReservationModal] = useState(false);
 
+  const user = useSelector((state: RootState) => state.user);
+
   useEffect(() => {
     tableApi.getAllTables().then((response: AxiosResponse) => {
       setTablesList(response.data);
     });
-    if (onlyTodayReservations) {
-      tableReservationApi
-        .getReservationsForDay(new Date().toISOString().split("T")[0])
-        .then((response: AxiosResponse) => {
-          setReservationsList(response.data);
-        });
+    if (user.loginResponse?.isAdmin) {
+      if (onlyTodayReservations) {
+        tableReservationApi
+          .getReservationsForDay(new Date().toISOString().split("T")[0])
+          .then((response: AxiosResponse) => {
+            setReservationsList(response.data);
+          });
+      } else {
+        tableReservationApi
+          .getAllReservations()
+          .then((response: AxiosResponse) => {
+            setReservationsList(response.data);
+          });
+      }
     } else {
       tableReservationApi
-        .getAllReservations()
+        .getReservationsForCustomer(user.loginResponse?.customerId!)
         .then((response: AxiosResponse) => {
           setReservationsList(response.data);
         });
@@ -64,7 +76,7 @@ export const TablesManagement = () => {
   return (
     <Container sx={{ mt: 15 }} maxWidth="lg">
       <Typography component="h1" variant="h4" align="center" gutterBottom>
-        Zarządzanie stolikami i rezerwacjami
+        Stoliki i rezerwacje
       </Typography>
       <Divider />
       <Grid
@@ -91,17 +103,23 @@ export const TablesManagement = () => {
               justifyContent: "space-around",
             }}
           >
-            <Box sx={{ width: 180, height: 20 }}></Box>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setOpenNewTableModal(true)}
-              sx={{
-                fontSize: "0.65rem",
-              }}
-            >
-              Dodaj stolik
-            </Button>
+            {user.loginResponse?.isAdmin ? (
+              <>
+                <Box sx={{ width: 180, height: 20 }}></Box>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setOpenNewTableModal(true)}
+                  sx={{
+                    fontSize: "0.65rem",
+                  }}
+                >
+                  Dodaj stolik
+                </Button>
+              </>
+            ) : (
+              <Box sx={{ width: 180, height: 30 }}></Box>
+            )}
           </Box>
           <Grid container>
             <Grid item xs={12}>
@@ -172,7 +190,7 @@ export const TablesManagement = () => {
                                 });
                             }}
                           >
-                            <DeleteIcon />
+                            {user.loginResponse?.isAdmin && <DeleteIcon />}
                           </IconButton>
                         }
                       >
@@ -200,7 +218,7 @@ export const TablesManagement = () => {
               justifyContent: "center",
             }}
           >
-            Rezerwacje
+            {user.loginResponse?.isAdmin ? "Rezerwacje" : "Moje rezerwacje"}
           </Typography>
           <Box
             sx={{
@@ -208,14 +226,18 @@ export const TablesManagement = () => {
               justifyContent: "space-around",
             }}
           >
-            <Box sx={{ width: 180, height: 20 }}>
-              <Checkbox
-                onClick={() => setOnlyTodayReservations(!onlyTodayReservations)}
-                size="small"
-                checked={onlyTodayReservations}
-              />
-              Tylko dzisiejsze
-            </Box>
+            {user.loginResponse?.isAdmin && (
+              <Box sx={{ width: 180, height: 20 }}>
+                <Checkbox
+                  onClick={() =>
+                    setOnlyTodayReservations(!onlyTodayReservations)
+                  }
+                  size="small"
+                  checked={onlyTodayReservations}
+                />
+                Tylko dzisiejsze
+              </Box>
+            )}
 
             <Button
               variant="contained"
