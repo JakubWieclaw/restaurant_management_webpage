@@ -89,37 +89,6 @@ export interface CategoryAddCommand {
 /**
  * 
  * @export
- * @interface CheckReservationTimesCommand
- */
-export interface CheckReservationTimesCommand {
-    /**
-     * Dates to search for possible reservation
-     * @type {Array<string>}
-     * @memberof CheckReservationTimesCommand
-     */
-    'days': Array<string>;
-    /**
-     * Duration of the reservation in minutes
-     * @type {number}
-     * @memberof CheckReservationTimesCommand
-     */
-    'duration': number;
-    /**
-     * Minutes between each timestamp  15 -> 10:00, 10:15..;  10 -> 10:00, 10:10..
-     * @type {number}
-     * @memberof CheckReservationTimesCommand
-     */
-    'minutesToAdd'?: number;
-    /**
-     * How many people will be on the reservation
-     * @type {number}
-     * @memberof CheckReservationTimesCommand
-     */
-    'people'?: number;
-}
-/**
- * 
- * @export
  * @interface Config
  */
 export interface Config {
@@ -889,6 +858,12 @@ export interface Order {
      * @memberof Order
      */
     'deliveryPrice'?: number;
+    /**
+     * 
+     * @type {TableReservation}
+     * @memberof Order
+     */
+    'tableReservation'?: TableReservation;
 }
 
 export const OrderTypeEnum = {
@@ -963,6 +938,18 @@ export interface OrderAddCommand {
      * @memberof OrderAddCommand
      */
     'tableId'?: string;
+    /**
+     * Number of people on the reservation
+     * @type {number}
+     * @memberof OrderAddCommand
+     */
+    'people'?: number;
+    /**
+     * Duration of the reservation in minutes, default = 120
+     * @type {number}
+     * @memberof OrderAddCommand
+     */
+    'minutesForReservation'?: number;
 }
 
 export const OrderAddCommandTypeEnum = {
@@ -1131,12 +1118,6 @@ export interface RegisterUserCommand {
      * @memberof RegisterUserCommand
      */
     'password'?: string;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof RegisterUserCommand
-     */
-    'admin'?: boolean;
 }
 /**
  * 
@@ -1175,6 +1156,67 @@ export interface TableAddCommand {
      * @memberof TableAddCommand
      */
     'capacity'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TableReservation
+ */
+export interface TableReservation {
+    /**
+     * 
+     * @type {number}
+     * @memberof TableReservation
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TableReservation
+     */
+    'tableId'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TableReservation
+     */
+    'people': number;
+    /**
+     * 
+     * @type {string}
+     * @memberof TableReservation
+     */
+    'day': string;
+    /**
+     * 
+     * @type {LocalTime}
+     * @memberof TableReservation
+     */
+    'startTime': LocalTime;
+    /**
+     * 
+     * @type {LocalTime}
+     * @memberof TableReservation
+     */
+    'endTime': LocalTime;
+    /**
+     * 
+     * @type {number}
+     * @memberof TableReservation
+     */
+    'duration'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof TableReservation
+     */
+    'customerId'?: number;
+    /**
+     * 
+     * @type {Array<Order>}
+     * @memberof TableReservation
+     */
+    'orders'?: Array<Order>;
 }
 /**
  * 
@@ -4388,6 +4430,50 @@ export const OrderControllerApiAxiosParamCreator = function (configuration?: Con
         },
         /**
          * 
+         * @summary Add order to reservation
+         * @param {number} reservationId 
+         * @param {number} orderId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addOrderToReservation: async (reservationId: number, orderId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'reservationId' is not null or undefined
+            assertParamExists('addOrderToReservation', 'reservationId', reservationId)
+            // verify required parameter 'orderId' is not null or undefined
+            assertParamExists('addOrderToReservation', 'orderId', orderId)
+            const localVarPath = `/api/orders/add-to-reservation`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (reservationId !== undefined) {
+                localVarQueryParameter['reservationId'] = reservationId;
+            }
+
+            if (orderId !== undefined) {
+                localVarQueryParameter['orderId'] = orderId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Delete order
          * @param {number} id 
          * @param {*} [options] Override http request option.
@@ -4583,6 +4669,20 @@ export const OrderControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @summary Add order to reservation
+         * @param {number} reservationId 
+         * @param {number} orderId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addOrderToReservation(reservationId: number, orderId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Order>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addOrderToReservation(reservationId, orderId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['OrderControllerApi.addOrderToReservation']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Delete order
          * @param {number} id 
          * @param {*} [options] Override http request option.
@@ -4668,6 +4768,17 @@ export const OrderControllerApiFactory = function (configuration?: Configuration
         },
         /**
          * 
+         * @summary Add order to reservation
+         * @param {number} reservationId 
+         * @param {number} orderId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addOrderToReservation(reservationId: number, orderId: number, options?: RawAxiosRequestConfig): AxiosPromise<Order> {
+            return localVarFp.addOrderToReservation(reservationId, orderId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Delete order
          * @param {number} id 
          * @param {*} [options] Override http request option.
@@ -4736,6 +4847,19 @@ export class OrderControllerApi extends BaseAPI {
      */
     public addOrder(orderAddCommand: OrderAddCommand, options?: RawAxiosRequestConfig) {
         return OrderControllerApiFp(this.configuration).addOrder(orderAddCommand, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Add order to reservation
+     * @param {number} reservationId 
+     * @param {number} orderId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof OrderControllerApi
+     */
+    public addOrderToReservation(reservationId: number, orderId: number, options?: RawAxiosRequestConfig) {
+        return OrderControllerApiFp(this.configuration).addOrderToReservation(reservationId, orderId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -5102,6 +5226,44 @@ export const StatsControllerApiAxiosParamCreator = function (configuration?: Con
     return {
         /**
          * 
+         * @summary Get n beast or worst rated meals
+         * @param {string} bestWorst 
+         * @param {number} n 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getBestWorstRatedMeals: async (bestWorst: string, n: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'bestWorst' is not null or undefined
+            assertParamExists('getBestWorstRatedMeals', 'bestWorst', bestWorst)
+            // verify required parameter 'n' is not null or undefined
+            assertParamExists('getBestWorstRatedMeals', 'n', n)
+            const localVarPath = `/api/stats/rated/{bestWorst}/{n}`
+                .replace(`{${"bestWorst"}}`, encodeURIComponent(String(bestWorst)))
+                .replace(`{${"n"}}`, encodeURIComponent(String(n)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Get earnings by year-month
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -5132,7 +5294,7 @@ export const StatsControllerApiAxiosParamCreator = function (configuration?: Con
         },
         /**
          * 
-         * @summary Get n most or less popular meals
+         * @summary Get n most or least popular meals
          * @param {string} mostLeast 
          * @param {number} n 
          * @param {*} [options] Override http request option.
@@ -5210,6 +5372,20 @@ export const StatsControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @summary Get n beast or worst rated meals
+         * @param {string} bestWorst 
+         * @param {number} n 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getBestWorstRatedMeals(bestWorst: string, n: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getBestWorstRatedMeals(bestWorst, n, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StatsControllerApi.getBestWorstRatedMeals']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Get earnings by year-month
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -5222,7 +5398,7 @@ export const StatsControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Get n most or less popular meals
+         * @summary Get n most or least popular meals
          * @param {string} mostLeast 
          * @param {number} n 
          * @param {*} [options] Override http request option.
@@ -5258,6 +5434,17 @@ export const StatsControllerApiFactory = function (configuration?: Configuration
     return {
         /**
          * 
+         * @summary Get n beast or worst rated meals
+         * @param {string} bestWorst 
+         * @param {number} n 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getBestWorstRatedMeals(bestWorst: string, n: number, options?: RawAxiosRequestConfig): AxiosPromise<object> {
+            return localVarFp.getBestWorstRatedMeals(bestWorst, n, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Get earnings by year-month
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -5267,7 +5454,7 @@ export const StatsControllerApiFactory = function (configuration?: Configuration
         },
         /**
          * 
-         * @summary Get n most or less popular meals
+         * @summary Get n most or least popular meals
          * @param {string} mostLeast 
          * @param {number} n 
          * @param {*} [options] Override http request option.
@@ -5297,6 +5484,19 @@ export const StatsControllerApiFactory = function (configuration?: Configuration
 export class StatsControllerApi extends BaseAPI {
     /**
      * 
+     * @summary Get n beast or worst rated meals
+     * @param {string} bestWorst 
+     * @param {number} n 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof StatsControllerApi
+     */
+    public getBestWorstRatedMeals(bestWorst: string, n: number, options?: RawAxiosRequestConfig) {
+        return StatsControllerApiFp(this.configuration).getBestWorstRatedMeals(bestWorst, n, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @summary Get earnings by year-month
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -5308,7 +5508,7 @@ export class StatsControllerApi extends BaseAPI {
 
     /**
      * 
-     * @summary Get n most or less popular meals
+     * @summary Get n most or least popular meals
      * @param {string} mostLeast 
      * @param {number} n 
      * @param {*} [options] Override http request option.
@@ -5722,87 +5922,15 @@ export const TableReservationControllerApiAxiosParamCreator = function (configur
     return {
         /**
          * 
-         * @summary Get available hours for a single day
-         * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getAvailableHoursForDay: async (checkReservationTimesCommand: CheckReservationTimesCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'checkReservationTimesCommand' is not null or undefined
-            assertParamExists('getAvailableHoursForDay', 'checkReservationTimesCommand', checkReservationTimesCommand)
-            const localVarPath = `/api/table-reservation/available-hours/day`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(checkReservationTimesCommand, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Get available hours for multiple days
-         * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getAvailableHoursForDays: async (checkReservationTimesCommand: CheckReservationTimesCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'checkReservationTimesCommand' is not null or undefined
-            assertParamExists('getAvailableHoursForDays', 'checkReservationTimesCommand', checkReservationTimesCommand)
-            const localVarPath = `/api/table-reservation/available-hours/days`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(checkReservationTimesCommand, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Make reservation
+         * @summary Create a new reservation
          * @param {MakeReservationCommand} makeReservationCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        makeReservation: async (makeReservationCommand: MakeReservationCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createReservation: async (makeReservationCommand: MakeReservationCommand, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'makeReservationCommand' is not null or undefined
-            assertParamExists('makeReservation', 'makeReservationCommand', makeReservationCommand)
-            const localVarPath = `/api/table-reservation/make`;
+            assertParamExists('createReservation', 'makeReservationCommand', makeReservationCommand)
+            const localVarPath = `/api/reservations`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -5828,6 +5956,289 @@ export const TableReservationControllerApiAxiosParamCreator = function (configur
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Get all reservations
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllReservations: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/reservations`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get available hours for a specific day
+         * @param {string} day 
+         * @param {number} reservationDuration 
+         * @param {number} minutesToAdd 
+         * @param {number} numberOfPeople 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPossibleHoursForDay: async (day: string, reservationDuration: number, minutesToAdd: number, numberOfPeople: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'day' is not null or undefined
+            assertParamExists('getPossibleHoursForDay', 'day', day)
+            // verify required parameter 'reservationDuration' is not null or undefined
+            assertParamExists('getPossibleHoursForDay', 'reservationDuration', reservationDuration)
+            // verify required parameter 'minutesToAdd' is not null or undefined
+            assertParamExists('getPossibleHoursForDay', 'minutesToAdd', minutesToAdd)
+            // verify required parameter 'numberOfPeople' is not null or undefined
+            assertParamExists('getPossibleHoursForDay', 'numberOfPeople', numberOfPeople)
+            const localVarPath = `/api/reservations/available-hours/{day}`
+                .replace(`{${"day"}}`, encodeURIComponent(String(day)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (reservationDuration !== undefined) {
+                localVarQueryParameter['reservationDuration'] = reservationDuration;
+            }
+
+            if (minutesToAdd !== undefined) {
+                localVarQueryParameter['minutesToAdd'] = minutesToAdd;
+            }
+
+            if (numberOfPeople !== undefined) {
+                localVarQueryParameter['numberOfPeople'] = numberOfPeople;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get available hours for multiple days
+         * @param {Array<string>} days 
+         * @param {number} reservationDuration 
+         * @param {number} minutesToAdd 
+         * @param {number} numberOfPeople 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPossibleHoursForDays: async (days: Array<string>, reservationDuration: number, minutesToAdd: number, numberOfPeople: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'days' is not null or undefined
+            assertParamExists('getPossibleHoursForDays', 'days', days)
+            // verify required parameter 'reservationDuration' is not null or undefined
+            assertParamExists('getPossibleHoursForDays', 'reservationDuration', reservationDuration)
+            // verify required parameter 'minutesToAdd' is not null or undefined
+            assertParamExists('getPossibleHoursForDays', 'minutesToAdd', minutesToAdd)
+            // verify required parameter 'numberOfPeople' is not null or undefined
+            assertParamExists('getPossibleHoursForDays', 'numberOfPeople', numberOfPeople)
+            const localVarPath = `/api/reservations/available-hours`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (days) {
+                localVarQueryParameter['days'] = days;
+            }
+
+            if (reservationDuration !== undefined) {
+                localVarQueryParameter['reservationDuration'] = reservationDuration;
+            }
+
+            if (minutesToAdd !== undefined) {
+                localVarQueryParameter['minutesToAdd'] = minutesToAdd;
+            }
+
+            if (numberOfPeople !== undefined) {
+                localVarQueryParameter['numberOfPeople'] = numberOfPeople;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get a reservation by ID
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getReservationById: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getReservationById', 'id', id)
+            const localVarPath = `/api/reservations/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get reservations for a specific customer
+         * @param {number} customerId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getReservationsForCustomer: async (customerId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'customerId' is not null or undefined
+            assertParamExists('getReservationsForCustomer', 'customerId', customerId)
+            const localVarPath = `/api/reservations/customer/{customerId}`
+                .replace(`{${"customerId"}}`, encodeURIComponent(String(customerId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get reservations for a specific day
+         * @param {string} day 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getReservationsForDay: async (day: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'day' is not null or undefined
+            assertParamExists('getReservationsForDay', 'day', day)
+            const localVarPath = `/api/reservations/day/{day}`
+                .replace(`{${"day"}}`, encodeURIComponent(String(day)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Get reservations for a specific table on a given day
+         * @param {string} tableId 
+         * @param {string} day 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getReservationsForTableOnDay: async (tableId: string, day: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'tableId' is not null or undefined
+            assertParamExists('getReservationsForTableOnDay', 'tableId', tableId)
+            // verify required parameter 'day' is not null or undefined
+            assertParamExists('getReservationsForTableOnDay', 'day', day)
+            const localVarPath = `/api/reservations/table/{tableId}/day/{day}`
+                .replace(`{${"tableId"}}`, encodeURIComponent(String(tableId)))
+                .replace(`{${"day"}}`, encodeURIComponent(String(day)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -5840,41 +6251,112 @@ export const TableReservationControllerApiFp = function(configuration?: Configur
     return {
         /**
          * 
-         * @summary Get available hours for a single day
-         * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
+         * @summary Create a new reservation
+         * @param {MakeReservationCommand} makeReservationCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAvailableHoursForDay(checkReservationTimesCommand: CheckReservationTimesCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<LocalTime>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAvailableHoursForDay(checkReservationTimesCommand, options);
+        async createReservation(makeReservationCommand: MakeReservationCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TableReservation>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createReservation(makeReservationCommand, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.getAvailableHoursForDay']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.createReservation']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get all reservations
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllReservations(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TableReservation>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllReservations(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.getAllReservations']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get available hours for a specific day
+         * @param {string} day 
+         * @param {number} reservationDuration 
+         * @param {number} minutesToAdd 
+         * @param {number} numberOfPeople 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getPossibleHoursForDay(day: string, reservationDuration: number, minutesToAdd: number, numberOfPeople: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<LocalTime>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getPossibleHoursForDay(day, reservationDuration, minutesToAdd, numberOfPeople, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.getPossibleHoursForDay']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
          * @summary Get available hours for multiple days
-         * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
+         * @param {Array<string>} days 
+         * @param {number} reservationDuration 
+         * @param {number} minutesToAdd 
+         * @param {number} numberOfPeople 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAvailableHoursForDays(checkReservationTimesCommand: CheckReservationTimesCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PossibleReservationHoursForDayDTO>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAvailableHoursForDays(checkReservationTimesCommand, options);
+        async getPossibleHoursForDays(days: Array<string>, reservationDuration: number, minutesToAdd: number, numberOfPeople: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PossibleReservationHoursForDayDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getPossibleHoursForDays(days, reservationDuration, minutesToAdd, numberOfPeople, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.getAvailableHoursForDays']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.getPossibleHoursForDays']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
          * 
-         * @summary Make reservation
-         * @param {MakeReservationCommand} makeReservationCommand 
+         * @summary Get a reservation by ID
+         * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async makeReservation(makeReservationCommand: MakeReservationCommand, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.makeReservation(makeReservationCommand, options);
+        async getReservationById(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TableReservation>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getReservationById(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.makeReservation']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.getReservationById']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get reservations for a specific customer
+         * @param {number} customerId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getReservationsForCustomer(customerId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TableReservation>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getReservationsForCustomer(customerId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.getReservationsForCustomer']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get reservations for a specific day
+         * @param {string} day 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getReservationsForDay(day: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TableReservation>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getReservationsForDay(day, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.getReservationsForDay']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Get reservations for a specific table on a given day
+         * @param {string} tableId 
+         * @param {string} day 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getReservationsForTableOnDay(tableId: string, day: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TableReservation>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getReservationsForTableOnDay(tableId, day, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.getReservationsForTableOnDay']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -5889,33 +6371,89 @@ export const TableReservationControllerApiFactory = function (configuration?: Co
     return {
         /**
          * 
-         * @summary Get available hours for a single day
-         * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getAvailableHoursForDay(checkReservationTimesCommand: CheckReservationTimesCommand, options?: RawAxiosRequestConfig): AxiosPromise<Array<LocalTime>> {
-            return localVarFp.getAvailableHoursForDay(checkReservationTimesCommand, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Get available hours for multiple days
-         * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getAvailableHoursForDays(checkReservationTimesCommand: CheckReservationTimesCommand, options?: RawAxiosRequestConfig): AxiosPromise<Array<PossibleReservationHoursForDayDTO>> {
-            return localVarFp.getAvailableHoursForDays(checkReservationTimesCommand, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Make reservation
+         * @summary Create a new reservation
          * @param {MakeReservationCommand} makeReservationCommand 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        makeReservation(makeReservationCommand: MakeReservationCommand, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.makeReservation(makeReservationCommand, options).then((request) => request(axios, basePath));
+        createReservation(makeReservationCommand: MakeReservationCommand, options?: RawAxiosRequestConfig): AxiosPromise<TableReservation> {
+            return localVarFp.createReservation(makeReservationCommand, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get all reservations
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllReservations(options?: RawAxiosRequestConfig): AxiosPromise<Array<TableReservation>> {
+            return localVarFp.getAllReservations(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get available hours for a specific day
+         * @param {string} day 
+         * @param {number} reservationDuration 
+         * @param {number} minutesToAdd 
+         * @param {number} numberOfPeople 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPossibleHoursForDay(day: string, reservationDuration: number, minutesToAdd: number, numberOfPeople: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<LocalTime>> {
+            return localVarFp.getPossibleHoursForDay(day, reservationDuration, minutesToAdd, numberOfPeople, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get available hours for multiple days
+         * @param {Array<string>} days 
+         * @param {number} reservationDuration 
+         * @param {number} minutesToAdd 
+         * @param {number} numberOfPeople 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPossibleHoursForDays(days: Array<string>, reservationDuration: number, minutesToAdd: number, numberOfPeople: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<PossibleReservationHoursForDayDTO>> {
+            return localVarFp.getPossibleHoursForDays(days, reservationDuration, minutesToAdd, numberOfPeople, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get a reservation by ID
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getReservationById(id: number, options?: RawAxiosRequestConfig): AxiosPromise<TableReservation> {
+            return localVarFp.getReservationById(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get reservations for a specific customer
+         * @param {number} customerId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getReservationsForCustomer(customerId: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<TableReservation>> {
+            return localVarFp.getReservationsForCustomer(customerId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get reservations for a specific day
+         * @param {string} day 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getReservationsForDay(day: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<TableReservation>> {
+            return localVarFp.getReservationsForDay(day, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Get reservations for a specific table on a given day
+         * @param {string} tableId 
+         * @param {string} day 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getReservationsForTableOnDay(tableId: string, day: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<TableReservation>> {
+            return localVarFp.getReservationsForTableOnDay(tableId, day, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -5929,38 +6467,104 @@ export const TableReservationControllerApiFactory = function (configuration?: Co
 export class TableReservationControllerApi extends BaseAPI {
     /**
      * 
-     * @summary Get available hours for a single day
-     * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof TableReservationControllerApi
-     */
-    public getAvailableHoursForDay(checkReservationTimesCommand: CheckReservationTimesCommand, options?: RawAxiosRequestConfig) {
-        return TableReservationControllerApiFp(this.configuration).getAvailableHoursForDay(checkReservationTimesCommand, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Get available hours for multiple days
-     * @param {CheckReservationTimesCommand} checkReservationTimesCommand 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof TableReservationControllerApi
-     */
-    public getAvailableHoursForDays(checkReservationTimesCommand: CheckReservationTimesCommand, options?: RawAxiosRequestConfig) {
-        return TableReservationControllerApiFp(this.configuration).getAvailableHoursForDays(checkReservationTimesCommand, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Make reservation
+     * @summary Create a new reservation
      * @param {MakeReservationCommand} makeReservationCommand 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TableReservationControllerApi
      */
-    public makeReservation(makeReservationCommand: MakeReservationCommand, options?: RawAxiosRequestConfig) {
-        return TableReservationControllerApiFp(this.configuration).makeReservation(makeReservationCommand, options).then((request) => request(this.axios, this.basePath));
+    public createReservation(makeReservationCommand: MakeReservationCommand, options?: RawAxiosRequestConfig) {
+        return TableReservationControllerApiFp(this.configuration).createReservation(makeReservationCommand, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get all reservations
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TableReservationControllerApi
+     */
+    public getAllReservations(options?: RawAxiosRequestConfig) {
+        return TableReservationControllerApiFp(this.configuration).getAllReservations(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get available hours for a specific day
+     * @param {string} day 
+     * @param {number} reservationDuration 
+     * @param {number} minutesToAdd 
+     * @param {number} numberOfPeople 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TableReservationControllerApi
+     */
+    public getPossibleHoursForDay(day: string, reservationDuration: number, minutesToAdd: number, numberOfPeople: number, options?: RawAxiosRequestConfig) {
+        return TableReservationControllerApiFp(this.configuration).getPossibleHoursForDay(day, reservationDuration, minutesToAdd, numberOfPeople, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get available hours for multiple days
+     * @param {Array<string>} days 
+     * @param {number} reservationDuration 
+     * @param {number} minutesToAdd 
+     * @param {number} numberOfPeople 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TableReservationControllerApi
+     */
+    public getPossibleHoursForDays(days: Array<string>, reservationDuration: number, minutesToAdd: number, numberOfPeople: number, options?: RawAxiosRequestConfig) {
+        return TableReservationControllerApiFp(this.configuration).getPossibleHoursForDays(days, reservationDuration, minutesToAdd, numberOfPeople, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get a reservation by ID
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TableReservationControllerApi
+     */
+    public getReservationById(id: number, options?: RawAxiosRequestConfig) {
+        return TableReservationControllerApiFp(this.configuration).getReservationById(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get reservations for a specific customer
+     * @param {number} customerId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TableReservationControllerApi
+     */
+    public getReservationsForCustomer(customerId: number, options?: RawAxiosRequestConfig) {
+        return TableReservationControllerApiFp(this.configuration).getReservationsForCustomer(customerId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get reservations for a specific day
+     * @param {string} day 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TableReservationControllerApi
+     */
+    public getReservationsForDay(day: string, options?: RawAxiosRequestConfig) {
+        return TableReservationControllerApiFp(this.configuration).getReservationsForDay(day, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Get reservations for a specific table on a given day
+     * @param {string} tableId 
+     * @param {string} day 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TableReservationControllerApi
+     */
+    public getReservationsForTableOnDay(tableId: string, day: string, options?: RawAxiosRequestConfig) {
+        return TableReservationControllerApiFp(this.configuration).getReservationsForTableOnDay(tableId, day, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

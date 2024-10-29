@@ -24,7 +24,7 @@ import { useEffect, useState } from "react";
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
 import { tableReservationApi } from "../../utils/api";
-import { CheckReservationTimesCommand, LocalTime } from "../../api";
+import { LocalTime } from "../../api";
 
 interface TableReservationModalProps {
   open: boolean;
@@ -46,14 +46,13 @@ export const TableReservationModal = ({
 
   useEffect(() => {
     if (!chosenDate) return;
-    const reservationRequest: CheckReservationTimesCommand = {
-      days: [chosenDate.format("YYYY-MM-DD")],
-      duration: duration * 60,
-      people: peopleCount,
-      minutesToAdd: 60,
-    };
     tableReservationApi
-      .getAvailableHoursForDay(reservationRequest)
+      .getPossibleHoursForDay(
+        chosenDate.format("YYYY-MM-DD"),
+        duration * 60,
+        60,
+        peopleCount
+      )
       .then((hours) => {
         console.log(hours);
         setAvailableHours(hours.data as string[]);
@@ -156,7 +155,7 @@ export const TableReservationModal = ({
             console.log(chosenDate, chosenHour, duration, peopleCount);
             setTableReservationLoading(true);
             tableReservationApi
-              .makeReservation({
+              .createReservation({
                 day: chosenDate!.format("YYYY-MM-DD"),
                 startTime: chosenHour as LocalTime,
                 endTime: dayjs(chosenHour, "HH:mm")
@@ -185,16 +184,31 @@ export const TableReservationModal = ({
                 setOpen(false);
               })
               .catch((error) => {
-                console.error(error);
-                toast.error(error.response.data, {
-                  position: "bottom-center",
-                  autoClose: 3000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                });
+                if (typeof error.response.data === "string") {
+                  toast.error(error.response.data, {
+                    position: "bottom-center",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                  });
+                } else if (typeof error.response.data === "object") {
+                  for (const [_, value] of Object.entries(
+                    error.response.data
+                  )) {
+                    toast.error(`${value}`, {
+                      position: "bottom-center",
+                      autoClose: 3000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                    });
+                  }
+                }
                 setTableReservationLoading(false);
               });
           }}

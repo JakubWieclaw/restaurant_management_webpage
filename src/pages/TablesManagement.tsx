@@ -15,36 +15,51 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Checkbox,
 } from "@mui/material";
-import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
-import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import TableRestaurantIcon from "@mui/icons-material/TableRestaurant";
 
+import { AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 
-import { AxiosResponse } from "axios";
-import { tableApi } from "../utils/api";
-import { Table, TableAddCommand } from "../api";
 import { Transition } from "../utils/Transision";
+import { tableApi, tableReservationApi } from "../utils/api";
+import { Table, TableAddCommand, TableReservation } from "../api";
 import { TableReservationModal } from "../components/Reservation/TablereservationModal";
 
 export const TablesManagement = () => {
   const [tableID, setTableID] = useState("");
   const [tableSeats, setTableSeats] = useState(1);
   const [tablesList, setTablesList] = useState([]);
-  const [refreshTables, setRefreshTables] = useState(false);
-  // const [reservationsList, setReservationsList] = useState([]);
+  const [refreshLists, setRefreshLists] = useState(false);
+  const [reservationsList, setReservationsList] = useState([]);
   const [openNewTableModal, setOpenNewTableModal] = useState(false);
   const [tableAddingLoading, setTableAddingLoading] = useState(false);
+  const [onlyTodayReservations, setOnlyTodayReservations] = useState(false);
   const [openNewReservationModal, setOpenNewReservationModal] = useState(false);
 
   useEffect(() => {
     tableApi.getAllTables().then((response: AxiosResponse) => {
-      console.log(response);
       setTablesList(response.data);
     });
-  }, [refreshTables]);
+    if (onlyTodayReservations) {
+      tableReservationApi
+        .getReservationsForDay(new Date().toISOString().split("T")[0])
+        .then((response: AxiosResponse) => {
+          setReservationsList(response.data);
+        });
+    } else {
+      tableReservationApi
+        .getAllReservations()
+        .then((response: AxiosResponse) => {
+          setReservationsList(response.data);
+        });
+    }
+  }, [refreshLists, onlyTodayReservations]);
 
   return (
     <Container sx={{ mt: 15 }} maxWidth="lg">
@@ -73,9 +88,10 @@ export const TablesManagement = () => {
           <Box
             sx={{
               display: "flex",
-              justifyContent: "flex-end",
+              justifyContent: "space-around",
             }}
           >
+            <Box sx={{ width: 180, height: 20 }}></Box>
             <Button
               variant="contained"
               color="primary"
@@ -131,7 +147,7 @@ export const TablesManagement = () => {
                               tableApi
                                 .deleteTable(table.id!)
                                 .then(() => {
-                                  setRefreshTables(!refreshTables);
+                                  setRefreshLists(!refreshLists);
                                   toast.success("Usunięto stolik", {
                                     position: "bottom-center",
                                     autoClose: 5000,
@@ -189,9 +205,18 @@ export const TablesManagement = () => {
           <Box
             sx={{
               display: "flex",
-              justifyContent: "flex-end",
+              justifyContent: "space-around",
             }}
           >
+            <Box sx={{ width: 180, height: 20 }}>
+              <Checkbox
+                onClick={() => setOnlyTodayReservations(!onlyTodayReservations)}
+                size="small"
+                checked={onlyTodayReservations}
+              />
+              Tylko dzisiejsze
+            </Box>
+
             <Button
               variant="contained"
               color="primary"
@@ -203,6 +228,70 @@ export const TablesManagement = () => {
               Dodaj rezerwację
             </Button>
           </Box>
+          <Grid container>
+            <Grid item xs={12}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <List
+                  sx={{
+                    width: "75%",
+                    display: "flex",
+                    justifyContent: "center",
+                    backgroundColor: "background.paper",
+                    border: "1px solid rgba(0, 0, 0, 0.12)",
+                    boxShadow: 4,
+                    borderRadius: 1,
+                    p: 1,
+                    m: 2,
+                    flexDirection: "column",
+                  }}
+                >
+                  {tablesList.length === 0 ? (
+                    <Typography
+                      variant="overline"
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      Brak rezerwacji
+                    </Typography>
+                  ) : (
+                    reservationsList.map((reservation: TableReservation) => (
+                      <ListItem
+                        key={reservation.id}
+                        // secondaryAction={
+                        //   <IconButton
+                        //     edge="end"
+                        //     aria-label="delete"
+                        //     onClick={() => {}}
+                        //   >
+                        //     <DeleteIcon />
+                        //   </IconButton>
+                        // }
+                      >
+                        <ListItemIcon>
+                          <AccessTimeIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={`${reservation.day} | ${reservation.startTime
+                            .toString()
+                            .slice(0, 5)}
+                          -
+                          ${reservation.endTime.toString().slice(0, 5)}`}
+                          secondary={`Stolik: ${reservation.tableId} | Osób: ${reservation.people}`}
+                        />
+                      </ListItem>
+                    ))
+                  )}
+                </List>
+              </Box>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
       <Dialog
@@ -260,7 +349,7 @@ export const TablesManagement = () => {
                 capacity: tableSeats,
               };
               tableApi.save(requestData).then(() => {
-                setRefreshTables(!refreshTables);
+                setRefreshLists(!refreshLists);
                 toast.success("Dodano nowy stolik", {
                   position: "bottom-center",
                   autoClose: 5000,
@@ -282,7 +371,10 @@ export const TablesManagement = () => {
       </Dialog>
       <TableReservationModal
         open={openNewReservationModal}
-        setOpen={setOpenNewReservationModal}
+        setOpen={(open) => {
+          setOpenNewReservationModal(open);
+          if (!open) setRefreshLists(!refreshLists);
+        }}
       />
     </Container>
   );

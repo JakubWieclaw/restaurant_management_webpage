@@ -126,7 +126,6 @@ export const LoginRegister = () => {
             surname: surname,
             phone: phoneNumber,
             password: password,
-            admin: registerAsAdmin,
           })
           .then((response) => {
             toast.success(
