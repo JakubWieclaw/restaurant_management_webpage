@@ -210,6 +210,7 @@ export const DeliverySelection: React.FC<DeliverySelectionProps> = ({
                 inputProps={{ min: 1 }}
                 onChange={(e) => {
                   setAddress(e.target.value);
+                  dispatch(changeAddress(e.target.value));
                 }}
               />
             </ListItem>

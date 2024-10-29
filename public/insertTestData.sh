@@ -55,7 +55,7 @@ curl -X 'POST' \
     {
       "day": "TUESDAY",
       "openingTime": "11:00",
-      "closingTime": "22:00"
+      "closingTime": "23:59"
     },
     {
       "day": "WEDNESDAY",

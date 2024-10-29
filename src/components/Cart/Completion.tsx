@@ -58,13 +58,20 @@ function Completion() {
           customerId: user.loginResponse?.customerId ?? 0, // 0 means unregistered user
           type: deliveryType,
           status: OrderAddCommandStatusEnum.Oczekujce,
-          deliveryAddress: cart.address,
+          deliveryAddress:
+            cart.deliveryType != DeliveryOption.Courier
+              ? undefined
+              : cart.address,
           deliveryDistance:
-            cart.deliveryType == DeliveryOption.Personal ? 0 : cart.distance,
+            cart.deliveryType != DeliveryOption.Courier ? 0 : cart.distance,
           tableId:
             deliveryType == OrderAddCommandTypeEnum.DoStolika
               ? cart.address
               : undefined,
+          people:
+            deliveryType == OrderAddCommandTypeEnum.DoStolika ? 1 : undefined,
+          minutesForReservation:
+            deliveryType == OrderAddCommandTypeEnum.DoStolika ? 1 : undefined,
         };
 
         cart.items.forEach((item, idx) => {
@@ -100,6 +107,8 @@ function Completion() {
             navigate("/order-details/" + response.data.id);
           })
           .catch((error) => {
+            // go back to the wybór dostawy page
+            navigate("/cart");
             toast.error(error.response.data, {
               position: "bottom-center",
               autoClose: 5000,
