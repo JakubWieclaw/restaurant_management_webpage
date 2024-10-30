@@ -9,6 +9,9 @@ import {
   Slider,
   Select,
   MenuItem,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
@@ -22,6 +25,28 @@ import { LineChart } from "@mui/x-charts";
 import { IncrementDecrementNumberInput } from "../components/inputs/IncrementDecrementNumberInput";
 
 export const AdminPanel = () => {
+  const [allCustomers, setAllCustomers] = useState([]);
+  const [itemNbOrders, setItemNbOrders] = useState<number>(5);
+  const [itemNbEarnings, setItemNbEarnings] = useState<number>(5);
+  const [rateMealsNumber, setRateMealsNumber] = useState<number>(5);
+  const [rateMealsCategory, setRateMealsCategory] = useState<string>("best");
+  const [rateMealsList, setRateMealsList] = useState<Record<string, number>>(
+    {}
+  );
+  const [orderMealsNumber, setOrderMealsNumber] = useState<number>(5);
+  const [orderMealsCategory, setOrderMealsCategory] = useState<string>("most");
+  const [orderMealsList, setOrderMealsList] = useState<Record<string, number>>(
+    {}
+  );
+  const [ordersByDayHour, setOrdersByDayHour] = useState<
+    { dayHour: string; data: number[] }[]
+  >([]);
+  const [earningsByYearMonth, setEarningsByYearMonth] = useState<
+    { month: string; data: number[] }[]
+  >([]);
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     customersApi.getAllCustomers().then((res: AxiosResponse) => {
       setAllCustomers(res.data);
@@ -64,21 +89,23 @@ export const AdminPanel = () => {
     });
   }, []);
 
-  const [allCustomers, setAllCustomers] = useState([]);
-  const [itemNbOrders, setItemNbOrders] = useState<number>(5);
-  const [itemNbEarnings, setItemNbEarnings] = useState<number>(5);
-  const [rateMealsNumber, setRateMealsNumber] = useState<number>(1);
-  const [orderMealsNumber, setOrderMealsNumber] = useState<number>(1);
-  const [rateMealsCategory, setRateMealsCategory] = useState<string>("best");
-  const [orderMealsCategory, setOrderMealsCategory] = useState<string>("most");
-  const [ordersByDayHour, setOrdersByDayHour] = useState<
-    { dayHour: string; data: number[] }[]
-  >([]);
-  const [earningsByYearMonth, setEarningsByYearMonth] = useState<
-    { month: string; data: number[] }[]
-  >([]);
-
-  const navigate = useNavigate();
+  useEffect(() => {
+    statsApi
+      .getBestWorstRatedMeals(rateMealsCategory, rateMealsNumber)
+      .then((res: AxiosResponse) => {
+        setRateMealsList(res.data);
+      });
+    statsApi
+      .getMostPopularMeals(orderMealsCategory, orderMealsNumber)
+      .then((res: AxiosResponse) => {
+        setOrderMealsList(res.data);
+      });
+  }, [
+    rateMealsNumber,
+    rateMealsCategory,
+    orderMealsNumber,
+    orderMealsCategory,
+  ]);
 
   return (
     <div>
@@ -242,7 +269,6 @@ export const AdminPanel = () => {
             xs={6}
             sx={{
               display: "flex",
-              justifyContent: "center",
               alignItems: "center",
               flexDirection: "column",
             }}
@@ -300,13 +326,32 @@ export const AdminPanel = () => {
               </Select>
               ocenianych posiłkow.
             </Box>
+
+            <List
+              sx={{
+                width: "100%",
+                maxWidth: 360,
+                mt: 5,
+              }}
+            >
+              {Object.keys(rateMealsList).map((key) => (
+                <>
+                  <ListItem key={key}>
+                    <ListItemText
+                      primary={`${key}`}
+                      secondary={`Średnia ocena: ${rateMealsList[key]}`}
+                    />
+                  </ListItem>
+                  <Divider />
+                </>
+              ))}
+            </List>
           </Grid>
           <Grid
             item
             xs={6}
             sx={{
               display: "flex",
-              justifyContent: "center",
               alignItems: "center",
               flexDirection: "column",
             }}
@@ -363,6 +408,26 @@ export const AdminPanel = () => {
               </Select>
               zamawianych posiłkow.
             </Box>
+
+            <List
+              sx={{
+                width: "100%",
+                maxWidth: 360,
+                mt: 5,
+              }}
+            >
+              {Object.keys(orderMealsList).map((key) => (
+                <>
+                  <ListItem key={key}>
+                    <ListItemText
+                      primary={`${key}`}
+                      secondary={`Liczba zamówień: ${orderMealsList[key]}`}
+                    />
+                  </ListItem>
+                  <Divider />
+                </>
+              ))}
+            </List>
           </Grid>
         </Grid>
       </Container>

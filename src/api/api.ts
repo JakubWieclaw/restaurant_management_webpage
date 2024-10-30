@@ -5958,6 +5958,40 @@ export const TableReservationControllerApiAxiosParamCreator = function (configur
         },
         /**
          * 
+         * @summary Delete a reservation by ID
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteReservationById: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteReservationById', 'id', id)
+            const localVarPath = `/api/reservations/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Get all reservations
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6264,6 +6298,19 @@ export const TableReservationControllerApiFp = function(configuration?: Configur
         },
         /**
          * 
+         * @summary Delete a reservation by ID
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteReservationById(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteReservationById(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TableReservationControllerApi.deleteReservationById']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @summary Get all reservations
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6381,6 +6428,16 @@ export const TableReservationControllerApiFactory = function (configuration?: Co
         },
         /**
          * 
+         * @summary Delete a reservation by ID
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteReservationById(id: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteReservationById(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Get all reservations
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6475,6 +6532,18 @@ export class TableReservationControllerApi extends BaseAPI {
      */
     public createReservation(makeReservationCommand: MakeReservationCommand, options?: RawAxiosRequestConfig) {
         return TableReservationControllerApiFp(this.configuration).createReservation(makeReservationCommand, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Delete a reservation by ID
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TableReservationControllerApi
+     */
+    public deleteReservationById(id: number, options?: RawAxiosRequestConfig) {
+        return TableReservationControllerApiFp(this.configuration).deleteReservationById(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
