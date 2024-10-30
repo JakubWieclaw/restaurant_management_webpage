@@ -54,7 +54,6 @@ export const TableReservationModal = ({
         peopleCount
       )
       .then((hours) => {
-        console.log(hours);
         setAvailableHours(hours.data as string[]);
       })
       .catch((error) => {
@@ -152,7 +151,6 @@ export const TableReservationModal = ({
         <Button onClick={() => setOpen(false)}>Anuluj</Button>
         <Button
           onClick={() => {
-            console.log(chosenDate, chosenHour, duration, peopleCount);
             setTableReservationLoading(true);
             tableReservationApi
               .createReservation({

@@ -78,7 +78,9 @@ export const DishModal: React.FC<DishModalProps> = ({
           mb: 1,
         }}
       >
-        <Link to={`/coupons/add/${dish?.id}`}>Dodaj kupon do tego dania</Link>
+        {dish?.id && (
+          <Link to={`/coupons/add/${dish?.id}`}>Dodaj kupon do tego dania</Link>
+        )}
       </Typography>
       <Box
         component={"form"}

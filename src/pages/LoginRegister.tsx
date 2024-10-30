@@ -46,7 +46,6 @@ export const LoginRegister = () => {
         await authApi
           .login({ email: email, password: password })
           .then((response) => {
-            console.log(response.data);
             dispatch(login({ response: response.data }));
             toast.success("Zalogowano pomyślnie", {
               position: "bottom-center",

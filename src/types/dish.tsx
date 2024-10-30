@@ -8,10 +8,4 @@ export interface Dish {
   rating: number;
   ratingNumber: number;
   allergens: string[];
-  //   description: string;
-  //   countInStock: number;
-  //   isVeg: boolean;
-  //   spicy: number;
-  //   numReviews: number;
-  //   reviews: Review[];
 }

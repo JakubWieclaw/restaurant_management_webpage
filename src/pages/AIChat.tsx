@@ -94,15 +94,6 @@ async function run(
       };
     }) as Content[],
   });
-  // console.log(
-  //   previousMessages.map((message) => {
-  //     tmp += 1;
-  //     return {
-  //       role: tmp % 2 === 0 ? "user" : "model",
-  //       parts: [{ text: message } as TextPart] as Part[],
-  //     };
-  //   }) as Content[]
-  // );
 
   const result = await chatSession.sendMessage(
     availableMeals +
@@ -112,7 +103,6 @@ async function run(
       message
   );
   setResponse(result.response.text());
-  // setPreviousMessages([...previousMessages, result.response.text()]);
   setLoading(false);
 
   return result.response.text();

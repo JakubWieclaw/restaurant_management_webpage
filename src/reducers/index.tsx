@@ -8,7 +8,6 @@ const rootReducer = combineReducers({
   user: userReducer,
   cart: cartReducer,
   config: configReducer,
-  // Add other reducers here
 });
 
 export default rootReducer;

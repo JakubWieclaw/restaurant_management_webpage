@@ -177,7 +177,6 @@ export const TablesManagement = () => {
                                   });
                                 })
                                 .catch((error) => {
-                                  console.log(error);
                                   toast.error("Nie można usunąć stolika", {
                                     position: "bottom-center",
                                     autoClose: 5000,
@@ -272,7 +271,7 @@ export const TablesManagement = () => {
                     flexDirection: "column",
                   }}
                 >
-                  {tablesList.length === 0 ? (
+                  {reservationsList.length === 0 ? (
                     <Typography
                       variant="overline"
                       sx={{
@@ -286,15 +285,30 @@ export const TablesManagement = () => {
                     reservationsList.map((reservation: TableReservation) => (
                       <ListItem
                         key={reservation.id}
-                        // secondaryAction={
-                        //   <IconButton
-                        //     edge="end"
-                        //     aria-label="delete"
-                        //     onClick={() => {}}
-                        //   >
-                        //     <DeleteIcon />
-                        //   </IconButton>
-                        // }
+                        secondaryAction={
+                          <IconButton
+                            edge="end"
+                            aria-label="delete"
+                            onClick={() => {
+                              tableReservationApi
+                                .deleteReservationById(reservation.id!)
+                                .then(() => {
+                                  setRefreshLists(!refreshLists);
+                                  toast.success("Usunięto rezerwację", {
+                                    position: "bottom-center",
+                                    autoClose: 5000,
+                                    hideProgressBar: false,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true,
+                                    progress: undefined,
+                                  });
+                                });
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        }
                       >
                         <ListItemIcon>
                           <AccessTimeIcon />

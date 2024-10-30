@@ -50,10 +50,6 @@ export const AppBarHeader = () => {
 
   const appBarMenuItems = [
     {
-      label: "Moje zamówienia",
-      link: "/customer-orders",
-    },
-    {
       label: "Kontakt",
       link: "/contact",
     },
@@ -170,6 +166,24 @@ export const AppBarHeader = () => {
                 </Link>
               </MenuItem>
             ))}
+            {user.loginResponse && (
+              <MenuItem
+                key="xsorders"
+                onClick={() => {
+                  setAnchorElMenu(null);
+                }}
+              >
+                <Link
+                  to="/customer-orders"
+                  style={{
+                    textDecoration: "none",
+                    color: "black",
+                  }}
+                >
+                  Moje zamówienia
+                </Link>
+              </MenuItem>
+            )}
           </Menu>
 
           <Box
@@ -226,6 +240,16 @@ export const AppBarHeader = () => {
                 {item.label}
               </Button>
             ))}
+            {user.loginResponse && (
+              <Button
+                color="inherit"
+                component={Link}
+                to="/customer-orders"
+                sx={{ marginLeft: 1 }}
+              >
+                Moje zamówienia
+              </Button>
+            )}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <IconButton

@@ -30,7 +30,6 @@ import { customersApi, mealsApi, orderApi } from "../utils/api";
 import { Order, OrderStatusEnum, OrderTypeEnum } from "../api";
 import { toast } from "react-toastify";
 
-// Define the CustomerName component
 const CustomerName = ({ customerId }: { customerId: number }) => {
   const [customerName, setCustomerName] = useState<string>("Niezarejestrowany");
 
@@ -100,7 +99,6 @@ export const Orders = () => {
               setChosenOrdersStatus(newValue);
             }}
           >
-            {/* for every status in OrderStatusEnum */}
             {Object.values(OrderStatusEnum).map((status) => (
               <Tab
                 key={status}
@@ -154,7 +152,6 @@ export const Orders = () => {
                         {order.id}
                       </TableCell>
                       <TableCell align="right">
-                        {/* fetch user's name and surname */}
                         {order.customerId !== undefined && (
                           <CustomerName customerId={order.customerId} />
                         )}
@@ -247,7 +244,7 @@ export const Orders = () => {
                             </Typography>
                             {order.type === OrderTypeEnum.DoStolika && (
                               <Typography variant="body1" gutterBottom>
-                                {/* ID stolika: {order.} */}
+                                ID stolika: {order.tableReservation?.tableId}
                               </Typography>
                             )}
                             {order.type === OrderTypeEnum.Dostawa && (

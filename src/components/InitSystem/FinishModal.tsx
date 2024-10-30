@@ -88,8 +88,6 @@ const handleCloseSummary = (
             navigate("/");
           })
           .catch((error) => {
-            // if type of error is string then just show it
-            // if type of error is object then iterate over it and show each error
             if (typeof error.response.data === "string") {
               toast.error(error.response.data, {
                 position: "bottom-center",
@@ -103,19 +101,6 @@ const handleCloseSummary = (
                 transition: Slide,
               });
             } else {
-              // Object.entries(error.response.data).forEach(([key, value]) => {
-              //   toast.error(key + " - " + value, {
-              //     position: "bottom-center",
-              //     autoClose: 5000,
-              //     hideProgressBar: false,
-              //     closeOnClick: true,
-              //     pauseOnHover: true,
-              //     draggable: true,
-              //     progress: undefined,
-              //     theme: "light",
-              //     transition: Slide,
-              //   });
-              // });
               toast.error(error.response.data.message, {
                 position: "bottom-center",
                 autoClose: 5000,
