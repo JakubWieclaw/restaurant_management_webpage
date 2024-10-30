@@ -176,7 +176,7 @@ export const TablesManagement = () => {
                                     progress: undefined,
                                   });
                                 })
-                                .catch((error) => {
+                                .catch((_) => {
                                   toast.error("Nie można usunąć stolika", {
                                     position: "bottom-center",
                                     autoClose: 5000,
