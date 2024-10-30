@@ -7,6 +7,8 @@ import {
   Divider,
   Typography,
   Slider,
+  Select,
+  MenuItem,
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
@@ -17,6 +19,7 @@ import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/system";
 import { LineChart } from "@mui/x-charts";
+import { IncrementDecrementNumberInput } from "../components/inputs/IncrementDecrementNumberInput";
 
 export const AdminPanel = () => {
   useEffect(() => {
@@ -61,9 +64,13 @@ export const AdminPanel = () => {
     });
   }, []);
 
-  const [itemNbEarnings, setItemNbEarnings] = useState<number>(5);
-  const [itemNbOrders, setItemNbOrders] = useState<number>(5);
   const [allCustomers, setAllCustomers] = useState([]);
+  const [itemNbOrders, setItemNbOrders] = useState<number>(5);
+  const [itemNbEarnings, setItemNbEarnings] = useState<number>(5);
+  const [rateMealsNumber, setRateMealsNumber] = useState<number>(1);
+  const [orderMealsNumber, setOrderMealsNumber] = useState<number>(1);
+  const [rateMealsCategory, setRateMealsCategory] = useState<string>("best");
+  const [orderMealsCategory, setOrderMealsCategory] = useState<string>("most");
   const [ordersByDayHour, setOrdersByDayHour] = useState<
     { dayHour: string; data: number[] }[]
   >([]);
@@ -229,6 +236,133 @@ export const AdminPanel = () => {
                 },
               ]}
             />
+          </Grid>
+          <Grid
+            item
+            xs={6}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <Typography component="h2" variant="h5" align="center" gutterBottom>
+              Oceny posiłków
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Typography
+                id="input-rate-meals"
+                gutterBottom
+                sx={{ mt: 1, mx: 2 }}
+              >
+                Pokaż
+              </Typography>
+              <IncrementDecrementNumberInput
+                value={rateMealsNumber}
+                setValue={setRateMealsNumber}
+              />
+              <Typography
+                id="input-rate-meals"
+                gutterBottom
+                sx={{ mt: 1, mx: 2 }}
+              >
+                pierwszych
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                mt: 2,
+              }}
+            >
+              <Select
+                value={rateMealsCategory}
+                onChange={(e) => setRateMealsCategory(e.target.value)}
+                sx={{
+                  mx: 2,
+                }}
+              >
+                <MenuItem value={"best"}>najlepiej</MenuItem>
+                <MenuItem value={"worst"}>najgorzej</MenuItem>
+              </Select>
+              ocenianych posiłkow.
+            </Box>
+          </Grid>
+          <Grid
+            item
+            xs={6}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
+            }}
+          >
+            <Typography component="h2" variant="h5" align="center" gutterBottom>
+              Zamówienia posiłków
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Typography
+                id="input-order-meals"
+                gutterBottom
+                sx={{ mt: 1, mx: 2 }}
+              >
+                Pokaż
+              </Typography>
+              <IncrementDecrementNumberInput
+                value={orderMealsNumber}
+                setValue={setOrderMealsNumber}
+              />
+              <Typography
+                id="input-order-meals"
+                gutterBottom
+                sx={{ mt: 1, mx: 2 }}
+              >
+                pierwszych
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                mt: 2,
+              }}
+            >
+              <Select
+                value={orderMealsCategory}
+                onChange={(e) => setOrderMealsCategory(e.target.value)}
+                sx={{
+                  mx: 2,
+                }}
+              >
+                <MenuItem value={"most"}>najczęściej</MenuItem>
+                <MenuItem value={"least"}>najrzadziej</MenuItem>
+              </Select>
+              zamawianych posiłkow.
+            </Box>
           </Grid>
         </Grid>
       </Container>
