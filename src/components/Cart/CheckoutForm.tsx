@@ -15,13 +15,14 @@ import { couponsApi } from "../../utils/api";
 
 interface CheckoutFormProps {
   coupon: Coupon | null;
+  orderId: number;
 }
 
-const CheckoutForm: React.FC<CheckoutFormProps> = ({ coupon }) => {
+const CheckoutForm: React.FC<CheckoutFormProps> = ({ coupon, orderId }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
   // fetch user
   const user = useSelector((state: RootState) => state.user);
 
@@ -44,7 +45,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ coupon }) => {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: `${window.location.origin}/completion`,
+        return_url: `${window.location.origin}/order-details/${orderId}`,
       },
     });
 

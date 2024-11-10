@@ -20,7 +20,6 @@ import { CategoriesManagement } from "./pages/CategoriesManagement";
 import { Contact } from "./pages/Contact";
 import { PasswordReset } from "./pages/PasswordReset";
 import { DishDetails } from "./pages/DishDetails";
-import Completion from "./components/Cart/Completion";
 import { OrderDetails } from "./pages/OrderDetails";
 import { CustomerOrders } from "./pages/CustomerOrders";
 import { Orders } from "./pages/Orders";
@@ -88,7 +87,6 @@ function App() {
             path="/categories-management"
             element={<CategoriesManagement />}
           />
-          <Route path="/completion" element={<Completion />} />
           <Route path="order-details/:orderId" element={<OrderDetails />} />
           <Route path="/customer-orders" element={<CustomerOrders />} />
           <Route path="/orders" element={<Orders />} />

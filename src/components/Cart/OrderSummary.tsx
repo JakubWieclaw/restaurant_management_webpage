@@ -5,20 +5,30 @@ import {
   List,
   CircularProgress,
   TextField,
+  Button,
 } from "@mui/material";
 
+import { AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
+import {
+  Coupon,
+  MealQuantity,
+  OrderAddCommand,
+  OrderAddCommandStatusEnum,
+  OrderAddCommandTypeEnum,
+} from "../../api";
 import { RootState } from "../../store";
-
 import CheckoutForm from "./CheckoutForm";
+import { DeliveryOption } from "./DeliverySelection";
+import { couponsApi, orderApi } from "../../utils/api";
+import { clearCart } from "../../reducers/slices/cartSlice";
+
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import { couponsApi } from "../../utils/api";
-import { AxiosResponse } from "axios";
-import { Coupon } from "../../api";
 
 interface ContentSummaryProps {
   shippingCost: number;
@@ -27,13 +37,18 @@ interface ContentSummaryProps {
 export const ContentSummary: React.FC<ContentSummaryProps> = ({
   shippingCost,
 }) => {
-  const [paymentIntent, setPaymentIntent] = useState<string | null>(null);
   const [couponCode, setCouponCode] = useState<string>("");
+  const [orderId, setOrderId] = useState<number | null>(null);
   const [coupon, setCoupon] = useState<Coupon | null>(null);
   const [couponDiscount, setCouponDiscount] = useState<number>(0);
+  const [orderAccepted, setOrderAccepted] = useState<boolean>(false);
+  const [paymentIntent, setPaymentIntent] = useState<string | null>(null);
 
   const cart = useSelector((state: RootState) => state.cart);
   const user = useSelector((state: RootState) => state.user);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const mealsCost = cart.items.reduce(
     (acc, item) => acc + item.dish.price * item.quantity,
@@ -44,61 +59,119 @@ export const ContentSummary: React.FC<ContentSummaryProps> = ({
   const stripe = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHED_KEY);
 
   useEffect(() => {
-    const createPaymentIntent = async () => {
-      try {
-        const response = await fetch(
-          "https://api.stripe.com/v1/payment_intents",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              Authorization: "Bearer " + import.meta.env.VITE_STRIPE_SECRET_KEY,
-            },
-            body: new URLSearchParams({
-              amount: (Number(total - couponDiscount) * 100)
-                .toFixed(0)
-                .toString(), // Convert to the smallest currency unit
-              currency: "pln",
-              "automatic_payment_methods[enabled]": "true",
-            }),
+    if (orderAccepted) {
+      if (cart.items.length > 0) {
+        let deliveryType: OrderAddCommandTypeEnum =
+          OrderAddCommandTypeEnum.NaMiejscu; // default value
+        switch (cart.deliveryType) {
+          case DeliveryOption.Personal:
+            deliveryType = OrderAddCommandTypeEnum.NaMiejscu;
+            break;
+          case DeliveryOption.Courier:
+            deliveryType = OrderAddCommandTypeEnum.Dostawa;
+            break;
+          case DeliveryOption.Table:
+            deliveryType = OrderAddCommandTypeEnum.DoStolika;
+            break;
+        }
+        let addOrderRequest: OrderAddCommand = {
+          mealIds: [],
+          unwantedIngredients: [],
+          customerId: user.loginResponse?.customerId ?? 0, // 0 means unregistered user
+          type: deliveryType,
+          status: OrderAddCommandStatusEnum.Oczekujce,
+          deliveryAddress:
+            cart.deliveryType != DeliveryOption.Courier
+              ? undefined
+              : cart.address,
+          deliveryDistance:
+            cart.deliveryType != DeliveryOption.Courier ? 0 : cart.distance,
+          tableId:
+            deliveryType == OrderAddCommandTypeEnum.DoStolika
+              ? cart.address
+              : undefined,
+          people:
+            deliveryType == OrderAddCommandTypeEnum.DoStolika ? 1 : undefined,
+          minutesForReservation:
+            deliveryType == OrderAddCommandTypeEnum.DoStolika ? 1 : undefined,
+        };
+
+        cart.items.forEach((item, idx) => {
+          const mealQuantity: MealQuantity = {
+            mealId: item.dish.id,
+            quantity: item.quantity,
+          };
+          addOrderRequest.mealIds.push(mealQuantity);
+          if (new Set(item.removedIngredients).size !== 0) {
+            addOrderRequest.unwantedIngredients!.push({
+              mealIndex: idx,
+              ingredients: item.removedIngredients,
+            });
           }
-        );
+        });
 
-        const data = await response.json();
-        setPaymentIntent(data.client_secret);
-      } catch (error) {
-        console.error("Error creating payment intent:", error);
+        orderApi
+          .addOrder(addOrderRequest)
+          .then((response: AxiosResponse) => {
+            setOrderId(response.data.id);
+            setPaymentIntent(response.data.paymentIntentClientSecret);
+            dispatch(clearCart());
+            const previousButton = document.getElementById("previous");
+            if (previousButton) {
+              previousButton.style.display = "none";
+            }
+
+            // navigate("/order-details/" + response.data.id);
+          })
+          .catch((error) => {
+            // go back to the wybór dostawy page
+            navigate("/cart");
+            toast.error(error.response.data, {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+          });
       }
-    };
-
-    createPaymentIntent();
-  }, []);
+    }
+  }, [orderAccepted]);
   return (
     <List sx={{ width: "100%", bgcolor: "background.paper", p: 5 }}>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography variant="body1">Posiłki</Typography>
-        <Typography variant="body1">{mealsCost.toFixed(2)} zł</Typography>
-      </Box>
-      <Divider />
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography variant="body1">Dostawa</Typography>
-        <Typography variant="body1">{shippingCost.toFixed(2)} zł</Typography>
-      </Box>
-      <Divider />
-      {couponDiscount !== 0 && (
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography variant="body1">Kod rabatowy</Typography>
-          <Typography variant="body1">-{couponDiscount} zł</Typography>
-        </Box>
+      {paymentIntent === null && (
+        <>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography variant="body1">Posiłki</Typography>
+            <Typography variant="body1">{mealsCost.toFixed(2)} zł</Typography>
+          </Box>
+          <Divider />
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography variant="body1">Dostawa</Typography>
+            <Typography variant="body1">
+              {shippingCost.toFixed(2)} zł
+            </Typography>
+          </Box>
+          <Divider />
+          {couponDiscount !== 0 && (
+            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography variant="body1">Kod rabatowy</Typography>
+              <Typography variant="body1">-{couponDiscount} zł</Typography>
+            </Box>
+          )}
+          <Divider />
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography variant="body1">Łącznie</Typography>
+            <Typography variant="body1">
+              {(total - couponDiscount).toFixed(2)} zł
+            </Typography>
+          </Box>
+        </>
       )}
-      <Divider />
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <Typography variant="body1">Łącznie</Typography>
-        <Typography variant="body1">
-          {(total - couponDiscount).toFixed(2)} zł
-        </Typography>
-      </Box>
-      {user.loginResponse && (
+
+      {user.loginResponse && paymentIntent === null && (
         <>
           <Divider />
           <Box
@@ -177,13 +250,21 @@ export const ContentSummary: React.FC<ContentSummaryProps> = ({
       )}
 
       {paymentIntent === null ? (
-        <CircularProgress
-          sx={{
-            margin: "auto",
-            display: "block",
-            mt: 3,
-          }}
-        />
+        <Button
+          variant="contained"
+          sx={{ margin: "auto", display: "block", mt: 3 }}
+          onClick={() => setOrderAccepted(true)}
+        >
+          {orderAccepted ? (
+            <CircularProgress
+              sx={{
+                color: "white",
+              }}
+            />
+          ) : (
+            "Zatwierdź i zapłać"
+          )}
+        </Button>
       ) : (
         <Elements
           stripe={stripe}
@@ -191,8 +272,7 @@ export const ContentSummary: React.FC<ContentSummaryProps> = ({
             clientSecret: paymentIntent,
           }}
         >
-          <Divider sx={{ mb: 3 }} />
-          <CheckoutForm coupon={coupon} />
+          <CheckoutForm coupon={coupon} orderId={orderId!} />
         </Elements>
       )}
     </List>

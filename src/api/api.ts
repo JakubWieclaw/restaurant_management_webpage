@@ -845,6 +845,12 @@ export interface Order {
      * @type {string}
      * @memberof Order
      */
+    'paymentIntentClientSecret'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Order
+     */
     'deliveryAddress'?: string;
     /**
      * 

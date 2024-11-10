@@ -121,6 +121,8 @@ export const Cart = () => {
             color="inherit"
             disabled={activeStep === 0}
             onClick={handleBack}
+            id="previous"
+            itemID="previous"
           >
             Poprzedni
           </Button>
