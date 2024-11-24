@@ -23,7 +23,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { RootState, AppDispatch } from "../store";
 import { logout } from "../reducers/slices/userSlice";
-import { couponsApi, photoDownloadUrl } from "../utils/api";
+import { auth, couponsApi, photoDownloadUrl } from "../utils/api";
 import { Coupon } from "../api";
 
 export const AppBarHeader = () => {
@@ -38,7 +38,7 @@ export const AppBarHeader = () => {
     const fetchCoupons = async () => {
       if (!user.loginResponse) return;
       couponsApi
-        .getCouponsForCustomer(user.loginResponse.customerId!)
+        .getCouponsForCustomer(user.loginResponse.customerId!, auth(user?.loginResponse?.token))
         .then((response) => {
           setNewCoupons(
             response.data.filter((coupon) => coupon.active === true)
@@ -104,7 +104,7 @@ export const AppBarHeader = () => {
                   width: 50,
                   marginRight: 1,
                 }}
-                src={photoDownloadUrl + config.config.logoUrl}
+                src={config.config.logoUrl}
               ></Box>
 
               <Typography
@@ -368,7 +368,7 @@ export const AppBarHeader = () => {
               ]}
 
               {user.loginResponse !== null ? (
-                <>
+                <Box>
                   <MenuItem
                     key="tables"
                     onClick={() => {
@@ -378,7 +378,7 @@ export const AppBarHeader = () => {
                     Stoliki i rezerwacje
                   </MenuItem>
                   <MenuItem onClick={handleLogout}>Wyloguj się</MenuItem>
-                </>
+                </Box>
               ) : (
                 <MenuItem onClick={handleLogin}>Zaloguj się</MenuItem>
               )}

@@ -16,13 +16,16 @@ import {
 
 import { useEffect, useState } from "react";
 
-import { customersApi, statsApi } from "../utils/api";
+import { auth, customersApi, statsApi } from "../utils/api";
 import { Customer } from "../api";
 import { AxiosResponse } from "axios";
 import { useNavigate } from "react-router-dom";
 import { Box } from "@mui/system";
 import { LineChart } from "@mui/x-charts";
 import { IncrementDecrementNumberInput } from "../components/inputs/IncrementDecrementNumberInput";
+import { RootState } from "../store";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 export const AdminPanel = () => {
   const [allCustomers, setAllCustomers] = useState([]);
@@ -45,13 +48,14 @@ export const AdminPanel = () => {
     { month: string; data: number[] }[]
   >([]);
 
+  const user = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
 
   useEffect(() => {
-    customersApi.getAllCustomers().then((res: AxiosResponse) => {
+    customersApi.getAllCustomers(auth(user?.loginResponse?.token)).then((res: AxiosResponse) => {
       setAllCustomers(res.data);
     });
-    statsApi.getEarningsByYearMonth().then((res: AxiosResponse) => {
+    statsApi.getEarningsByYearMonth(auth(user?.loginResponse?.token)).then((res: AxiosResponse) => {
       if (typeof res.data === "string") {
         setItemNbEarnings(0);
         return;
@@ -70,7 +74,7 @@ export const AdminPanel = () => {
       }
       setEarningsByYearMonth(series);
     });
-    statsApi.getOrdersByDayAndHour().then((res: AxiosResponse) => {
+    statsApi.getOrdersByDayAndHour(auth(user?.loginResponse?.token)).then((res: AxiosResponse) => {
       if (typeof res.data === "string") {
         setItemNbOrders(0);
         return;
@@ -91,15 +95,61 @@ export const AdminPanel = () => {
 
   useEffect(() => {
     statsApi
-      .getBestWorstRatedMeals(rateMealsCategory, rateMealsNumber)
+      .getBestWorstRatedMeals(rateMealsCategory, rateMealsNumber, auth(user?.loginResponse?.token))
       .then((res: AxiosResponse) => {
-        setRateMealsList(res.data);
-      });
+        if (typeof res.data === "string") {
+          toast.error(res.data, {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          return;
+        } else {
+          setRateMealsList(res.data);
+        }
+      }).catch((error) => {
+        toast.error(error.response.data, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } );
     statsApi
-      .getMostPopularMeals(orderMealsCategory, orderMealsNumber)
+      .getMostPopularMeals(orderMealsCategory, orderMealsNumber, auth(user?.loginResponse?.token))
       .then((res: AxiosResponse) => {
+        if (typeof res.data === "string") {
+          toast.error(res.data, {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
+          return;
+        } else {
         setOrderMealsList(res.data);
-      });
+        }
+      }).catch((error) => {
+        toast.error(error.response.data, {
+          position: "bottom-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } );
   }, [
     rateMealsNumber,
     rateMealsCategory,

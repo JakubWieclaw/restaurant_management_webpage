@@ -10,7 +10,7 @@ import { toast, ToastContainer, Slide } from "react-toastify";
 import { RootState } from "./store";
 import { Cart } from "./pages/Cart";
 import { Menu } from "./pages/FoodMenu";
-import { configApi } from "./utils/api";
+import { auth, configApi } from "./utils/api";
 import { InitSystem } from "./pages/InitSystem";
 import { AppFooter } from "./components/AppFooter";
 import { LoginRegister } from "./pages/LoginRegister";
@@ -34,7 +34,7 @@ function App() {
 
   useEffect(() => {
     configApi
-      .getConfig()
+      .getConfig(auth(user?.loginResponse?.token))
       .then((response) => {
         dispatch(setConfig(response.data));
       })
@@ -42,23 +42,34 @@ function App() {
         if (user.loginResponse === null) {
           if (!window.location.href.includes("/auth")) {
             window.location.href = "/auth";
+            toast.info("Zarejestruj się, aby utworzyć konto administratora.", {
+              position: "bottom-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Slide,
+            });
           }
         } else if (!window.location.href.includes("/initialize-system")) {
           window.location.href = "/initialize-system";
+          toast.info("Zainicjalizuj system, aby móc korzystać z aplikacji.", {
+            position: "bottom-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Slide,
+          });
         }
 
         toast.info(error.response.data, {
-          position: "bottom-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Slide,
-        });
-        toast.info("Zarejestruj się, aby utworzyć konto administratora.", {
           position: "bottom-center",
           autoClose: 5000,
           hideProgressBar: false,

@@ -22,7 +22,7 @@ import { useState, useEffect, useRef } from "react";
 import { RootState } from "../store";
 import { Dish } from "../types/dish";
 import { OpinionAddCommand, OpinionResponseDTO } from "../api";
-import { mealsApi, opinionApi, photoDownloadUrl } from "../utils/api";
+import { auth, mealsApi, opinionApi, photoDownloadUrl } from "../utils/api";
 
 export const DishDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -47,7 +47,7 @@ export const DishDetails = () => {
     });
 
     mealsApi
-      .getMealById(Number(id))
+      .getMealById(Number(id), auth(user?.loginResponse?.token))
       .then(async (response) => {
         const [rating, ratingNumber] = await fetchRating(response.data);
         setDish({
@@ -80,7 +80,7 @@ export const DishDetails = () => {
     };
 
     opinionApi
-      .addOpinion(addOpinionRequest)
+      .addOpinion(addOpinionRequest, auth(user?.loginResponse?.token))
       .then((response) => {
         setOpinionSwitch(!opinionSwitch);
         setRating(5);
@@ -104,7 +104,7 @@ export const DishDetails = () => {
       })
       .catch((_) => {
         opinionApi
-          .updateOpinion(addOpinionRequest)
+          .updateOpinion(addOpinionRequest, auth(user?.loginResponse?.token))
           .then((response) => {
             setOpinionSwitch(!opinionSwitch);
             setRating(5);
@@ -185,7 +185,7 @@ export const DishDetails = () => {
         <Item>
           <Box
             component={"img"}
-            src={photoDownloadUrl + dish.image}
+            src={dish.image}
             alt={dish.name}
             sx={{ width: "100%" }}
           />

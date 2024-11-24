@@ -39,7 +39,6 @@ export const LoginRegister = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    let registerAsAdmin = false;
 
     switch (loginRegisterState) {
       case LoginRegisterState.Login:
@@ -115,9 +114,6 @@ export const LoginRegister = () => {
         await configApi
           .getConfig()
           .then((_) => {})
-          .catch((_) => {
-            registerAsAdmin = true;
-          });
         await authApi
           .registerUser({
             email: email,
@@ -144,23 +140,6 @@ export const LoginRegister = () => {
               }
             );
             setLoginRegisterState(LoginRegisterState.Login);
-            if (registerAsAdmin) {
-              navigate("/initialize-system");
-              toast.info(
-                "Zarejestrowano administratora. Przejdź do inicjalizacji systemu.",
-                {
-                  position: "bottom-center",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "light",
-                  transition: Slide,
-                }
-              );
-            }
           })
           .catch((error: any) => {
             toast.error(
@@ -201,6 +180,7 @@ export const LoginRegister = () => {
   const [loginRegisterState, setLoginRegisterState] =
     useState<LoginRegisterState>(LoginRegisterState.Login);
   const formRef = useRef(null);
+
 
   const returnProperComponent = (formRef: React.MutableRefObject<null>) => {
     switch (loginRegisterState) {

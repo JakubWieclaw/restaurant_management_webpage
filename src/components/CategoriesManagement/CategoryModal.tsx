@@ -79,7 +79,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
             if (photo) {
               // if new photo
               photoApi
-                .uploadPhoto(photo)
+                .uploadPhoto(photo, auth(user?.loginResponse?.token))
                 .then((response: AxiosResponse) => {
                   categoryCopy.photographUrl = photoDownloadUrl + response.data;
                 })
@@ -98,7 +98,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
                 });
             }
             categoriesApi
-              .updateCategory(categoryCopy.id, categoryCopy, auth(user.loginResponse?.token))
+              .updateCategory(categoryCopy.id, categoryCopy, auth(user?.loginResponse?.token))
               .then((_: AxiosResponse) => {
                 toast.success("Kategoria zaktualizowana pomyślnie.", {
                   position: "bottom-center",
@@ -138,11 +138,11 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
             };
             if (photo) {
               photoApi
-                .uploadPhoto(photo, auth(user.loginResponse?.token))
+                .uploadPhoto(photo, auth(user?.loginResponse?.token))
                 .then((response: AxiosResponse) => {
                   newCategory.photographUrl = photoDownloadUrl + response.data;
                   categoriesApi
-                    .addCategory(newCategory, auth(user.loginResponse?.token))
+                    .addCategory(newCategory, auth(user?.loginResponse?.token))
                     .then((_: AxiosResponse) => {
                       toast.success("Kategoria dodana pomyślnie.", {
                         position: "bottom-center",
@@ -293,7 +293,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
                 onClick={() => {
                   if (categoryCopy?.id) {
                     categoriesApi
-                      .deleteCategoryById(categoryCopy.id, auth(user.loginResponse?.token))
+                      .deleteCategoryById(categoryCopy.id, auth(user?.loginResponse?.token))
                       .then((e) => {
                         setOpen(false);
                         setCategory(null);

@@ -4,4 +4,34 @@ CATEGORY:
     delete
 
 MEAL:
-    
+    add
+    update
+    delete
+
+OPINION:
+    add
+    update
+
+TABLE:
+    save
+    getall
+
+TABLE_RESERVATION:
+    getForDay
+    getAll
+    createNew
+    getPossibleHoursForDay
+    delete
+
+CONFIGURATION:
+    init
+
+STATS:
+    allGets
+
+Remove authentication:
+http://localhost:8080/swagger-ui/index.html#/meal-controller/getMealsByCategory
+http://localhost:8080/swagger-ui/index.html#/meal-controller/getMealById
+http://localhost:8080/swagger-ui/index.html#/table-controller/getAllTables ???
+http://localhost:8080/swagger-ui/index.html#/config-controller/initializeSystem
+http://localhost:8080/swagger-ui/index.html#/photo-controller/downloadPhoto

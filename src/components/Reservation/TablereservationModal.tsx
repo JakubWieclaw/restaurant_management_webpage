@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 
 import { RootState } from "../../store";
 import { useSelector } from "react-redux";
-import { tableReservationApi } from "../../utils/api";
+import { auth, tableReservationApi } from "../../utils/api";
 import { LocalTime } from "../../api";
 
 interface TableReservationModalProps {
@@ -51,7 +51,8 @@ export const TableReservationModal = ({
         chosenDate.format("YYYY-MM-DD"),
         duration * 60,
         60,
-        peopleCount
+        peopleCount,
+        auth(user.loginResponse!.token)
       )
       .then((hours) => {
         setAvailableHours(hours.data as string[]);
@@ -161,7 +162,7 @@ export const TableReservationModal = ({
                   .format("HH:mm:ss") as LocalTime,
                 numberOfPeople: peopleCount,
                 customerId: user.loginResponse!.customerId,
-              })
+              }, auth(user.loginResponse!.token))
               .then(() => {
                 setTableReservationLoading(false);
                 setAvailableHours([]);

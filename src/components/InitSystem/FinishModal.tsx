@@ -10,6 +10,7 @@ import {
 
 import { useContext } from "react";
 import { AxiosResponse } from "axios";
+import { useSelector } from "react-redux";
 import { toast, Slide } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -19,11 +20,14 @@ import {
   LocalTime,
   OpeningHour,
 } from "../../api";
-import { configApi, photoApi, photoDownloadUrl } from "../../utils/api";
+import { RootState } from "../../store";
 import { Transition } from "../../utils/Transision";
 import { WizardContext } from "../../pages/InitSystem";
 import { dayToEnum } from "../../utils/dayEnumTranslate";
 import { daysOfWeek, daysOfWeekAfterMerge, DayState } from "./OpeningHours";
+import { auth, configApi, photoApi, photoDownloadUrl } from "../../utils/api";
+
+
 
 const modalActions = ["Chcę je poprawić", "Wszystko OK!"];
 
@@ -31,8 +35,10 @@ const handleCloseSummary = (
   e: { target: any },
   modalActions: string[],
   ctx: any,
-  navigate: (url: string) => void
+  navigate: (url: string) => void,
+  token?: string
 ) => {
+  console.log(ctx);
   ctx.setOpenSummary(false);
   if (e.target.textContent === modalActions[1]) {
     let deliveryPricings: DeliveryPricing[] = [];
@@ -57,7 +63,7 @@ const handleCloseSummary = (
     );
 
     photoApi
-      .uploadPhoto(ctx.restaurantLogo)
+      .uploadPhoto(ctx.restaurantLogo, auth(token))
       .then((_) => {
         const initData: ConfigAddCommand = {
           restaurantName: ctx.restaurantName,
@@ -72,9 +78,9 @@ const handleCloseSummary = (
         };
 
         configApi
-          .initializeSystem(initData)
-          .then((response: AxiosResponse) => {
-            toast.success(response.data, {
+          .initializeSystem(initData, auth(token))
+          .then((_: AxiosResponse) => {
+            toast.success("System zainicjalizowany pomyślnie", {
               position: "bottom-center",
               autoClose: 5000,
               hideProgressBar: false,
@@ -134,7 +140,7 @@ const handleCloseSummary = (
 export const FinishModal = () => {
   const navigate = useNavigate();
   const ctx = useContext(WizardContext);
-
+  const user = useSelector((state: RootState) => state.user);
   const summaryContent = (
     <span>
       <Typography variant="h6">Nazwa i logo:</Typography>
@@ -209,14 +215,14 @@ export const FinishModal = () => {
       <DialogActions>
         <Button
           onClick={(e) => {
-            handleCloseSummary(e, modalActions, ctx, navigate);
+            handleCloseSummary(e, modalActions, ctx, navigate, user?.loginResponse?.token);
           }}
         >
           {modalActions[0]}
         </Button>
         <Button
           onClick={(e) => {
-            handleCloseSummary(e, modalActions, ctx, navigate);
+            handleCloseSummary(e, modalActions, ctx, navigate, user?.loginResponse?.token);
           }}
           autoFocus
         >

@@ -19,7 +19,7 @@ import {
 import { useState } from "react";
 
 import { Transition } from "../utils/Transision";
-import { configApi, mealsApi } from "../utils/api";
+import { auth, configApi, mealsApi } from "../utils/api";
 
 const apiKey = import.meta.env.VITE_GOOGLE_AI_API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);

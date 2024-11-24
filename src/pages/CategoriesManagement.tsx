@@ -57,7 +57,7 @@ export const CategoriesManagement = () => {
   const fetchMealsByCategory = (category: Category, idx: number) => {
     if (category.id !== undefined) {
       return mealsApi
-        .getMealsByCategory(category.id, auth(user.loginResponse?.token))
+        .getMealsByCategory(category.id, auth(user?.loginResponse?.token))
         .then((response: AxiosResponse) => {
           setMeals((prev: Meal[][]) => {
             const newMeals = [...prev];
@@ -309,12 +309,14 @@ export const CategoriesManagement = () => {
         setDish={(dish: Meal | null) => {
           if (dish !== null) {
             console.log(categoryIdxToEdit, dishIdxToEdit);
-            setMeals((prev) => {
-              const newMeals = [...prev];
-              newMeals[categoryIdxToEdit as number][dishIdxToEdit as number] =
-                dish;
-              return newMeals;
-            });
+            if (categoryIdxToEdit !== null && dishIdxToEdit !== null) {
+              setMeals((prev) => {
+                const newMeals = [...prev];
+                newMeals[categoryIdxToEdit][dishIdxToEdit] =
+                  dish;
+                return newMeals;
+              });
+            }
           } else if (dishIdxToEdit !== null && categoryIdxToEdit !== null) {
             // delete dish
             setMeals((prev) => {

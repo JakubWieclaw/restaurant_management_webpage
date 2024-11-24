@@ -29,7 +29,7 @@ import { useEffect, useState } from "react";
 
 import { RootState } from "../store";
 import { Transition } from "../utils/Transision";
-import { tableApi, tableReservationApi } from "../utils/api";
+import { auth, tableApi, tableReservationApi } from "../utils/api";
 import { Table, TableAddCommand, TableReservation } from "../api";
 import { TableReservationModal } from "../components/Reservation/TablereservationModal";
 
@@ -47,19 +47,19 @@ export const TablesManagement = () => {
   const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
-    tableApi.getAllTables().then((response: AxiosResponse) => {
+    tableApi.getAllTables(auth(user?.loginResponse?.token)).then((response: AxiosResponse) => {
       setTablesList(response.data);
     });
     if (user.loginResponse?.isAdmin) {
       if (onlyTodayReservations) {
         tableReservationApi
-          .getReservationsForDay(new Date().toISOString().split("T")[0])
+          .getReservationsForDay(new Date().toISOString().split("T")[0], auth(user?.loginResponse?.token))
           .then((response: AxiosResponse) => {
             setReservationsList(response.data);
           });
       } else {
         tableReservationApi
-          .getAllReservations()
+          .getAllReservations(auth(user?.loginResponse?.token))
           .then((response: AxiosResponse) => {
             setReservationsList(response.data);
           });
@@ -163,7 +163,7 @@ export const TablesManagement = () => {
                             aria-label="delete"
                             onClick={() => {
                               tableApi
-                                .deleteTable(table.id!)
+                                .deleteTable(table.id!, auth(user?.loginResponse?.token))
                                 .then(() => {
                                   setRefreshLists(!refreshLists);
                                   toast.success("Usunięto stolik", {
@@ -291,7 +291,7 @@ export const TablesManagement = () => {
                             aria-label="delete"
                             onClick={() => {
                               tableReservationApi
-                                .deleteReservationById(reservation.id!)
+                                .deleteReservationById(reservation.id!, auth(user?.loginResponse?.token))
                                 .then(() => {
                                   setRefreshLists(!refreshLists);
                                   toast.success("Usunięto rezerwację", {
@@ -384,7 +384,7 @@ export const TablesManagement = () => {
                 id: tableID,
                 capacity: tableSeats,
               };
-              tableApi.save(requestData).then(() => {
+              tableApi.save(requestData, auth(user?.loginResponse?.token)).then(() => {
                 setRefreshLists(!refreshLists);
                 toast.success("Dodano nowy stolik", {
                   position: "bottom-center",
@@ -396,7 +396,18 @@ export const TablesManagement = () => {
                   progress: undefined,
                 });
                 setTableAddingLoading(false);
-              });
+              }).catch((error) => {
+                toast.error(error.response.data, {
+                  position: "bottom-center",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                });
+                setTableAddingLoading(false);
+              } );
               setOpenNewTableModal(false);
             }}
             color="primary"

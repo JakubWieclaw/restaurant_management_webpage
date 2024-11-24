@@ -108,7 +108,7 @@ export const DishModal: React.FC<DishModalProps> = ({
             // update dish
             if (photo) {
               photoApi
-                .uploadPhoto(photo)
+                .uploadPhoto(photo, auth(user?.loginResponse?.token))
                 .then((response) => {
                   dishCopy.photographUrl = photoDownloadUrl + response.data;
                 })
@@ -132,7 +132,7 @@ export const DishModal: React.FC<DishModalProps> = ({
             }
 
             mealsApi
-              .updateMeal(dishCopy.id, dishCopy as MealAddCommand)
+              .updateMeal(dishCopy.id, dishCopy as MealAddCommand, auth(user?.loginResponse?.token))
               .then((_) => {
                 toast.success("Danie zaktualizowane pomyślnie.", {
                   position: "bottom-center",
@@ -170,14 +170,14 @@ export const DishModal: React.FC<DishModalProps> = ({
             // add dish
             if (photo) {
               photoApi
-                .uploadPhoto(photo, auth(user.loginResponse?.token))
+                .uploadPhoto(photo, auth(user?.loginResponse?.token))
                 .then((response) => {
                   mealsApi
                     .addMeal({
                       ...dishCopy,
                       photographUrl: photoDownloadUrl + response.data,
                     } as MealAddCommand,
-                    auth(user.loginResponse?.token)
+                    auth(user?.loginResponse?.token)
                   )
                     .then((_) => {
                       toast.success("Danie dodane pomyślnie.", {
@@ -567,7 +567,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                   // delete dish
                   if (!dishCopy?.id) return;
                   mealsApi
-                    .deleteMealById(dishCopy.id)
+                    .deleteMealById(dishCopy.id, auth(user?.loginResponse?.token))
                     .then((response: AxiosResponse) => {
                       toast.success(response.data, {
                         position: "bottom-center",
