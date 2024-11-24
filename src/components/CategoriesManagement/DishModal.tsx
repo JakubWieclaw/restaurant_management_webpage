@@ -28,7 +28,7 @@ import { AxiosResponse } from "axios";
 import { Link } from "react-router-dom";
 import { RootState } from "../../store";
 import { Transition } from "../../utils/Transision";
-import { mealsApi, photoApi, photoDownloadUrl, auth } from "../../utils/api";
+import { mealsApi, photoApi, auth } from "../../utils/api";
 import { Meal, Category, MealUnitTypeEnum, MealAddCommand } from "../../api";
 
 interface DishModalProps {
@@ -110,7 +110,7 @@ export const DishModal: React.FC<DishModalProps> = ({
               photoApi
                 .uploadPhoto(photo, auth(user?.loginResponse?.token))
                 .then((response) => {
-                  dishCopy.photographUrl = photoDownloadUrl + response.data;
+                  dishCopy.photographUrl =  response.data;
                 })
                 .catch((error) => {
                   toast.error(
@@ -175,7 +175,7 @@ export const DishModal: React.FC<DishModalProps> = ({
                   mealsApi
                     .addMeal({
                       ...dishCopy,
-                      photographUrl: photoDownloadUrl + response.data,
+                      photographUrl:  response.data,
                     } as MealAddCommand,
                     auth(user?.loginResponse?.token)
                   )

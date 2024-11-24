@@ -22,7 +22,7 @@ import { useState, useEffect, useRef } from "react";
 import { RootState } from "../store";
 import { Dish } from "../types/dish";
 import { OpinionAddCommand, OpinionResponseDTO } from "../api";
-import { auth, mealsApi, opinionApi, photoDownloadUrl } from "../utils/api";
+import { auth, mealsApi, opinionApi } from "../utils/api";
 
 export const DishDetails = () => {
   const { id } = useParams<{ id: string }>();

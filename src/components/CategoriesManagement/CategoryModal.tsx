@@ -19,7 +19,7 @@ import { toast, Slide } from "react-toastify";
 import { RootState } from "../../store";
 import { Transition } from "../../utils/Transision";
 import { Category, CategoryAddCommand } from "../../api";
-import { categoriesApi, photoApi, photoDownloadUrl, auth } from "../../utils/api";
+import { categoriesApi, photoApi, auth } from "../../utils/api";
 
 interface CategoryModalProps {
   open: boolean;
@@ -81,7 +81,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
               photoApi
                 .uploadPhoto(photo, auth(user?.loginResponse?.token))
                 .then((response: AxiosResponse) => {
-                  categoryCopy.photographUrl = photoDownloadUrl + response.data;
+                  categoryCopy.photographUrl =  response.data;
                 })
                 .catch((error) => {
                   toast.error(error.response.data, {
@@ -133,14 +133,14 @@ export const CategoryModal: React.FC<CategoryModalProps> = ({
             const newCategory: CategoryAddCommand = {
               name: categoryCopy?.name ?? "",
               photographUrl: categoryCopy?.photographUrl
-                ? photoDownloadUrl + categoryCopy.photographUrl
+                ?  categoryCopy.photographUrl
                 : "",
             };
             if (photo) {
               photoApi
                 .uploadPhoto(photo, auth(user?.loginResponse?.token))
                 .then((response: AxiosResponse) => {
-                  newCategory.photographUrl = photoDownloadUrl + response.data;
+                  newCategory.photographUrl =  response.data;
                   categoriesApi
                     .addCategory(newCategory, auth(user?.loginResponse?.token))
                     .then((_: AxiosResponse) => {

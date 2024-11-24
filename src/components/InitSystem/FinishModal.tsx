@@ -25,7 +25,7 @@ import { Transition } from "../../utils/Transision";
 import { WizardContext } from "../../pages/InitSystem";
 import { dayToEnum } from "../../utils/dayEnumTranslate";
 import { daysOfWeek, daysOfWeekAfterMerge, DayState } from "./OpeningHours";
-import { auth, configApi, photoApi, photoDownloadUrl } from "../../utils/api";
+import { auth, configApi, photoApi } from "../../utils/api";
 
 
 
@@ -67,7 +67,7 @@ const handleCloseSummary = (
       .then((_) => {
         const initData: ConfigAddCommand = {
           restaurantName: ctx.restaurantName,
-          logoUrl: photoDownloadUrl + ctx.restaurantLogo?.name,
+          logoUrl:  ctx.restaurantLogo?.name,
           postalCode: ctx.postalCode,
           city: ctx.city,
           street: ctx.street,
