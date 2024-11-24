@@ -18,12 +18,14 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 
 import { AxiosResponse } from "axios";
+import { useSelector } from "react-redux";
 import { useEffect, useState, Fragment } from "react";
 
+import { RootState } from "../store";
 import { Category, Meal } from "../api";
-import { categoriesApi, mealsApi } from "../utils/api";
-import { CategoryModal } from "../components/CategoriesManagement/CategoryModal";
+import { auth, categoriesApi, mealsApi } from "../utils/api";
 import { DishModal } from "../components/CategoriesManagement/DishModal";
+import { CategoryModal } from "../components/CategoriesManagement/CategoryModal";
 
 export const CategoriesManagement = () => {
   const [open, setOpen] = useState<boolean[]>([]);
@@ -39,6 +41,8 @@ export const CategoriesManagement = () => {
   const [allergens, setAllergens] = useState<string[]>([]);
   const [ingredients, setIngredients] = useState<string[]>([]);
 
+  const user = useSelector((state: RootState) => state.user);
+
   const handleClick = (idx: number) => {
     setOpen((prev) => {
       const newOpen = [...prev];
@@ -53,7 +57,7 @@ export const CategoriesManagement = () => {
   const fetchMealsByCategory = (category: Category, idx: number) => {
     if (category.id !== undefined) {
       return mealsApi
-        .getMealsByCategory(category.id)
+        .getMealsByCategory(category.id, auth(user.loginResponse?.token))
         .then((response: AxiosResponse) => {
           setMeals((prev: Meal[][]) => {
             const newMeals = [...prev];
@@ -304,6 +308,7 @@ export const CategoriesManagement = () => {
         }
         setDish={(dish: Meal | null) => {
           if (dish !== null) {
+            console.log(categoryIdxToEdit, dishIdxToEdit);
             setMeals((prev) => {
               const newMeals = [...prev];
               newMeals[categoryIdxToEdit as number][dishIdxToEdit as number] =

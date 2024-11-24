@@ -15,6 +15,10 @@ import {
   StatsControllerApi,
 } from "../api";
 
+export const auth = (token?: string) => {
+  return {headers: {Authorization: `Bearer ${token}`}}
+}
+
 export const apiUrl = import.meta.env.VITE_API_URL;
 
 const config = new Configuration({ basePath: apiUrl });

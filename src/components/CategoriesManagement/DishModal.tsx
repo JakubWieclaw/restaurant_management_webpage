@@ -20,14 +20,16 @@ import {
 import ImageIcon from "@mui/icons-material/Image";
 import Autocomplete from "@mui/material/Autocomplete";
 
+import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { toast, Slide } from "react-toastify";
 
-import { Meal, Category, MealUnitTypeEnum, MealAddCommand } from "../../api";
-import { Transition } from "../../utils/Transision";
-import { mealsApi, photoApi, photoDownloadUrl } from "../../utils/api";
 import { AxiosResponse } from "axios";
 import { Link } from "react-router-dom";
+import { RootState } from "../../store";
+import { Transition } from "../../utils/Transision";
+import { mealsApi, photoApi, photoDownloadUrl, auth } from "../../utils/api";
+import { Meal, Category, MealUnitTypeEnum, MealAddCommand } from "../../api";
 
 interface DishModalProps {
   open: boolean;
@@ -53,6 +55,8 @@ export const DishModal: React.FC<DishModalProps> = ({
   useEffect(() => {
     setDishCopy(dish);
   }, [dish]);
+
+  const user = useSelector((state: RootState) => state.user);
 
   const [dishCopy, setDishCopy] = useState<Meal | null>(dish);
   const [selectedUnit, setSelectedUnit] = useState<MealUnitTypeEnum>(
@@ -166,13 +170,15 @@ export const DishModal: React.FC<DishModalProps> = ({
             // add dish
             if (photo) {
               photoApi
-                .uploadPhoto(photo)
+                .uploadPhoto(photo, auth(user.loginResponse?.token))
                 .then((response) => {
                   mealsApi
                     .addMeal({
                       ...dishCopy,
                       photographUrl: photoDownloadUrl + response.data,
-                    } as MealAddCommand)
+                    } as MealAddCommand,
+                    auth(user.loginResponse?.token)
+                  )
                     .then((_) => {
                       toast.success("Danie dodane pomyślnie.", {
                         position: "bottom-center",
@@ -470,6 +476,7 @@ export const DishModal: React.FC<DishModalProps> = ({
             </Box>
             <Box>
               <TextField
+                required
                 label={`Wartość (${selectedUnit})`}
                 value={dishCopy?.weightOrVolume ?? ""}
                 onChange={(e) => {
