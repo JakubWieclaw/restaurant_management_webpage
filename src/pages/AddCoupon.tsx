@@ -22,7 +22,9 @@ import { useParams } from "react-router-dom";
 import { Dayjs } from "dayjs";
 import { AxiosResponse } from "axios";
 import { CouponAddCommand, Customer } from "../api";
-import { couponsApi, customersApi } from "../utils/api";
+import { auth, couponsApi, customersApi } from "../utils/api";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 export const AddCoupon = () => {
   const mealId = useParams<{ mealId: string }>().mealId;
@@ -34,10 +36,12 @@ export const AddCoupon = () => {
   const [chosenClients, setChosenClients] = useState<Customer[]>([]);
   const [selectAllClients, setSelectAllClients] = useState(false);
 
+  const user = useSelector((state: RootState) => state.user);
+
   useEffect(() => {
     const fetchClients = async () => {
       await customersApi
-        .getAllCustomers()
+        .getAllCustomers(auth(user?.loginResponse?.token))
         .then((r: AxiosResponse) => setClients(r.data));
     };
     fetchClients();
@@ -59,7 +63,7 @@ export const AddCoupon = () => {
         customerId: client.id!,
         mealId: Number(mealId),
       };
-      await couponsApi.createCoupon(addCouponRequest).catch((e) => {
+      await couponsApi.createCoupon(addCouponRequest, auth(user?.loginResponse?.token)).catch((e) => {
         error = e.response.data;
         success = false;
       });

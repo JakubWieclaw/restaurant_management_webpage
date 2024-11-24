@@ -25,10 +25,12 @@ import {
 import { AxiosResponse } from "axios";
 import { useState, useEffect, Fragment } from "react";
 
-import { customersApi, mealsApi, orderApi } from "../utils/api";
+import { auth, customersApi, mealsApi, orderApi } from "../utils/api";
 
 import { Order, OrderStatusEnum, OrderTypeEnum } from "../api";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 const CustomerName = ({ customerId }: { customerId: number }) => {
   const [customerName, setCustomerName] = useState<string>("Niezarejestrowany");
@@ -55,6 +57,8 @@ export const Orders = () => {
     OrderStatusEnum.Oczekujce
   );
   const [reloadOrders, setReloadOrders] = useState<boolean>(false);
+
+  const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     orderApi.getAllOrders().then((response: AxiosResponse) => {
@@ -271,7 +275,7 @@ export const Orders = () => {
                                   (meal: any, mealIdx: number) => {
                                     if (!(meal.mealId in meals)) {
                                       mealsApi
-                                        .getMealById(meal.mealId)
+                                        .getMealById(meal.mealId, auth(user?.loginResponse?.token))
                                         .then((response: AxiosResponse) => {
                                           setMeals((prevMeals) => {
                                             return {

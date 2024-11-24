@@ -24,7 +24,7 @@ import {
 import { RootState } from "../../store";
 import CheckoutForm from "./CheckoutForm";
 import { DeliveryOption } from "./DeliverySelection";
-import { couponsApi, orderApi } from "../../utils/api";
+import { auth, couponsApi, orderApi } from "../../utils/api";
 import { clearCart } from "../../reducers/slices/cartSlice";
 
 import { loadStripe } from "@stripe/stripe-js";
@@ -94,6 +94,7 @@ export const ContentSummary: React.FC<ContentSummaryProps> = ({
             deliveryType == OrderAddCommandTypeEnum.DoStolika ? 1 : undefined,
           minutesForReservation:
             deliveryType == OrderAddCommandTypeEnum.DoStolika ? 1 : undefined,
+          couponCode: coupon?.code ?? undefined,
         };
 
         cart.items.forEach((item, idx) => {
@@ -109,7 +110,7 @@ export const ContentSummary: React.FC<ContentSummaryProps> = ({
             });
           }
         });
-
+        console.log(addOrderRequest);
         orderApi
           .addOrder(addOrderRequest)
           .then((response: AxiosResponse) => {
@@ -195,7 +196,7 @@ export const ContentSummary: React.FC<ContentSummaryProps> = ({
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   couponsApi
-                    .getCouponsForCustomer(user.loginResponse?.customerId!)
+                    .getCouponsForCustomer(user.loginResponse?.customerId!, auth(user?.loginResponse?.token))
                     .then((response) => {
                       const coupon = response.data.find(
                         (coupon) => coupon.code === couponCode && coupon.active
@@ -212,11 +213,12 @@ export const ContentSummary: React.FC<ContentSummaryProps> = ({
                             coupon.code,
                             user.loginResponse?.customerId!,
                             coupon.meal?.id!,
-                            coupon.meal?.price!
+                            coupon.meal?.price!,
+                            auth(user?.loginResponse?.token)
                           )
                           .then((response: AxiosResponse) => {
                             setCouponDiscount(
-                              parseFloat((response.data as number).toFixed(2))
+                              (total - response.data).toFixed(2) as unknown as number
                             );
                             setCoupon(coupon);
                             toast.success("Kod rabatowy został zastosowany", {

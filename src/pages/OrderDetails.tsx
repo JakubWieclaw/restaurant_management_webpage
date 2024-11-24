@@ -10,14 +10,18 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { mealsApi, orderApi } from "../utils/api";
+import { auth, mealsApi, orderApi } from "../utils/api";
 import { Meal, Order, OrderStatusEnum, OrderTypeEnum } from "../api";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 export const OrderDetails = () => {
   const { orderId } = useParams<{ orderId: string }>();
-  const navigate = useNavigate();
   const [order, setOrder] = useState<Order | null>(null);
   const [orderedMeals, setOrderedMeals] = useState<Meal[]>([]);
+  
+  const navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     if (!orderId) {
@@ -27,13 +31,13 @@ export const OrderDetails = () => {
 
     const fetchOrder = () => {
       orderApi
-        .getOrderById(orderId as unknown as number)
+        .getOrderById(orderId as unknown as number, auth(user?.loginResponse?.token))
         .then((response) => {
           setOrder(response.data);
 
           response.data.mealIds.forEach(async (mealQuantity) => {
             await mealsApi
-              .getMealById(mealQuantity.mealId!)
+              .getMealById(mealQuantity.mealId!, auth(user?.loginResponse?.token))
               .then((response) => {
                 setOrderedMeals((prev) => [...prev, response.data]);
               });

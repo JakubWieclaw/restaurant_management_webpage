@@ -561,6 +561,12 @@ export interface Meal {
     'ingredients'?: Array<string>;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof Meal
+     */
+    'removableIngredList'?: Array<string>;
+    /**
+     * 
      * @type {number}
      * @memberof Meal
      */
@@ -628,6 +634,12 @@ export interface MealAddCommand {
      * @memberof MealAddCommand
      */
     'ingredients'?: Array<string>;
+    /**
+     * Ingredients that can be removed from the meal
+     * @type {Array<string>}
+     * @memberof MealAddCommand
+     */
+    'removableIngredientsList'?: Array<string>;
     /**
      * Weight or volume of the meal
      * @type {number}
@@ -951,11 +963,17 @@ export interface OrderAddCommand {
      */
     'people'?: number;
     /**
-     * Duration of the reservation in minutes, default = 120
+     * Duration of the reservation in minutes
      * @type {number}
      * @memberof OrderAddCommand
      */
     'minutesForReservation'?: number;
+    /**
+     * Coupon id for the order. Empty if not used
+     * @type {string}
+     * @memberof OrderAddCommand
+     */
+    'couponCode'?: string;
 }
 
 export const OrderAddCommandTypeEnum = {
@@ -1012,8 +1030,16 @@ export interface Privilege {
      * @type {string}
      * @memberof Privilege
      */
-    'privilegeName'?: string;
+    'privilegeName': PrivilegePrivilegeNameEnum;
 }
+
+export const PrivilegePrivilegeNameEnum = {
+    UserPrivilege: 'USER_PRIVILEGE',
+    AdminPrivilege: 'ADMIN_PRIVILEGE'
+} as const;
+
+export type PrivilegePrivilegeNameEnum = typeof PrivilegePrivilegeNameEnum[keyof typeof PrivilegePrivilegeNameEnum];
+
 /**
  * 
  * @export

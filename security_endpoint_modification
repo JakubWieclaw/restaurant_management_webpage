@@ -29,6 +29,12 @@ CONFIGURATION:
 STATS:
     allGets
 
+COUPON:
+    create
+    getForCustomer
+
+ORDER:
+    getById
 Remove authentication:
 http://localhost:8080/swagger-ui/index.html#/meal-controller/getMealsByCategory
 http://localhost:8080/swagger-ui/index.html#/meal-controller/getMealById
