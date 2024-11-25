@@ -66,7 +66,7 @@ export const TablesManagement = () => {
       }
     } else {
       tableReservationApi
-        .getReservationsForCustomer(user.loginResponse?.customerId!)
+        .getReservationsForCustomer(user.loginResponse?.customerId!, auth(user?.loginResponse?.token))
         .then((response: AxiosResponse) => {
           setReservationsList(response.data);
         });

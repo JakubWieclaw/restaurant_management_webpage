@@ -110,9 +110,8 @@ export const ContentSummary: React.FC<ContentSummaryProps> = ({
             });
           }
         });
-        console.log(addOrderRequest);
         orderApi
-          .addOrder(addOrderRequest)
+          .addOrder(addOrderRequest, auth(user?.loginResponse?.token))
           .then((response: AxiosResponse) => {
             setOrderId(response.data.id);
             setPaymentIntent(response.data.paymentIntentClientSecret);
@@ -208,6 +207,11 @@ export const ContentSummary: React.FC<ContentSummaryProps> = ({
                           (item) => coupon.meal?.id === item.dish.id
                         )
                       ) {
+                        // sum up item.dish.quantity for each item in cart where item.dish.id === coupon.meal?.id
+                        const quantity = cart.items
+                          .filter((item) => item.dish.id === coupon.meal?.id)
+                          .reduce((acc, item) => acc + item.quantity, 0);
+                        console.log(cart.items);
                         couponsApi
                           .applyCoupon(
                             coupon.code,
@@ -218,7 +222,7 @@ export const ContentSummary: React.FC<ContentSummaryProps> = ({
                           )
                           .then((response: AxiosResponse) => {
                             setCouponDiscount(
-                              (total - response.data).toFixed(2) as unknown as number
+                              ((coupon.meal?.price! - response.data)*quantity).toFixed(2) as unknown as number
                             );
                             setCoupon(coupon);
                             toast.success("Kod rabatowy został zastosowany", {

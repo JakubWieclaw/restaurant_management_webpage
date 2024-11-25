@@ -11,14 +11,16 @@ import {
   Dialog,
 } from "@mui/material";
 
+import { AxiosResponse } from "axios";
+import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { toast, Slide } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { AxiosResponse } from "axios";
+import { RootState } from "../store";
 import { Customer, Order } from "../api";
-import { customersApi, orderApi } from "../utils/api";
 import { CustomerOrdersList } from "./CustomerOrders";
+import { auth, customersApi, orderApi } from "../utils/api";
 
 export const CustomerDetails = () => {
   const [customer, setCustomer] = useState<Customer | null>(null);
@@ -30,6 +32,7 @@ export const CustomerDetails = () => {
 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     setCustomerId(id ? parseInt(id, 10) : null);
@@ -39,10 +42,10 @@ export const CustomerDetails = () => {
     if (customerId === null) {
       return;
     }
-    customersApi.getCustomerById(customerId).then((res: AxiosResponse) => {
+    customersApi.getCustomerById(customerId, auth(user?.loginResponse?.token)).then((res: AxiosResponse) => {
       setCustomer(res.data);
     });
-    orderApi.getAllOrdersOfCustomer(customerId).then((res: AxiosResponse) => {
+    orderApi.getAllOrdersOfCustomer(customerId, auth(user?.loginResponse?.token)).then((res: AxiosResponse) => {
       setCustomerOrders(res.data);
     });
   }, [customerId]);
@@ -91,7 +94,7 @@ export const CustomerDetails = () => {
               e.preventDefault();
               setLoadingDataForm(true);
               customersApi
-                .updateCustomer(customerId!, customer)
+                .updateCustomer(customerId!, customer, auth(user?.loginResponse?.token))
                 .then(() => {
                   toast.success("Dane klienta zostały zapisane", {
                     position: "bottom-center",
@@ -313,7 +316,7 @@ export const CustomerDetails = () => {
               size="small"
               onClick={() => {
                 customersApi
-                  .deleteCustomerById(customerId!)
+                  .deleteCustomerById(customerId!, auth(user?.loginResponse?.token))
                   .then(() => {
                     navigate("/admin-panel");
                     toast.success("Klient został usunięty", {

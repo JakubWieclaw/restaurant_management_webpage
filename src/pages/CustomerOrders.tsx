@@ -22,7 +22,7 @@ import { useState, useEffect } from "react";
 import { Order, OrderTypeEnum } from "../api";
 import { RootState } from "../store";
 import { AxiosResponse } from "axios";
-import { orderApi } from "../utils/api";
+import { auth, orderApi } from "../utils/api";
 
 export const CustomerOrdersList = ({ orders }: { orders: Order[] }) => {
   const navigate = useNavigate();
@@ -104,7 +104,7 @@ export const CustomerOrders = () => {
 
   useEffect(() => {
     orderApi
-      .getAllOrdersOfCustomer(user.loginResponse?.customerId!)
+      .getAllOrdersOfCustomer(user.loginResponse?.customerId!, auth(user?.loginResponse?.token))
       .then((response: AxiosResponse) => {
         setCustomerOrders(response.data);
         setLoading(false);

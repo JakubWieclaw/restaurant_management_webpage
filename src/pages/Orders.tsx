@@ -31,8 +31,11 @@ import { Order, OrderStatusEnum, OrderTypeEnum } from "../api";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import { UserState } from "../types/userTypes";
 
-const CustomerName = ({ customerId }: { customerId: number }) => {
+const CustomerName = (
+  { customerId, user }: { customerId: number; user: UserState },
+) => {
   const [customerName, setCustomerName] = useState<string>("Niezarejestrowany");
 
   useEffect(() => {
@@ -40,10 +43,12 @@ const CustomerName = ({ customerId }: { customerId: number }) => {
       setCustomerName("Niezarejestrowany");
       return;
     }
-    customersApi.getCustomerById(customerId).then((response: AxiosResponse) => {
-      const customer = response.data;
-      setCustomerName(`${customer.name} ${customer.surname}`);
-    });
+    customersApi
+      .getCustomerById(customerId, auth(user?.loginResponse?.token))
+      .then((response: AxiosResponse) => {
+        const customer = response.data;
+        setCustomerName(`${customer.name} ${customer.surname}`);
+      });
   }, [customerId]);
 
   return <>{customerName}</>;
@@ -61,22 +66,24 @@ export const Orders = () => {
   const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
-    orderApi.getAllOrders().then((response: AxiosResponse) => {
-      setOrders(response.data);
-      setOpen((prev) => {
-        return {
-          ...prev,
-          ...response.data.reduce(
-            (_: Record<number, boolean>, _order: Order) => {
-              return {
-                [_order.id!]: prev[_order.id!] ?? false,
-              };
-            },
-            {}
-          ),
-        };
+    orderApi
+      .getAllOrders(auth(user?.loginResponse?.token))
+      .then((response: AxiosResponse) => {
+        setOrders(response.data);
+        setOpen((prev) => {
+          return {
+            ...prev,
+            ...response.data.reduce(
+              (_: Record<number, boolean>, _order: Order) => {
+                return {
+                  [_order.id!]: prev[_order.id!] ?? false,
+                };
+              },
+              {}
+            ),
+          };
+        });
       });
-    });
   }, [reloadOrders]);
 
   return (
@@ -157,7 +164,7 @@ export const Orders = () => {
                       </TableCell>
                       <TableCell align="right">
                         {order.customerId !== undefined && (
-                          <CustomerName customerId={order.customerId} />
+                          <CustomerName customerId={order.customerId} user={user} />
                         )}
                       </TableCell>
                       <TableCell align="right">
@@ -179,7 +186,7 @@ export const Orders = () => {
                               .updateOrder(order.id!, {
                                 ...order,
                                 status: chosenStatus,
-                              })
+                              }, auth(user?.loginResponse?.token))
                               .then(() => {
                                 setChosenOrdersStatus(chosenStatus);
                                 setReloadOrders((prev) => !prev);
@@ -275,7 +282,10 @@ export const Orders = () => {
                                   (meal: any, mealIdx: number) => {
                                     if (!(meal.mealId in meals)) {
                                       mealsApi
-                                        .getMealById(meal.mealId, auth(user?.loginResponse?.token))
+                                        .getMealById(
+                                          meal.mealId,
+                                          auth(user?.loginResponse?.token)
+                                        )
                                         .then((response: AxiosResponse) => {
                                           setMeals((prevMeals) => {
                                             return {
