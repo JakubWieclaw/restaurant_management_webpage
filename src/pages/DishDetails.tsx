@@ -22,7 +22,7 @@ import { useState, useEffect, useRef } from "react";
 import { RootState } from "../store";
 import { Dish } from "../types/dish";
 import { OpinionAddCommand, OpinionResponseDTO } from "../api";
-import { auth, mealsApi, opinionApi } from "../utils/api";
+import { auth, mealsApi, opinionApi, photoDownloadUrl } from "../utils/api";
 
 export const DishDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -185,7 +185,7 @@ export const DishDetails = () => {
         <Item>
           <Box
             component={"img"}
-            src={dish.image}
+            src={photoDownloadUrl + dish.image}
             alt={dish.name}
             sx={{ width: "100%" }}
           />

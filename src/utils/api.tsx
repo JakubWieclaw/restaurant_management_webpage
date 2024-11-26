@@ -16,6 +16,7 @@ import {
 } from "../api";
 
 export const auth = (token?: string) => {
+  if (!token) return {};
   return {headers: {Authorization: `Bearer ${token}`}}
 }
 

@@ -23,7 +23,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 import { RootState, AppDispatch } from "../store";
 import { logout } from "../reducers/slices/userSlice";
-import { auth, couponsApi } from "../utils/api";
+import { auth, couponsApi, photoDownloadUrl } from "../utils/api";
 import { Coupon } from "../api";
 
 export const AppBarHeader = () => {
@@ -104,7 +104,7 @@ export const AppBarHeader = () => {
                   width: 50,
                   marginRight: 1,
                 }}
-                src={config.config.logoUrl}
+                src={photoDownloadUrl + config.config.logoUrl}
               ></Box>
 
               <Typography
