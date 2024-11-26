@@ -45,6 +45,7 @@
     "recharts": "^2.13.0",
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
+    "serve": "^14.2.4",
     "swiper": "^11.1.5",
     "vite-plugin-require": "^1.2.14"
   },

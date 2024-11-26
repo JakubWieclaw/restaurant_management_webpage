@@ -1,7 +1,6 @@
 import "./index.css";
 import { CssBaseline } from "@mui/material";
 
-import React from "react";
 import { PersistGate } from "redux-persist/integration/react";
 
 import App from "./App.tsx";
