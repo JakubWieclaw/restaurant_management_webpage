@@ -1,110 +1,8 @@
 #!/bin/bash
 
-# DELETE ALL DATA
-meals=$(curl -s -X 'GET' 'http://localhost:8080/api/meals/all' -H 'accept: */*')
-
-meal_ids=$(echo $meals | jq -r '.[].id')
-
-for id in $meal_ids; do
-  curl -X 'DELETE' "http://localhost:8080/api/meals/delete/$id" -H 'accept: */*'
-  echo
-done
-
-categories=$(curl -s -X 'GET' 'http://localhost:8080/api/categories/all' -H 'accept: */*')
-
-category_ids=$(echo $categories | jq -r '.[].id')
-
-for id in $category_ids; do
-  curl -X 'DELETE' "http://localhost:8080/api/categories/delete/$id" -H 'accept: */*'
-  echo
-done
-
-curl -X 'DELETE' \
-  'http://localhost:8080/admin/api/config' \
-  -H 'accept: */*'
-
-echo
-
-# INSERT IMAGE
-
-curl -X 'POST' \
-  'http://localhost:8080/api/photos/upload' \
-  -H 'accept: */*' \
-  -H 'Content-Type: multipart/form-data' \
-  -F 'file=@icons8-meal.png;type=image/jpeg'
-
-# INITIALIZE CONFIG
-curl -X 'POST' \
-  'http://localhost:8080/admin/api/config/initialize-system' \
-  -H 'accept: */*' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "restaurantName": "Bellissimo",
-  "postalCode": "00-000",
-  "city": "Warszawa",
-  "street": "ul. Marszałkowska 1",
-  "phoneNumber": "123456789",
-  "email": "a@a",
-  "logoUrl": "icons8-meal.png",
-  "openingHours": [
-    {
-      "day": "MONDAY",
-      "openingTime": "10:00",
-      "closingTime": "22:00"
-    },
-    {
-      "day": "TUESDAY",
-      "openingTime": "11:00",
-      "closingTime": "23:59"
-    },
-    {
-      "day": "WEDNESDAY",
-      "openingTime": "12:00",
-      "closingTime": "22:00"
-    },
-    {
-      "day": "THURSDAY",
-      "openingTime": "13:00",
-      "closingTime": "22:00"
-    },
-    {
-      "day": "FRIDAY",
-      "openingTime": "14:00",
-      "closingTime": "22:00"
-    },
-    {
-      "day": "SATURDAY",
-      "openingTime": "15:00",
-      "closingTime": "22:00"
-    },
-    {
-      "day": "SUNDAY",
-      "openingTime": "16:00",
-      "closingTime": "22:00"
-    }
-  ],
-  "deliveryPricings": [
-    {
-      "maximumRange": 1,
-      "price": 5.99
-    },
-    {
-      "maximumRange": 5,
-      "price": 6.99
-    },
-    {
-      "maximumRange": 10,
-      "price": 7.99
-    }
-  ]
-}'
-
-echo
-
 # INSERT USER
 curl -X 'POST' \
   'http://localhost:8080/auth/register' \
-  -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
   "id": 0,
@@ -121,7 +19,6 @@ echo
 # INSERT 2 USER
 curl -X 'POST' \
   'http://localhost:8080/auth/register' \
-  -H 'accept: */*' \
   -H 'Content-Type: application/json' \
   -d '{
   "id": 0,
@@ -133,6 +30,141 @@ curl -X 'POST' \
 }'
 
 echo
+
+# LOGIN TO GET ADMIN TOKEN
+admin_resp=$(curl -X 'POST' \
+  'http://localhost:8080/auth/login' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "email": "example@example.com",
+  "password": "example1"
+}')
+
+admin_token=$(echo "$admin_resp" | jq -r '.token')
+
+# Verify that the token was retrieved successfully
+if [ -z "$admin_token" ] || [ "$admin_token" == "null" ]; then
+  echo "Error: Failed to retrieve admin token"
+  echo "Response from server: $admin_resp"
+  exit 1
+fi
+
+echo "Admin token retrieved: $admin_token"
+
+# INITIALIZE CONFIG
+resp=$(curl -s -X 'POST' \
+  'http://localhost:8080/admin/api/config/initialize-system' \
+  -H "Authorization: Bearer $admin_token" \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "restaurantName": "Bellissimo",
+    "postalCode": "00-000",
+    "city": "Warszawa",
+    "street": "ul. Marszałkowska 1",
+    "phoneNumber": "123456789",
+    "email": "a@a",
+    "logoUrl": "icons8-meal.png",
+    "openingHours": [
+      {
+        "day": "MONDAY",
+        "openingTime": "10:00",
+        "closingTime": "22:00"
+      },
+      {
+        "day": "TUESDAY",
+        "openingTime": "11:00",
+        "closingTime": "23:59"
+      },
+      {
+        "day": "WEDNESDAY",
+        "openingTime": "12:00",
+        "closingTime": "22:00"
+      },
+      {
+        "day": "THURSDAY",
+        "openingTime": "13:00",
+        "closingTime": "22:00"
+      },
+      {
+        "day": "FRIDAY",
+        "openingTime": "14:00",
+        "closingTime": "22:00"
+      },
+      {
+        "day": "SATURDAY",
+        "openingTime": "15:00",
+        "closingTime": "22:00"
+      },
+      {
+        "day": "SUNDAY",
+        "openingTime": "16:00",
+        "closingTime": "22:00"
+      }
+    ],
+    "deliveryPricings": [
+      {
+        "maximumRange": 1,
+        "price": 5.99
+      },
+      {
+        "maximumRange": 5,
+        "price": 6.99
+      },
+      {
+        "maximumRange": 10,
+        "price": 7.99
+      }
+    ]
+}')
+
+# Display the response
+echo "Initialization response: $resp"
+
+# Check if initialization was successful
+success=$(echo "$resp" | jq -r '.success')
+echo "Response from server: $resp"
+
+echo "Initialization finished"
+
+# DELETE ALL DATA
+meals=$(curl -s -X 'GET' 'http://localhost:8080/api/meals/all' \
+  -H 'Authorization: Bearer '"$admin_token")
+
+meal_ids=$(echo $meals | jq -r '.[].id')
+
+for id in $meal_ids; do
+  curl -X 'DELETE' "http://localhost:8080/api/meals/delete/$id" \
+    -H 'Authorization: Bearer '"$admin_token"
+  echo
+done
+
+categories=$(curl -s -X 'GET' 'http://localhost:8080/api/categories/all' \
+  -H 'Authorization: Bearer '"$admin_token")
+
+category_ids=$(echo $categories | jq -r '.[].id')
+
+for id in $category_ids; do
+  curl -X 'DELETE' "http://localhost:8080/api/categories/delete/$id" \
+    -H 'Authorization: Bearer '"$admin_token"
+  echo
+done
+
+curl -X 'DELETE' \
+  'http://localhost:8080/admin/api/config' \
+  -H 'Authorization: Bearer '"$admin_token"
+
+echo
+
+# INSERT IMAGE
+curl -X 'POST' \
+  'http://localhost:8080/api/photos/upload' \
+  -H 'Authorization: Bearer '"$admin_token" \
+  -H 'Content-Type: multipart/form-data' \
+  -F 'file=@icons8-meal.png;type=image/jpeg'
+
+echo
+
+
 
 # INSERT CATEGORIES
 categories=(
@@ -156,7 +188,7 @@ for category in "${categories[@]}"; do
 
   curl -X 'POST' \
     'http://localhost:8080/api/photos/upload' \
-    -H 'accept: */*' \
+    -H 'Authorization: Bearer '"$admin_token" \
     -H 'Content-Type: multipart/form-data' \
     -F "file=@$photographUrl;type=image/jpeg"
 
@@ -164,7 +196,7 @@ for category in "${categories[@]}"; do
 
   response=$(curl -s -X 'POST' \
     'http://localhost:8080/api/categories/add' \
-    -H 'accept: */*' \
+    -H 'Authorization: Bearer '"$admin_token" \
     -H 'Content-Type: application/json' \
     -d "{
     \"name\": \"$name\",
@@ -177,6 +209,7 @@ for category in "${categories[@]}"; do
     second_category_id=$(echo $response | jq -r '.id')
   fi
 done
+
 # INSERT PIZZA DISHES
 dishes=(
   '{"name": "Pepperoni", "price": 23.99, "ingredients": ["Sos pomidorowy", "Ser", "Pepperoni"], "image": "pizza4.jpg", "allergens": ["Nabiał", "Gluten"]}'
@@ -200,7 +233,7 @@ for dish in "${dishes[@]}"; do
 
   curl -X 'POST' \
     'http://localhost:8080/api/photos/upload' \
-    -H 'accept: */*' \
+    -H 'Authorization: Bearer '"$admin_token" \
     -H 'Content-Type: multipart/form-data' \
     -F "file=@$image;type=image/jpeg"
 
@@ -208,7 +241,7 @@ for dish in "${dishes[@]}"; do
 
   curl -X 'POST' \
     'http://localhost:8080/api/meals/add' \
-    -H 'accept: */*' \
+    -H 'Authorization: Bearer '"$admin_token" \
     -H 'Content-Type: application/json' \
     -d "{
     \"name\": \"$name\",
@@ -247,13 +280,15 @@ for dish in "${dishes[@]}"; do
 
   curl -X 'POST' \
     'http://localhost:8080/api/photos/upload' \
-    -H 'accept: */*' \
+    -H 'Authorization: Bearer '"$admin_token" \
     -H 'Content-Type: multipart/form-data' \
     -F "file=@$image;type=image/jpeg"
 
+  echo
+
   curl -X 'POST' \
     'http://localhost:8080/api/meals/add' \
-    -H 'accept: */*' \
+    -H 'Authorization: Bearer '"$admin_token" \
     -H 'Content-Type: application/json' \
     -d "{
     \"name\": \"$name\",

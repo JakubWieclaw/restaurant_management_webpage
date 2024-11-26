@@ -11,7 +11,7 @@ import { store, persistor } from "./store";
 import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  <>
     <CssBaseline />
     <BrowserRouter>
       <Provider store={store}>
@@ -20,5 +20,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         </PersistGate>
       </Provider>
     </BrowserRouter>
-  </React.StrictMode>
+  </>
 );

@@ -37,6 +37,11 @@ function App() {
       .getConfig(auth(user?.loginResponse?.token))
       .then((response) => {
         dispatch(setConfig(response.data));
+        const link = document.createElement("link");
+        link.type = "image/x-icon";
+        link.rel = "shortcut icon";
+        link.href = response.data.logoUrl;
+        document.getElementsByTagName("head")[0].appendChild(link);
       })
       .catch((error) => {
         if (user.loginResponse === null) {
