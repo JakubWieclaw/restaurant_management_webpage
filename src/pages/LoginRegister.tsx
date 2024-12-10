@@ -39,7 +39,6 @@ export const LoginRegister = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-
     switch (loginRegisterState) {
       case LoginRegisterState.Login:
         await authApi
@@ -114,6 +113,7 @@ export const LoginRegister = () => {
         await configApi
           .getConfig()
           .then((_) => {})
+          .catch((_) => {});
         await authApi
           .registerUser({
             email: email,
@@ -180,7 +180,6 @@ export const LoginRegister = () => {
   const [loginRegisterState, setLoginRegisterState] =
     useState<LoginRegisterState>(LoginRegisterState.Login);
   const formRef = useRef(null);
-
 
   const returnProperComponent = (formRef: React.MutableRefObject<null>) => {
     switch (loginRegisterState) {
