@@ -23,7 +23,7 @@ import { useEffect, useState, Fragment } from "react";
 
 import { RootState } from "../store";
 import { Category, Meal } from "../api";
-import { auth, categoriesApi, mealsApi } from "../utils/api";
+import { auth, categoriesApi, mealsApi, photoDownloadUrl } from "../utils/api";
 import { DishModal } from "../components/CategoriesManagement/DishModal";
 import { CategoryModal } from "../components/CategoriesManagement/CategoryModal";
 
@@ -201,7 +201,7 @@ export const CategoriesManagement = () => {
                   <ListItemIcon>
                     <Box
                       component={"img"}
-                      src={category?.photographUrl}
+                      src={photoDownloadUrl + category?.photographUrl}
                       sx={{
                         width: 32,
                         height: 32,
@@ -252,7 +252,7 @@ export const CategoriesManagement = () => {
                           <ListItemIcon>
                             <Box
                               component={"img"}
-                              src={meal.photographUrl}
+                              src={photoDownloadUrl + meal.photographUrl}
                               sx={{
                                 width: 32,
                                 height: 32,
@@ -312,8 +312,7 @@ export const CategoriesManagement = () => {
             if (categoryIdxToEdit !== null && dishIdxToEdit !== null) {
               setMeals((prev) => {
                 const newMeals = [...prev];
-                newMeals[categoryIdxToEdit][dishIdxToEdit] =
-                  dish;
+                newMeals[categoryIdxToEdit][dishIdxToEdit] = dish;
                 return newMeals;
               });
             }

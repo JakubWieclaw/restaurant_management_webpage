@@ -15,6 +15,7 @@ import {
 
 import { Dish } from "../../../types/dish";
 import { IncrementDecrementNumberInput } from "../../inputs/IncrementDecrementNumberInput";
+import { photoDownloadUrl } from "../../../utils/api";
 
 interface DishDialogProps {
   open: boolean;
@@ -62,7 +63,7 @@ export const DishDialog: React.FC<DishDialogProps> = ({
           </Typography>
           <Box
             component="img"
-            src={dish.image}
+            src={photoDownloadUrl + dish.image}
             sx={{
               height: 300,
               width: "100%",

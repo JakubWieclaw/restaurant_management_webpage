@@ -1,4 +1,5 @@
 import { Typography, Card, Box, CardContent } from "@mui/material";
+import { photoDownloadUrl } from "../../../utils/api";
 
 interface CategoryCardProps {
   category: string;
@@ -19,7 +20,7 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({
       }}
     >
       <CardContent>
-        <Box component="img" src={icon} alt={category} />
+        <Box component="img" src={photoDownloadUrl + icon} alt={category} />
         <Typography>{category}</Typography>
       </CardContent>
     </Card>

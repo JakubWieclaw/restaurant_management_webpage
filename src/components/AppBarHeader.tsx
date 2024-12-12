@@ -38,7 +38,10 @@ export const AppBarHeader = () => {
     const fetchCoupons = async () => {
       if (!user.loginResponse) return;
       couponsApi
-        .getCouponsForCustomer(user.loginResponse.customerId!, auth(user?.loginResponse?.token))
+        .getCouponsForCustomer(
+          user.loginResponse.customerId!,
+          auth(user?.loginResponse?.token)
+        )
         .then((response) => {
           setNewCoupons(
             response.data.filter((coupon) => coupon.active === true)
@@ -209,7 +212,7 @@ export const AppBarHeader = () => {
                   width: 50,
                   marginRight: 1,
                 }}
-                src={ config.config.logoUrl}
+                src={photoDownloadUrl + config.config.logoUrl}
               ></Box>
 
               <Typography

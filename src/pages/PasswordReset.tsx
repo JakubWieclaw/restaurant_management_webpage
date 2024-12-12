@@ -13,7 +13,7 @@ import { toast, Slide } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 import { RootState } from "../store";
-import { authApi } from "../utils/api";
+import { authApi, photoDownloadUrl } from "../utils/api";
 
 export const PasswordReset = () => {
   const minPasswordLength = 3;
@@ -82,7 +82,7 @@ export const PasswordReset = () => {
           <Grid item xs={12}>
             <Box
               component={"img"}
-              src={ config.config.logoUrl}
+              src={photoDownloadUrl + config.config.logoUrl}
               sx={{
                 width: "20%",
               }}

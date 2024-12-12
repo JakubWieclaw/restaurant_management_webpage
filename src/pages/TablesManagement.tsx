@@ -47,13 +47,18 @@ export const TablesManagement = () => {
   const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
-    tableApi.getAllTables(auth(user?.loginResponse?.token)).then((response: AxiosResponse) => {
-      setTablesList(response.data);
-    });
+    tableApi
+      .getAllTables(auth(user?.loginResponse?.token))
+      .then((response: AxiosResponse) => {
+        setTablesList(response.data);
+      });
     if (user.loginResponse?.isAdmin) {
       if (onlyTodayReservations) {
         tableReservationApi
-          .getReservationsForDay(new Date().toISOString().split("T")[0], auth(user?.loginResponse?.token))
+          .getReservationsForDay(
+            new Date().toISOString().split("T")[0],
+            auth(user?.loginResponse?.token)
+          )
           .then((response: AxiosResponse) => {
             setReservationsList(response.data);
           });
@@ -66,7 +71,10 @@ export const TablesManagement = () => {
       }
     } else {
       tableReservationApi
-        .getReservationsForCustomer(user.loginResponse?.customerId!, auth(user?.loginResponse?.token))
+        .getReservationsForCustomer(
+          user.loginResponse?.customerId!,
+          auth(user?.loginResponse?.token)
+        )
         .then((response: AxiosResponse) => {
           setReservationsList(response.data);
         });
@@ -163,7 +171,10 @@ export const TablesManagement = () => {
                             aria-label="delete"
                             onClick={() => {
                               tableApi
-                                .deleteTable(table.id!, auth(user?.loginResponse?.token))
+                                .deleteTable(
+                                  table.id!,
+                                  auth(user?.loginResponse?.token)
+                                )
                                 .then(() => {
                                   setRefreshLists(!refreshLists);
                                   toast.success("Usunięto stolik", {
@@ -198,7 +209,7 @@ export const TablesManagement = () => {
                         </ListItemIcon>
                         <ListItemText
                           primary={table.id}
-                          secondary={`Ilość miejsc: ${table.capacity}`}
+                          secondary={`Liczba miejsc: ${table.capacity}`}
                         />
                       </ListItem>
                     ))
@@ -291,7 +302,10 @@ export const TablesManagement = () => {
                             aria-label="delete"
                             onClick={() => {
                               tableReservationApi
-                                .deleteReservationById(reservation.id!, auth(user?.loginResponse?.token))
+                                .deleteReservationById(
+                                  reservation.id!,
+                                  auth(user?.loginResponse?.token)
+                                )
                                 .then(() => {
                                   setRefreshLists(!refreshLists);
                                   toast.success("Usunięto rezerwację", {
@@ -355,7 +369,7 @@ export const TablesManagement = () => {
           <TextField
             margin="dense"
             id="name"
-            label="Ilość miejsc"
+            label="Liczba miejsc"
             type="number"
             fullWidth
             value={tableSeats}
@@ -384,30 +398,33 @@ export const TablesManagement = () => {
                 id: tableID,
                 capacity: tableSeats,
               };
-              tableApi.save(requestData, auth(user?.loginResponse?.token)).then(() => {
-                setRefreshLists(!refreshLists);
-                toast.success("Dodano nowy stolik", {
-                  position: "bottom-center",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
+              tableApi
+                .save(requestData, auth(user?.loginResponse?.token))
+                .then(() => {
+                  setRefreshLists(!refreshLists);
+                  toast.success("Dodano nowy stolik", {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                  });
+                  setTableAddingLoading(false);
+                })
+                .catch((error) => {
+                  toast.error(error.response.data, {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                  });
+                  setTableAddingLoading(false);
                 });
-                setTableAddingLoading(false);
-              }).catch((error) => {
-                toast.error(error.response.data, {
-                  position: "bottom-center",
-                  autoClose: 5000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                });
-                setTableAddingLoading(false);
-              } );
               setOpenNewTableModal(false);
             }}
             color="primary"

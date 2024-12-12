@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState, useRef, createContext, useMemo } from "react";
 
 import { AppDispatch, RootState } from "../store";
-import { authApi, configApi } from "../utils/api";
+import { authApi, configApi, photoDownloadUrl } from "../utils/api";
 import { login } from "../reducers/slices/userSlice";
 import { Login } from "../components/LoginRegister/Login";
 import { validatePhoneNumber } from "../utils/validations";
@@ -209,7 +209,7 @@ export const LoginRegister = () => {
           <Grid item xs={12}>
             <Box
               component={"img"}
-              src={config.config.logoUrl}
+              src={photoDownloadUrl + config.config.logoUrl}
               sx={{
                 width: "20%",
               }}

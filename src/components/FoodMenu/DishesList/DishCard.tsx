@@ -20,6 +20,7 @@ import { DishDialog } from "./DishDialog";
 import { CartItem } from "../../../types/cartTypes";
 import { addToCart } from "../../../reducers/slices/cartSlice";
 import { Link } from "react-router-dom";
+import { photoDownloadUrl } from "../../../utils/api";
 
 interface DishCardProps {
   dish: Dish;
@@ -66,7 +67,7 @@ export const DishCard: React.FC<DishCardProps> = ({ dish }) => {
           }}
         >
           <CardMedia
-            image={dish.image}
+            image={photoDownloadUrl + dish.image}
             title={dish.name}
             sx={{
               height: 200,
