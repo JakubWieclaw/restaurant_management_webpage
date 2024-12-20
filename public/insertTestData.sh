@@ -51,6 +51,10 @@ fi
 
 echo "Admin token retrieved: $admin_token"
 
+curl -X 'DELETE' \
+  'http://localhost:8080/admin/api/config' \
+  -H 'Authorization: Bearer '"$admin_token"
+
 # INITIALIZE CONFIG
 resp=$(curl -s -X 'POST' \
   'http://localhost:8080/admin/api/config/initialize-system' \
@@ -149,9 +153,6 @@ for id in $category_ids; do
   echo
 done
 
-curl -X 'DELETE' \
-  'http://localhost:8080/admin/api/config' \
-  -H 'Authorization: Bearer '"$admin_token"
 
 echo
 
