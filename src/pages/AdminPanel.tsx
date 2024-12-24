@@ -73,6 +73,28 @@ export const AdminPanel = () => {
         setItemNbEarnings(series.length);
       }
       setEarningsByYearMonth(series);
+      series.sort((a, b) => {
+        const months = [
+          "Styczeń",
+          "Luty",
+          "Marzec",
+          "Kwiecień",
+          "Maj",
+          "Czerwiec",
+          "Lipiec",
+          "Sierpień",
+          "Wrzesień",
+          "Październik",
+          "Listopad",
+          "Grudzień",
+        ]
+        const aMonth = a.month.split("-")[1];
+        const bMonth = b.month.split("-")[1];
+        if (months.indexOf(aMonth) < months.indexOf(bMonth)) {
+          return -1;
+        }
+        return 0;
+      });
     });
     statsApi.getOrdersByDayAndHour(auth(user?.loginResponse?.token)).then((res: AxiosResponse) => {
       if (typeof res.data === "string") {
@@ -89,6 +111,38 @@ export const AdminPanel = () => {
       if (series.length < itemNbOrders) {
         setItemNbOrders(series.length);
       }
+      //day and hour are in format "Poniedziałek 10:00"
+      // please sort this array
+      series.sort((a, b) => {
+        const days = [
+          "Poniedziałek",
+          "Wtorek",
+          "Środa",
+          "Czwartek",
+          "Piątek",
+          "Sobota",
+          "Niedziela",
+        ]
+        const aDay = a.dayHour.split(" ")[0];
+        const bDay = b.dayHour.split(" ")[0];
+        if (days.indexOf(aDay) < days.indexOf(bDay)) {
+          return -1;
+        }
+        return 0;
+      });
+
+      // sort by hour also
+      series.sort((a, b) => {
+        const aHour = a.dayHour.split(" ")[1];
+        const bHour = b.dayHour.split(" ")[1];
+        const aHourInt = parseInt(aHour.split(":")[0]);
+        const bHourInt = parseInt(bHour.split(":")[0]);
+        if (aHourInt < bHourInt) {
+          return -1;
+        }
+        return 0;
+      });
+
       setOrdersByDayHour(series);
     });
   }, []);
