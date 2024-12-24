@@ -310,7 +310,7 @@ export const AppBarHeader = () => {
               </>
             )}
 
-            <Tooltip title="Open settings">
+            <Tooltip title="Dodatkowe opcje">
               <IconButton
                 onClick={(e: any) => setAnchorElProfile(e.currentTarget)}
                 sx={{ p: 0 }}
