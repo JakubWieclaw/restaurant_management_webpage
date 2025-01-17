@@ -20,7 +20,7 @@ export const AppFooter = () => {
         <Container>
           <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
             <Typography variant="h6" color="inherit">
-              {new Date().getFullYear()} &copy; {config.restaurantName}
+              {2024} &copy; {config.restaurantName}
             </Typography>
           </Toolbar>
         </Container>

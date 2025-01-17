@@ -3,7 +3,6 @@ import {
   Grid,
   Link,
   TextField,
-  Typography,
   Divider,
 } from "@mui/material";
 
@@ -73,7 +72,7 @@ export const Register = () => {
           error={
             ctx.password.length < minPasswordLength && ctx.password.length > 0
           }
-          helperText={`Hasło musi mieć co najmniej ${minPasswordLength} znaki`}
+          helperText={`Hasło musi mieć co najmniej ${minPasswordLength} znaków`}
           inputProps={{
             minLength: minPasswordLength,
           }}
@@ -103,7 +102,7 @@ export const Register = () => {
         </Button>
       </Grid>
       <Grid item xs={12}>
-        <Typography
+        {/* <Typography
           variant="overline"
           sx={{
             fontSize: "0.7rem",
@@ -111,7 +110,7 @@ export const Register = () => {
         >
           Klikając przycisk "Zarejestruj się" zgadzasz się z naszymi warunkami
           korzystania z usługi oraz polityką prywatności.
-        </Typography>
+        </Typography> */}
       </Grid>
       <Grid item xs={12}>
         <Divider />

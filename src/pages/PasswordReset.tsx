@@ -16,7 +16,7 @@ import { RootState } from "../store";
 import { authApi, photoDownloadUrl } from "../utils/api";
 
 export const PasswordReset = () => {
-  const minPasswordLength = 3;
+  const minPasswordLength = 8;
   const [password, setPassword] = useState<string>("");
   const [passwordRepeat, setPasswordRepeat] = useState<string>("");
 
@@ -102,7 +102,7 @@ export const PasswordReset = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               error={password.length < minPasswordLength && password.length > 0}
-              helperText={`Hasło musi mieć co najmniej ${minPasswordLength} znaki`}
+              helperText={`Hasło musi mieć co najmniej ${minPasswordLength} znaków`}
               inputProps={{
                 minLength: minPasswordLength,
               }}
